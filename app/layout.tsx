@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import { Manrope } from 'next/font/google';
 import './globals.css';
 import { SafeJsonProtection } from '@/components/SafeJsonProtection';
+import { Analytics } from '@vercel/analytics/next';
 
 const manrope = Manrope({ 
   subsets: ['latin'],
@@ -37,6 +38,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         <SafeJsonProtection />
         <div className="fixed inset-0 z-[-10] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-screen pointer-events-none"></div>
         {children}
+        <Analytics />
       </body>
     </html>
   );
