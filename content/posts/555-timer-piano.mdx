@@ -1,0 +1,37 @@
+---
+title: "555 Timer Breadboard Piano"
+date: "2026-04-10"
+type: "project"
+summary: "A multi-key electronic piano built entirely on a breadboard using analog electronics and the versatile 555 Timer IC."
+tags: ["Analog", "Electronics", "Music"]
+published: true
+featured: true
+image: "/images/projects/piano.png.jpeg"
+tech: ["555 Timer IC", "Analog Electronics", "Breadboard Circuits"]
+---
+
+Before the ubiquity of digital microcontrollers like the Arduino, analog timing circuits were the backbone of electronic control. To deepen my understanding of fundamental analog design, my team and I built a multi-key electronic piano utilizing the legendary 555 Timer IC in astable mode.
+
+## The Theory of Operation
+
+The 555 timer, when configured as an astable multivibrator, outputs a continuous square wave. The frequency of this wave is determined by the values of two resistors and a capacitor connected to the chip. 
+
+By varying the resistance, we can change the frequency of the output wave. In audio terms, changing the frequency means changing the pitch of the note!
+
+### Building the Keyboard
+
+Instead of a single fixed resistor, we designed a parallel resistor network. Each "key" on our piano is a push-button switch connected in series with a specific resistor value. 
+
+* **High Resistance:** Slower charge/discharge cycle $\rightarrow$ Lower frequency $\rightarrow$ Lower pitch.
+* **Low Resistance:** Faster charge/discharge cycle $\rightarrow$ Higher frequency $\rightarrow$ Higher pitch.
+
+## Breadboard Prototyping
+
+Translating a schematic to a breadboard is an exercise in spatial reasoning and cable management. 
+
+1. **Iterative Debugging:** Our initial prototype suffered from significant "crosstalk" and noisy signals. We learned firsthand the importance of decoupling capacitors to stabilize the power supply lines.
+2. **Tuning:** We spent hours swapping out resistors and calculating equivalent parallel resistances to tune our buttons to approximate a diatonic musical scale.
+
+## Conclusion
+
+While you can write a software piano in a few lines of code, physically building one from silicon, resistors, and capacitors offers a profound appreciation for how electronic sound is synthesized from the ground up. It was the perfect synthesis of two of my interests: engineering and music.

@@ -1,0 +1,56 @@
+---
+title: "LPG Gas Leakage Detection System"
+date: "2025-10-15"
+type: "project"
+summary: "An embedded system designed to detect gas leaks in real-time, providing both visual and audible alerts to prevent hazards."
+tags: ["Embedded", "Sensors", "Safety"]
+published: true
+featured: true
+image: "/images/projects/gas-leak.png.jpeg"
+tech: ["Arduino Uno", "MQ-6 Gas Sensor", "Embedded Systems"]
+github: "https://github.com/byvikraman"
+---
+
+Safety in domestic and industrial environments is paramount. One of the most common yet preventable hazards is Liquefied Petroleum Gas (LPG) leakage. 
+
+For my end-semester embedded systems project, I collaborated with a six-member team to develop a robust, real-time gas leakage detection system using the Arduino Uno and an MQ-6 gas sensor.
+
+## The Architecture
+
+The system's core logic is straightforward but highly effective:
+1. **Sensing:** The MQ-6 sensor continuously monitors the concentration of combustible gases in the air.
+2. **Processing:** The analog signal is fed into the Arduino's ADC. We established a calibrated threshold based on baseline atmospheric conditions.
+3. **Actuation:** If the concentration breaches the safety threshold, the system immediately triggers a piezoelectric buzzer and a high-intensity LED array.
+
+## Hardware Integration Challenges
+
+Writing the software was only half the battle. The real engineering challenges lay in the physical world:
+* **Sensor Calibration:** The MQ-6 requires a preheat time and careful calibration to avoid false positives from other environmental factors.
+* **Power Management:** Ensuring stable voltage levels across the sensor and the actuators to prevent brownouts on the Arduino board.
+
+```c
+// Simplified threshold logic
+const int sensorPin = A0;
+const int buzzerPin = 8;
+const int threshold = 400; // Calibrated safe limit
+
+void setup() {
+  pinMode(buzzerPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int gasLevel = analogRead(sensorPin);
+  
+  if(gasLevel > threshold) {
+    digitalWrite(buzzerPin, HIGH); // Sound the alarm!
+  } else {
+    digitalWrite(buzzerPin, LOW);
+  }
+  delay(100);
+}
+```
+
+## Takeaways
+
+This project was a fantastic exercise in translating theoretical electronics into a functional, life-saving prototype. It reinforced the importance of iterative debugging, hardware assembly, and most importantly, teamwork under a tight academic deadline.
