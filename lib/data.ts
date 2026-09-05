@@ -6,6 +6,7 @@ export const personalInfo = {
   location: "Chengalpattu, Tamil Nadu",
   linkedin: "https://www.linkedin.com/in/byvikraman/",
   github: "https://github.com/V1kraman",
+  resume: "/Vikraman_V_Resume.pdf",
   about: "Electronics and Communication Engineering student at SRM Institute of Science and Technology with a strong interest in embedded systems, electronics, and software development. Hands-on experience in designing Arduino- and analog circuit-based projects, complemented by programming skills in Python, Java, and C. A proactive learner with excellent teamwork, leadership, and problem-solving abilities, seeking opportunities to apply technical knowledge through internships and real-world engineering projects."
 };
 

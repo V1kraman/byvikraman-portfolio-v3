@@ -113,11 +113,11 @@ export function WorkFeed({ initialPosts }: WorkFeedProps) {
             <div className="flex items-center gap-2 text-white">
               <Sparkles className="w-4 h-4 text-[#C2A370]" />
               <h2 id="featured-work-heading" className="text-xs uppercase tracking-[0.25em] font-semibold text-white/90">
-                Featured Highlights
+                Curated Showcase
               </h2>
             </div>
             <span className="text-[11px] text-white/30 uppercase tracking-widest font-mono">
-              {featuredItems.length} Handpicked
+              {featuredItems.length} Total Works
             </span>
           </div>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { Reveal } from "./Reveal";
-import { ArrowUpRight, Copy, CheckCircle2, ArrowRight } from "lucide-react";
+import { ArrowUpRight, Copy, CheckCircle2, ArrowRight, Download } from "lucide-react";
 import { personalInfo } from "@/lib/data";
 import { useState } from "react";
 import Link from "next/link";
@@ -32,15 +32,27 @@ export function Contact() {
               I&apos;m currently looking for new opportunities. My inbox is always open—whether you have a question or just want to say hi, I&apos;ll try my best to get back to you!
             </p>
             
-            <div className="flex flex-col sm:flex-row items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link 
                 href={`mailto:${personalInfo.email}`}
-                className="group relative inline-flex items-center gap-4 px-8 py-4 bg-[#C2A370] text-black font-semibold text-xs uppercase tracking-widest rounded-sm overflow-hidden"
+                className="group relative inline-flex items-center gap-4 px-8 py-4 bg-[#C2A370] text-black font-semibold text-xs uppercase tracking-widest rounded-sm overflow-hidden shadow-[0_0_30px_rgba(194,163,112,0.15)]"
               >
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
                 <span className="relative z-10">Say Hello</span>
                 <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
               </Link>
+
+              <a 
+                href={personalInfo.resume || "/Vikraman_V_Resume.pdf"}
+                download="Vikraman_V_Resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative inline-flex items-center gap-4 px-8 py-4 border border-[#C2A370]/60 hover:border-[#C2A370] text-[#C2A370] font-semibold text-xs uppercase tracking-widest rounded-sm overflow-hidden transition-colors duration-300"
+              >
+                <div className="absolute inset-0 bg-[#C2A370] translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                <span className="relative z-10 group-hover:text-black transition-colors duration-300">Download CV</span>
+                <Download className="w-4 h-4 relative z-10 group-hover:text-black group-hover:translate-y-0.5 transition-all duration-300" />
+              </a>
               
               <button 
                 onClick={handleCopy}
