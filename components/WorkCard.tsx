@@ -3,9 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { format, parseISO } from "date-fns";
-import { ArrowUpRight, ArrowRight, Calendar, Clock, Code2, PenTool, Github, ExternalLink, CheckCircle } from "lucide-react";
+import { ArrowUpRight, ArrowRight, Calendar, Clock, Code2, PenTool, Github, ExternalLink } from "lucide-react";
 import type { Post } from "@/lib/content/mdx";
 import { motion } from "motion/react";
+import { ProjectStatusBadge } from "./ProjectStatusBadge";
 
 interface WorkCardProps {
   item: Post;
@@ -55,10 +56,7 @@ export function WorkCard({ item, priority = false }: WorkCardProps) {
             </span>
 
             {isProject && item.status && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[9px] uppercase tracking-wider text-emerald-400/90 bg-emerald-500/10 border border-emerald-500/20 font-medium">
-                <CheckCircle className="w-2.5 h-2.5" />
-                {item.status}
-              </span>
+              <ProjectStatusBadge status={item.status} size="sm" />
             )}
           </div>
 

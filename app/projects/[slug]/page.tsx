@@ -1,12 +1,13 @@
 import { getAllPosts, getRelatedContent } from "@/lib/content/mdx";
 import { notFound } from "next/navigation";
-import { Calendar, Clock, Code2, Github, ExternalLink, CheckCircle } from "lucide-react";
+import { Calendar, Clock, Code2, Github, ExternalLink } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { Markdown } from "@/components/Markdown";
 import { BackButton } from "@/components/navigation/BackButton";
 import { Breadcrumbs } from "@/components/navigation/Breadcrumbs";
 import { ReadingProgress } from "@/components/navigation/ReadingProgress";
 import { RelatedContent } from "@/components/RelatedContent";
+import { ProjectStatusBadge } from "@/components/ProjectStatusBadge";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Contact";
 
@@ -86,10 +87,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                   </div>
 
                   {post.status && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-[10px] uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 font-medium">
-                      <CheckCircle className="w-3 h-3" />
-                      {post.status}
-                    </span>
+                    <ProjectStatusBadge status={post.status} size="md" />
                   )}
                 </div>
 

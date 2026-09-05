@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
 import type { Post } from "@/lib/content/mdx";
+import { ProjectStatusBadge } from "./ProjectStatusBadge";
 
 interface ProjectsProps {
   projects: Post[];
@@ -37,6 +38,15 @@ export function Projects({ projects, viewAllLink, viewAllText = "Explore All Wor
                 <div className="absolute inset-0 bg-gradient-to-br from-white/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
                 <div className="relative z-10 flex flex-col h-full">
+                  <div className="flex items-center justify-between gap-3 mb-4">
+                    <span className="text-[11px] font-mono uppercase tracking-widest text-white/30">
+                      0{idx + 1}
+                    </span>
+                    {project.status && (
+                      <ProjectStatusBadge status={project.status} size="sm" />
+                    )}
+                  </div>
+
                   {project.image && (
                     <div className="relative aspect-video w-full rounded-xl overflow-hidden mb-8 border border-white/5 bg-[#1a1a1e]">
                       <div className="absolute inset-0 bg-white/5 animate-pulse" />
