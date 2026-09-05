@@ -1,0 +1,24 @@
+{
+  "name": "Vikraman V",
+  "short_name": "Vikraman",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#0A0A0C",
+  "background_color": "#0A0A0C",
+  "display": "standalone"
+}

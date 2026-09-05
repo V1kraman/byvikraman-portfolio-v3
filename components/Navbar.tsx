@@ -54,8 +54,25 @@ export function Navbar() {
         className="fixed top-0 inset-x-0 z-50 flex justify-between items-center pt-6 px-6 md:pt-8 md:px-12 pointer-events-none"
       >
         <div className="pointer-events-auto">
-          <Link href="/" className="text-sm font-medium tracking-[0.2em] uppercase text-white/90 hover:text-white transition-colors" onClick={() => setMobileMenuOpen(false)}>
-            V V
+          <Link
+            id="navbar-brand-logo"
+            href="/"
+            className="flex items-center group transition-opacity duration-200 hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded-sm"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-label="Vikraman V - Home"
+          >
+            <svg
+              viewBox="22.04 58.88 467.92 378.88"
+              className="h-7 sm:h-8 w-auto fill-white transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_2px_10px_rgba(255,255,255,0.05)]"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <polygon points="22.04,58.88 155.40,58.88 200.43,153.60 67.08,153.60" />
+              <polygon points="356.60,58.88 489.96,58.88 444.92,153.60 311.57,153.60" />
+              <polygon points="75.37,171.03 208.72,171.03 256.00,270.46 189.32,410.70" />
+              <polygon points="303.28,171.03 436.63,171.03 322.68,410.70 256.00,270.46" />
+              <polygon points="256.00,289.76 193.91,420.35 202.19,437.76 309.81,437.76 318.09,420.35" />
+            </svg>
           </Link>
         </div>
         
