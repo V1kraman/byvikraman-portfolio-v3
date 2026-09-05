@@ -1,4 +1,4 @@
-import { getAllPosts } from "@/lib/content/mdx";
+import { getAllPosts, getRelatedContent } from "@/lib/content/mdx";
 import { notFound } from "next/navigation";
 import { Calendar, Clock, Code2, PenTool, Github, ExternalLink } from "lucide-react";
 import { format, parseISO } from "date-fns";
@@ -6,6 +6,9 @@ import { Markdown } from "@/components/Markdown";
 import { BackButton } from "@/components/navigation/BackButton";
 import { Breadcrumbs } from "@/components/navigation/Breadcrumbs";
 import { ReadingProgress } from "@/components/navigation/ReadingProgress";
+import { RelatedContent } from "@/components/RelatedContent";
+import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Contact";
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -36,26 +39,30 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
-  const post = getAllPosts().find((p) => p.slug === slug);
+  const allPosts = getAllPosts();
+  const post = allPosts.find((p) => p.slug === slug);
 
   if (!post) {
     notFound();
   }
 
+  const relatedItems = getRelatedContent(post, allPosts);
+
   return (
     <>
+      <Navbar />
       <ReadingProgress />
       <main className="relative min-h-screen pt-32 pb-24 flex flex-col">
         <div className="container px-6 md:px-12 mx-auto relative z-10 flex-grow max-w-4xl">
         
         <div className="flex flex-col mb-8">
-          <BackButton fallback={post.type === "project" ? "/projects" : "/blog"} />
+          <BackButton fallback="/work" />
           <Breadcrumbs 
             items={[
               { label: "Home", href: "/" },
               { 
-                label: post.type === "project" ? "Projects" : "Journal & Archive", 
-                href: post.type === "project" ? "/projects" : "/blog" 
+                label: "Work", 
+                href: "/work" 
               },
               { label: post.title }
             ]} 
@@ -148,8 +155,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </div>
         </article>
 
+        {/* Related Content Section */}
+        <RelatedContent currentPost={post} relatedItems={relatedItems} />
+
       </div>
       </main>
+      <Footer />
     </>
   );
 }

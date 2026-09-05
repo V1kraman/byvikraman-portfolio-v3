@@ -85,11 +85,20 @@ export function Contact() {
 
 export function Footer() {
   return (
-    <footer className="mt-auto pt-8 pb-12 border-t border-white/5 bg-[#0A0A0C]">
+    <footer className="mt-auto pt-10 pb-14 border-t border-white/5 bg-[#0A0A0C]">
       <div className="container px-8 md:px-12 mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
         <div className="flex flex-col items-center md:items-start gap-1 w-full md:w-auto">
           <div className="text-[10px] text-white/30 uppercase tracking-[0.2em] font-medium mb-1">Vikraman V</div>
-          <div className="text-xs text-white/40 font-light">&copy; {new Date().getFullYear()} All rights reserved.</div>
+          <div className="text-xs text-white/40 font-light">&copy; {new Date().getFullYear()} All rights reserved. &bull; Bridging hardware &amp; software</div>
+        </div>
+
+        {/* Navigation Links */}
+        <div className="flex items-center gap-6 text-[11px] uppercase tracking-widest font-medium text-white/50">
+          <Link href="/" className="hover:text-white transition-colors">Home</Link>
+          <Link href="/#about" className="hover:text-white transition-colors">About</Link>
+          <Link href="/work" className="text-[#C2A370] hover:text-[#C2A370]/80 transition-colors font-semibold">Work</Link>
+          <Link href="/#experience" className="hover:text-white transition-colors">Experience</Link>
+          <Link href="/#contact" className="hover:text-white transition-colors">Contact</Link>
         </div>
 
         <div className="flex gap-8 items-center w-full md:w-auto justify-center md:justify-end">

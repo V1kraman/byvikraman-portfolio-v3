@@ -54,10 +54,10 @@ export function Hero() {
               className="flex flex-col sm:flex-row gap-6 items-start sm:items-center"
             >
               <Link 
-                href="/projects"
+                href="/work"
                 className="group relative inline-flex items-center gap-4 px-8 py-4 bg-white text-black text-xs uppercase tracking-widest font-semibold rounded-sm overflow-hidden"
               >
-                <span className="relative z-10">Selected Work</span>
+                <span className="relative z-10">Explore Work</span>
                 <ArrowRight className="w-4 h-4 relative z-10 transition-transform duration-300 group-hover:translate-x-1" />
                 <div className="absolute inset-0 bg-[#C2A370] transform scale-x-0 origin-left transition-transform duration-500 ease-out group-hover:scale-x-100"></div>
               </Link>

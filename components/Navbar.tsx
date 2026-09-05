@@ -37,9 +37,8 @@ export function Navbar() {
 
   const links = [
     { name: "About", href: "/#about" },
-    { name: "Projects", href: "/projects" },
+    { name: "Work", href: "/work" },
     { name: "Experience", href: "/#experience" },
-    { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/#contact" },
   ];
 

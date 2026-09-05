@@ -20,6 +20,18 @@ export interface Post {
   tech?: string[];
   github?: string;
   demo?: string;
+  status?: string;
+  timeline?: string;
+  relatedProjects?: string[];
+  relatedArticles?: string[];
+}
+
+function normalizeImagePath(img?: string): string {
+  if (!img) return '';
+  const trimmed = img.trim();
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return trimmed;
+  if (trimmed.startsWith('/')) return trimmed;
+  return `/images/projects/${trimmed}`;
 }
 
 function getMDXFiles(dir: string) {
@@ -40,21 +52,37 @@ export function getAllPosts(): Post[] {
     const { data, content } = matter(rawContent);
     const slug = file.replace(/\.mdx?$/, '');
 
+    const rawType = String(data.type || '').toLowerCase().trim();
+    const type: 'project' | 'article' = 
+      rawType === 'project' || rawType === 'case-study' ? 'project' : 'article';
+
+    const relatedProjects = Array.isArray(data.relatedProjects) 
+      ? data.relatedProjects 
+      : (typeof data.relatedProjects === 'string' ? [data.relatedProjects] : []);
+
+    const relatedArticles = Array.isArray(data.relatedArticles) 
+      ? data.relatedArticles 
+      : (typeof data.relatedArticles === 'string' ? [data.relatedArticles] : []);
+
     return {
       slug,
-      type: data.type || 'article',
-      title: data.title,
+      type,
+      title: data.title || slug,
       date: data.date || '',
       summary: data.summary || '',
       content,
-      tags: data.tags || [],
+      tags: Array.isArray(data.tags) ? data.tags : [],
       readingTime: readingTime(content).text,
       published: data.published !== false,
       featured: data.featured === true,
-      image: data.image || '',
-      tech: data.tech || [],
+      image: normalizeImagePath(data.image),
+      tech: Array.isArray(data.tech) ? data.tech : [],
       github: data.github || '',
       demo: data.demo || '',
+      status: data.status || (type === 'project' ? 'Completed' : undefined),
+      timeline: data.timeline || (data.date ? new Date(data.date).getFullYear().toString() : undefined),
+      relatedProjects,
+      relatedArticles,
     } as Post;
   });
 
@@ -62,3 +90,48 @@ export function getAllPosts(): Post[] {
     .filter(post => post.published)
     .sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
 }
+
+export function getRelatedContent(currentPost: Post, allPosts: Post[] = getAllPosts()): Post[] {
+  if (currentPost.type === 'project') {
+    // Recommend related articles for a project
+    const explicitSlugs = currentPost.relatedArticles || [];
+    const explicit = allPosts.filter(
+      p => p.type === 'article' && p.slug !== currentPost.slug && explicitSlugs.includes(p.slug)
+    );
+    const tagMatches = allPosts.filter(
+      p => p.type === 'article' &&
+           p.slug !== currentPost.slug &&
+           !explicitSlugs.includes(p.slug) &&
+           (p.tags?.some(t => currentPost.tags?.includes(t) || currentPost.tech?.includes(t)) ||
+            p.tech?.some(t => currentPost.tags?.includes(t) || currentPost.tech?.includes(t)))
+    );
+    const remaining = allPosts.filter(
+      p => p.type === 'article' &&
+           p.slug !== currentPost.slug &&
+           !explicit.some(e => e.slug === p.slug) &&
+           !tagMatches.some(t => t.slug === p.slug)
+    );
+    return [...explicit, ...tagMatches, ...remaining].slice(0, 2);
+  } else {
+    // Recommend related projects for an article
+    const explicitSlugs = currentPost.relatedProjects || [];
+    const explicit = allPosts.filter(
+      p => p.type === 'project' && p.slug !== currentPost.slug && explicitSlugs.includes(p.slug)
+    );
+    const tagMatches = allPosts.filter(
+      p => p.type === 'project' &&
+           p.slug !== currentPost.slug &&
+           !explicitSlugs.includes(p.slug) &&
+           (p.tags?.some(t => currentPost.tags?.includes(t) || currentPost.tech?.includes(t)) ||
+            p.tech?.some(t => currentPost.tags?.includes(t) || currentPost.tech?.includes(t)))
+    );
+    const remaining = allPosts.filter(
+      p => p.type === 'project' &&
+           p.slug !== currentPost.slug &&
+           !explicit.some(e => e.slug === p.slug) &&
+           !tagMatches.some(t => t.slug === p.slug)
+    );
+    return [...explicit, ...tagMatches, ...remaining].slice(0, 2);
+  }
+}
+

@@ -17,7 +17,7 @@ export default function Home() {
       <Hero />
       <About />
       <Skills />
-      <Projects projects={featuredProjects.slice(0, 2)} viewAllLink="/projects" />
+      <Projects projects={featuredProjects.slice(0, 2)} viewAllLink="/work" viewAllText="Explore All Work" />
       <Education />
       <Contact />
       <Footer />

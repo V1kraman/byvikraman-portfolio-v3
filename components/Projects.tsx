@@ -10,15 +10,16 @@ import type { Post } from "@/lib/content/mdx";
 interface ProjectsProps {
   projects: Post[];
   viewAllLink?: string;
+  viewAllText?: string;
 }
 
-export function Projects({ projects, viewAllLink }: ProjectsProps) {
+export function Projects({ projects, viewAllLink, viewAllText = "Explore All Work" }: ProjectsProps) {
   return (
     <section id="projects" className="py-24 md:py-32 relative border-t border-white/5">
       <div className="container px-8 md:px-12 mx-auto">
         <Reveal>
           <div className="mb-16">
-            <h2 className="text-[10px] font-medium uppercase tracking-[0.2em] text-white/30 mb-4">Selected Work</h2>
+            <h2 className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#C2A370] mb-4">Selected Work</h2>
             <div className="text-[40px] md:text-[50px] font-light tracking-[-0.02em] text-white">
               Featured Projects
             </div>
@@ -29,7 +30,7 @@ export function Projects({ projects, viewAllLink }: ProjectsProps) {
           {projects.map((project, idx) => (
             <Reveal key={project.slug} delay={idx * 0.1}>
               <Link 
-                href={`/blog/${project.slug}`}
+                href={`/projects/${project.slug}`}
                 className="group flex flex-col h-full bg-[#ffffff03] border border-white/5 rounded-2xl p-6 sm:p-8 hover:border-white/10 transition-all duration-500 relative overflow-hidden"
               >
                 {/* Subtle hover gradient */}
@@ -83,7 +84,7 @@ export function Projects({ projects, viewAllLink }: ProjectsProps) {
                 href={viewAllLink}
                 className="group relative inline-flex items-center gap-4 px-8 py-4 bg-transparent border border-white/20 hover:border-white/40 text-white text-xs uppercase tracking-widest font-semibold rounded-sm transition-colors"
               >
-                <span>View All Projects</span>
+                <span>{viewAllText}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
