@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { getAllPosts } from "@/lib/content/mdx";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vikraman.dev";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://byvikraman.me";
   const posts = getAllPosts();
 
   const postUrls: MetadataRoute.Sitemap = posts.map((post) => ({

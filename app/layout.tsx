@@ -11,8 +11,34 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: 'Vikraman V | Developer & Engineer',
+  metadataBase: new URL('https://byvikraman.me'),
+  title: {
+    default: 'Vikraman V | Developer & Engineer',
+    template: '%s | Vikraman V',
+  },
   description: 'Portfolio of Vikraman V, Electronics and Communication Engineering student and developer.',
+  authors: [{ name: 'Vikraman V', url: 'https://byvikraman.me' }],
+  creator: 'Vikraman V',
+  alternates: {
+    canonical: 'https://byvikraman.me',
+  },
+  keywords: [
+    'Vikraman V',
+    'Vikraman',
+    'Developer',
+    'Engineer',
+    'Software Engineer',
+    'Electronics and Communication Engineering',
+    'ECE',
+    'Full Stack Developer',
+    'Embedded Systems',
+    'IoT',
+    'TypeScript',
+    'Next.js',
+    'React',
+    'Hardware Engineering',
+    'Portfolio',
+  ],
   icons: {
     icon: [
       { url: '/favicon.svg', type: 'image/svg+xml' },
@@ -27,6 +53,8 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Vikraman V | Developer & Engineer',
     description: 'Portfolio of Vikraman V, Electronics and Communication Engineering student and developer.',
+    url: 'https://byvikraman.me',
+    siteName: 'Vikraman V',
     type: 'website',
   },
   twitter: {
