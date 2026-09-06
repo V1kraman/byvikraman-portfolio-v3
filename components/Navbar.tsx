@@ -115,7 +115,7 @@ export function Navbar() {
           </AnimatePresence>
         </button>
 
-        <div className="hidden md:block pointer-events-auto text-[10px] text-white/30 uppercase tracking-tighter">Based in Chengalpattu, TN</div>
+        <div id="navbar-location" className="hidden md:block pointer-events-auto text-[10px] text-white/30 uppercase tracking-tighter">Based in India</div>
       </motion.header>
 
       {/* Mobile Full Screen Menu */}

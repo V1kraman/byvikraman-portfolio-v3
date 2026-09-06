@@ -3,7 +3,7 @@ export const personalInfo = {
   role: "Electronics & Communication Engineering Student",
   email: "byvikraman@gmail.com",
   phone: "+91 9360625695",
-  location: "Chengalpattu, Tamil Nadu",
+  location: "India",
   linkedin: "https://www.linkedin.com/in/byvikraman/",
   github: "https://github.com/V1kraman",
   resume: "/Vikraman_V_Resume.pdf",
@@ -11,9 +11,9 @@ export const personalInfo = {
 };
 
 export const skills = {
-  programming: ["Python", "Java", "C Programming", "TypeScript", "React", "Next.js"],
-  electronics: ["PCB Design", "555 Timer IC", "Analog Circuit Design", "MQ-6 Gas Sensor", "Digital Logic", "Arduino", "Embedded Systems"],
-  tools: ["DaVinci Resolve", "Adobe Photoshop", "Visual Studio Code", "Git", "Figma"],
+  programming: ["Python", "Java", "C Programming", "Vibe Coding"],
+  electronics: ["PCB Design", "ESP32", "Analog Circuit Design", "Mesh", "Digital Logic", "Arduino", "Local LLMS"],
+  tools: ["DaVinci Resolve", "Adobe Photoshop", "Visual Studio Code", "Git", "Google AI Studio"],
   soft: ["Problem Solving", "Communication", "Teamwork", "Leadership", "Time Management", "Adaptability", "Creativity", "Attention to Detail", "Critical Thinking", "Project Coordination"]
 };
 

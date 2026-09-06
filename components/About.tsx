@@ -36,14 +36,17 @@ export function About() {
           <div className="lg:col-span-7 space-y-12 lg:pt-12">
             <Reveal delay={0.1}>
               <div className="prose prose-invert max-w-none">
-                <p className="text-white/70 text-xl font-light leading-relaxed mb-6">
-                  I am an Electronics and Communication Engineering student at SRM Institute of Science and Technology. My journey began with a deep-seated curiosity about the inner workings of technology—a drive to understand the systems that power our world.
+                <p id="about-narrative-p1" className="text-white/70 text-xl font-light leading-relaxed mb-6">
+                  I am an Electronics and Communication Engineering student at SRM Institute of Science and Technology, driven by a fascination with how ideas become tangible systems. Whether it&apos;s a line of code, an electronic circuit, or a carefully crafted interface, I&apos;m drawn to understanding how individual pieces come together to create something meaningful.
                 </p>
-                <p className="text-white/50 text-lg font-light leading-relaxed mb-6">
-                  With hands-on experience designing Arduino-based projects and analog circuits, I have cultivated a strong foundation in embedded systems. This hardware knowledge doesn&apos;t exist in a vacuum; it is deeply intertwined with my proficiency in Python, Java, and C. I believe the most elegant solutions emerge when hardware and software are designed to speak the same language seamlessly.
+                <p id="about-narrative-p2" className="text-white/50 text-lg font-light leading-relaxed mb-6">
+                  My work spans software development, electronics, and modern web technologies, with each project becoming another opportunity to learn, experiment, and refine my craft. I enjoy building with intention, paying attention to the details that often go unnoticed but quietly shape the overall experience.
                 </p>
-                <p className="text-white/50 text-lg font-light leading-relaxed">
-                  Beyond breadboards and code editors, I am a creator at heart. Whether I&apos;m coordinating a team project, strumming a guitar, framing a photograph, or getting lost in a good book, I approach life with the same meticulous attention to detail and creative problem-solving that I apply to engineering.
+                <p id="about-narrative-p3" className="text-white/50 text-lg font-light leading-relaxed mb-6">
+                  Beyond engineering, I find inspiration in the things that reward patience and observation. You&apos;ll often find me with a guitar in hand, behind a camera, immersed in a good book, or exploring worlds that celebrate perseverance and thoughtful design. Those experiences influence the way I approach technology, reminding me that the best work is rarely rushed and that meaningful progress is built one deliberate step at a time.
+                </p>
+                <p id="about-narrative-p4" className="text-white/50 text-lg font-light leading-relaxed">
+                  I don&apos;t see engineering as simply writing code or assembling circuits. For me, it&apos;s a lifelong pursuit of understanding, creating, and leaving every project better than the one before it.
                 </p>
               </div>
             </Reveal>

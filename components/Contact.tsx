@@ -1,7 +1,7 @@
 "use client";
 
 import { Reveal } from "./Reveal";
-import { ArrowUpRight, Copy, CheckCircle2, ArrowRight, Download } from "lucide-react";
+import { ArrowUpRight, Copy, CheckCircle2, Download, Linkedin, Github } from "lucide-react";
 import { personalInfo } from "@/lib/data";
 import { useState } from "react";
 import Link from "next/link";
@@ -29,34 +29,28 @@ export function Contact() {
               Let&apos;s work together.
             </div>
             <p className="text-white/50 text-lg md:text-xl font-light leading-relaxed mb-10 max-w-xl mx-auto">
-              I&apos;m currently looking for new opportunities. My inbox is always open—whether you have a question or just want to say hi, I&apos;ll try my best to get back to you!
+              I&apos;m currently looking for new opportunities. My inbox is always open—whether you have a question or want to discuss a project, feel free to connect!
             </p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link 
-                href={`mailto:${personalInfo.email}`}
-                className="group relative inline-flex items-center gap-4 px-8 py-4 bg-[#C2A370] text-black font-semibold text-xs uppercase tracking-widest rounded-sm overflow-hidden shadow-[0_0_30px_rgba(194,163,112,0.15)]"
-              >
-                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-                <span className="relative z-10">Say Hello</span>
-                <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
-              </Link>
-
+            <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4 w-full max-w-2xl">
+              {/* Download CV Button */}
               <a 
+                id="contact-download-cv"
                 href={personalInfo.resume || "/Vikraman_V_Resume.pdf"}
                 download="Vikraman_V_Resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative inline-flex items-center gap-4 px-8 py-4 border border-[#C2A370]/60 hover:border-[#C2A370] text-[#C2A370] font-semibold text-xs uppercase tracking-widest rounded-sm overflow-hidden transition-colors duration-300"
+                className="group relative inline-flex items-center justify-center gap-3 px-6 py-3.5 bg-[#C2A370] hover:bg-[#d4b581] text-black font-semibold text-xs uppercase tracking-widest rounded-sm overflow-hidden shadow-[0_0_25px_rgba(194,163,112,0.15)] transition-all duration-200"
               >
-                <div className="absolute inset-0 bg-[#C2A370] translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-                <span className="relative z-10 group-hover:text-black transition-colors duration-300">Download CV</span>
-                <Download className="w-4 h-4 relative z-10 group-hover:text-black group-hover:translate-y-0.5 transition-all duration-300" />
+                <span>Download CV</span>
+                <Download className="w-4 h-4 transition-transform duration-200 group-hover:translate-y-0.5" />
               </a>
-              
+
+              {/* Copy Email Button */}
               <button 
+                id="contact-copy-email"
                 onClick={handleCopy}
-                className="group relative flex items-center gap-3 px-8 py-4 border border-white/20 text-white font-medium text-xs uppercase tracking-widest rounded-sm transition-colors hover:bg-white/5"
+                className="group relative inline-flex items-center justify-center gap-3 px-6 py-3.5 border border-white/20 hover:border-white/40 text-white font-medium text-xs uppercase tracking-widest rounded-sm transition-all duration-200 hover:bg-white/5"
               >
                 <div className="relative w-4 h-4 flex items-center justify-center">
                   <AnimatePresence mode="wait">
@@ -87,6 +81,32 @@ export function Contact() {
                 </div>
                 <span>{copied ? "Copied!" : "Copy Email"}</span>
               </button>
+
+              {/* LinkedIn Link */}
+              <a 
+                id="contact-linkedin"
+                href={personalInfo.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative inline-flex items-center justify-center gap-2.5 px-6 py-3.5 border border-white/20 hover:border-[#C2A370]/60 text-white/90 hover:text-[#C2A370] font-medium text-xs uppercase tracking-widest rounded-sm transition-all duration-200 hover:bg-white/5"
+              >
+                <Linkedin className="w-4 h-4 text-white/60 group-hover:text-[#C2A370] transition-colors" />
+                <span>LinkedIn</span>
+                <ArrowUpRight className="w-3.5 h-3.5 text-white/40 group-hover:text-[#C2A370] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </a>
+
+              {/* GitHub Link */}
+              <a 
+                id="contact-github"
+                href={personalInfo.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative inline-flex items-center justify-center gap-2.5 px-6 py-3.5 border border-white/20 hover:border-[#C2A370]/60 text-white/90 hover:text-[#C2A370] font-medium text-xs uppercase tracking-widest rounded-sm transition-all duration-200 hover:bg-white/5"
+              >
+                <Github className="w-4 h-4 text-white/60 group-hover:text-[#C2A370] transition-colors" />
+                <span>GitHub</span>
+                <ArrowUpRight className="w-3.5 h-3.5 text-white/40 group-hover:text-[#C2A370] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </a>
             </div>
           </div>
         </Reveal>
