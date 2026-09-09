@@ -1,12 +1,26 @@
 "use client";
 
 import { Reveal } from "./Reveal";
-import { Camera, Code, Cpu, Gamepad2, Guitar } from "lucide-react";
+import { Camera, Code2, Cpu, Gamepad2, Guitar, LucideIcon } from "lucide-react";
+
+interface InterestItem {
+  icon: LucideIcon;
+  label: string;
+}
+
+function InterestChip({ icon: Icon, label }: InterestItem) {
+  return (
+    <div className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/[0.03] border border-white/10 text-xs sm:text-[13px] text-white/75 hover:text-white hover:border-[#C2A370]/40 hover:bg-white/[0.06] transition-all duration-200 cursor-default select-none shadow-[0_2px_12px_rgba(0,0,0,0.15)]">
+      <Icon className="w-[17px] h-[17px] text-white/45 group-hover:text-[#C2A370] transition-colors duration-200 flex-shrink-0" />
+      <span className="font-normal tracking-wide whitespace-nowrap">{label}</span>
+    </div>
+  );
+}
 
 export function About() {
-  const interests = [
+  const interests: InterestItem[] = [
     { icon: Cpu, label: "Electronics" },
-    { icon: Code, label: "Development" },
+    { icon: Code2, label: "Development" },
     { icon: Guitar, label: "Music" },
     { icon: Camera, label: "Photography" },
     { icon: Gamepad2, label: "Gaming" },
@@ -70,13 +84,12 @@ export function About() {
 
             <Reveal delay={0.3}>
               <div className="pt-12 border-t border-white/5">
-                <h3 className="text-[11px] uppercase tracking-[0.2em] text-white/40 mb-6">Interests & Pursuits</h3>
+                <h3 className="text-[11px] uppercase tracking-[0.25em] text-white/40 mb-6 font-medium">
+                  Interests & Pursuits
+                </h3>
                 <div className="flex flex-wrap gap-3">
-                  {interests.map((item, i) => (
-                    <div key={i} className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/[0.03] border border-white/5 text-sm text-white/60 hover:bg-white/10 hover:text-white transition-colors cursor-default">
-                      <item.icon className="w-4 h-4 text-white/40" />
-                      <span className="font-light">{item.label}</span>
-                    </div>
+                  {interests.map((item) => (
+                    <InterestChip key={item.label} icon={item.icon} label={item.label} />
                   ))}
                 </div>
               </div>

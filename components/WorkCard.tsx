@@ -79,11 +79,12 @@ export function WorkCard({ item, priority = false }: WorkCardProps) {
 
         {/* Optional Image */}
         {item.image && (
-          <Link href={targetHref} className="block relative aspect-video w-full rounded-xl overflow-hidden mb-6 border border-white/5 bg-[#141417]">
+          <Link href={targetHref} tabIndex={-1} aria-hidden="true" className="block relative aspect-video w-full rounded-xl overflow-hidden mb-6 border border-white/10 bg-[#141417]">
             <div className="absolute inset-0 bg-white/5 animate-pulse pointer-events-none" />
             <Image
               src={item.image}
-              alt={item.title}
+              alt=""
+              aria-hidden="true"
               fill
               priority={priority}
               referrerPolicy="no-referrer"
@@ -102,23 +103,23 @@ export function WorkCard({ item, priority = false }: WorkCardProps) {
         </h3>
 
         {/* Excerpt / Summary */}
-        <p className="text-white/55 text-sm sm:text-base leading-relaxed font-light mb-6 flex-grow">
+        <p className="text-white/55 text-sm sm:text-base leading-relaxed font-light mb-6 flex-grow line-clamp-3">
           {item.summary}
         </p>
 
-        {/* Tags / Technologies */}
+        {/* Tags / Technologies (discrete chip pills) */}
         {((item.tech && item.tech.length > 0) || (item.tags && item.tags.length > 0)) && (
-          <ul className="flex flex-wrap gap-2 mb-6">
+          <ul className="flex flex-wrap gap-2 mb-6" aria-label="Tags">
             {(item.tech && item.tech.length > 0 ? item.tech : item.tags || []).slice(0, 4).map((tag) => (
               <li
                 key={tag}
-                className="px-2.5 py-1 bg-white/[0.03] border border-white/5 rounded-sm text-[10px] uppercase tracking-widest font-medium text-white/50"
+                className="inline-flex items-center px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/10 text-xs text-white/70 font-normal tracking-wide"
               >
                 {tag}
               </li>
             ))}
             {((item.tech?.length || 0) + (item.tags?.length || 0) > 4) && (
-              <li className="px-2 py-1 text-[10px] text-white/30 font-medium">
+              <li className="inline-flex items-center px-2 py-1 text-xs text-white/40 font-normal">
                 +more
               </li>
             )}

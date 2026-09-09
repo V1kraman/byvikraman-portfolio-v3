@@ -9,7 +9,8 @@ import { getAllPosts } from "@/lib/content/mdx";
 
 export default function Home() {
   const posts = getAllPosts();
-  const featuredProjects = posts.filter(post => post.type === 'project' && post.featured);
+  const allProjects = posts.filter(post => post.type === 'project');
+  const featuredProjects = allProjects.filter(post => post.featured);
 
   return (
     <main className="relative min-h-screen flex flex-col">
@@ -17,7 +18,13 @@ export default function Home() {
       <Hero />
       <About />
       <Skills />
-      <Projects projects={featuredProjects.slice(0, 2)} viewAllLink="/work" viewAllText="Explore All Work" />
+      <Projects 
+        projects={featuredProjects.slice(0, 2)} 
+        totalProjectsCount={allProjects.length}
+        viewAllLink="/work" 
+        viewAllText="Explore All Work" 
+        showIndex={false}
+      />
       <Education />
       <Contact />
       <Footer />

@@ -1,19 +1,47 @@
 "use client";
 
 import { Reveal } from "./Reveal";
-import { ArrowUpRight, Copy, CheckCircle2, Download, Linkedin, Github } from "lucide-react";
+import { ArrowUpRight, Copy, Check, Download, Linkedin, Github } from "lucide-react";
 import { personalInfo } from "@/lib/data";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 
 export function Contact() {
   const [copied, setCopied] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(personalInfo.email);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
+
+  const handleCopy = async () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    try {
+      if (typeof navigator !== "undefined" && navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(personalInfo.email);
+        setCopied(true);
+        setStatusMessage("Email address copied to clipboard!");
+        timerRef.current = setTimeout(() => {
+          setCopied(false);
+          setStatusMessage("");
+        }, 1800);
+      } else {
+        throw new Error("Clipboard API not available");
+      }
+    } catch {
+      // Graceful fallback to mailto link
+      window.location.href = `mailto:${personalInfo.email}`;
+      setStatusMessage(`Opening mail client for ${personalInfo.email}`);
+    }
   };
 
   return (
@@ -49,10 +77,16 @@ export function Contact() {
               {/* Copy Email Button */}
               <button 
                 id="contact-copy-email"
+                type="button"
                 onClick={handleCopy}
-                className="group relative inline-flex items-center justify-center gap-3 px-6 py-3.5 border border-white/20 hover:border-white/40 text-white font-medium text-xs uppercase tracking-widest rounded-sm transition-all duration-200 hover:bg-white/5"
+                aria-label={copied ? "Email copied to clipboard" : `Copy email address ${personalInfo.email}`}
+                className={`group relative inline-flex items-center justify-center gap-3 px-6 py-3.5 border text-xs uppercase tracking-widest rounded-sm transition-all duration-200 min-w-[155px] select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2A370] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0C] ${
+                  copied
+                    ? "border-[#C2A370] bg-[#C2A370]/10 text-[#C2A370] font-semibold shadow-[0_0_20px_rgba(194,163,112,0.1)]"
+                    : "border-white/20 hover:border-white/40 text-white font-medium hover:bg-white/5"
+                }`}
               >
-                <div className="relative w-4 h-4 flex items-center justify-center">
+                <div className="relative w-4 h-4 flex items-center justify-center flex-shrink-0">
                   <AnimatePresence mode="wait">
                     {copied ? (
                       <motion.div
@@ -60,10 +94,10 @@ export function Contact() {
                         initial={{ opacity: 0, scale: 0.5 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.5 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute inset-0 text-[#C2A370]"
+                        transition={{ duration: 0.15 }}
+                        className="absolute inset-0 flex items-center justify-center text-[#C2A370]"
                       >
-                        <CheckCircle2 className="w-4 h-4" />
+                        <Check className="w-4 h-4" />
                       </motion.div>
                     ) : (
                       <motion.div
@@ -71,15 +105,18 @@ export function Contact() {
                         initial={{ opacity: 0, scale: 0.5 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.5 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute inset-0 text-white/50 group-hover:text-white transition-colors"
+                        transition={{ duration: 0.15 }}
+                        className="absolute inset-0 flex items-center justify-center text-white/50 group-hover:text-white transition-colors"
                       >
                         <Copy className="w-4 h-4" />
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </div>
-                <span>{copied ? "Copied!" : "Copy Email"}</span>
+                <span className="whitespace-nowrap">{copied ? "Copied!" : "Copy Email"}</span>
+                <span className="sr-only" aria-live="polite">
+                  {statusMessage}
+                </span>
               </button>
 
               {/* LinkedIn Link */}
