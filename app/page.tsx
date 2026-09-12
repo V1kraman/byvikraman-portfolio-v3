@@ -19,7 +19,7 @@ export default function Home() {
       <About />
       <Skills />
       <Projects 
-        projects={featuredProjects.slice(0, 2)} 
+        projects={featuredProjects.slice(0, 4)} 
         totalProjectsCount={allProjects.length}
         viewAllLink="/work" 
         viewAllText="Explore All Work" 

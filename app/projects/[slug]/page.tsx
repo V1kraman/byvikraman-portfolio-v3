@@ -1,6 +1,6 @@
 import { getAllPosts, getRelatedContent } from "@/lib/content/mdx";
 import { notFound } from "next/navigation";
-import { Calendar, Clock, Code2, Github, ExternalLink } from "lucide-react";
+import { Calendar, Clock, Code2, Github, ExternalLink, BookOpen } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { Markdown } from "@/components/Markdown";
 import { BackButton } from "@/components/navigation/BackButton";
@@ -134,16 +134,21 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                   </div>
                 )}
                 
-                {(post.github || post.demo) && (
-                  <div className="flex flex-wrap gap-4 items-start sm:self-end">
+                {(post.github || post.demo || post.docs) && (
+                  <div className="flex flex-wrap gap-3 items-start sm:self-end">
+                    {post.docs ? (
+                      <a href={post.docs} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 transition-colors rounded-sm text-xs font-medium text-white border border-white/10">
+                        <BookOpen className="w-4 h-4 text-[#C2A370]" /> View Documentation
+                      </a>
+                    ) : null}
                     {post.github ? (
                       <a href={post.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 transition-colors rounded-sm text-xs font-medium text-white border border-white/10">
-                        <Github className="w-4 h-4" /> Repository
+                        <Github className="w-4 h-4" /> View Code
                       </a>
                     ) : null}
                     {post.demo ? (
                       <a href={post.demo} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 bg-[#C2A370] text-black hover:bg-[#C2A370]/90 transition-colors rounded-sm text-xs font-semibold">
-                        <ExternalLink className="w-4 h-4" /> Live Demo
+                        <ExternalLink className="w-4 h-4" /> Live Demo / Converter
                       </a>
                     ) : null}
                   </div>

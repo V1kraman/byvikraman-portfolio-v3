@@ -20,6 +20,7 @@ export interface Post {
   tech?: string[];
   github?: string;
   demo?: string;
+  docs?: string;
   status?: string;
   timeline?: string;
   relatedProjects?: string[];
@@ -79,6 +80,7 @@ export function getAllPosts(): Post[] {
       tech: Array.isArray(data.tech) ? data.tech : [],
       github: data.github || '',
       demo: data.demo || '',
+      docs: data.docs || '',
       status: data.status || (type === 'project' ? 'Completed' : undefined),
       timeline: data.timeline || (data.date ? new Date(data.date).getFullYear().toString() : undefined),
       relatedProjects,
