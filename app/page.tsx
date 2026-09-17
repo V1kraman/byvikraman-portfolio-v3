@@ -5,12 +5,11 @@ import { Skills } from "@/components/Skills";
 import { Projects } from "@/components/Projects";
 import { Education } from "@/components/Education";
 import { Contact, Footer } from "@/components/Contact";
-import { getAllPosts } from "@/lib/content/mdx";
+import { getAllPosts, getFeaturedWork } from "@/lib/content/mdx";
 
 export default function Home() {
-  const posts = getAllPosts();
-  const allProjects = posts.filter(post => post.type === 'project');
-  const featuredProjects = allProjects.filter(post => post.featured);
+  const allPosts = getAllPosts();
+  const featuredWork = getFeaturedWork(allPosts, 2);
 
   return (
     <main className="relative min-h-screen flex flex-col">
@@ -19,10 +18,10 @@ export default function Home() {
       <About />
       <Skills />
       <Projects 
-        projects={featuredProjects.slice(0, 4)} 
-        totalProjectsCount={allProjects.length}
+        projects={featuredWork} 
+        totalProjectsCount={allPosts.length}
         viewAllLink="/work" 
-        viewAllText="Explore All Work" 
+        viewAllText="Explore Work" 
         showIndex={false}
       />
       <Education />

@@ -12,14 +12,20 @@ interface ProjectsProps {
   viewAllLink?: string;
   viewAllText?: string;
   showIndex?: boolean;
+  title?: string;
+  subtitle?: string;
+  eyebrow?: string;
 }
 
 export function Projects({
   projects,
   totalProjectsCount,
   viewAllLink,
-  viewAllText = "Explore All Work",
+  viewAllText = "Explore Work",
   showIndex = false,
+  title = "Featured Work",
+  subtitle = "Currently building, recently finished, and worth exploring.",
+  eyebrow = "Selected Work",
 }: ProjectsProps) {
   return (
     <section id="projects" className="py-24 md:py-32 relative border-t border-white/5">
@@ -29,18 +35,25 @@ export function Projects({
             <div className="flex items-center gap-3 mb-4">
               <div className="h-[1px] w-8 bg-[#C2A370]"></div>
               <h2 className="text-[10px] font-medium uppercase tracking-[0.25em] text-[#C2A370]">
-                Selected Work
+                {eyebrow}
               </h2>
             </div>
 
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-              <div className="text-[36px] sm:text-[46px] md:text-[52px] font-light tracking-[-0.02em] text-white leading-tight">
-                Featured Projects
+              <div>
+                <h3 className="text-[36px] sm:text-[46px] md:text-[52px] font-light tracking-[-0.02em] text-white leading-tight">
+                  {title}
+                </h3>
+                {subtitle && (
+                  <p className="text-sm sm:text-base text-white/50 font-light mt-2 max-w-xl">
+                    {subtitle}
+                  </p>
+                )}
               </div>
 
               {typeof totalProjectsCount === "number" && (
                 <div className="text-xs font-mono uppercase tracking-widest text-white/45 pb-1">
-                  Showing {projects.length} of {totalProjectsCount} projects
+                  Showing {projects.length} of {totalProjectsCount} works
                 </div>
               )}
             </div>

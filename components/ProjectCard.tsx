@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Code2 } from "lucide-react";
+import { ArrowUpRight, Code2, PenTool } from "lucide-react";
 import type { Post } from "@/lib/content/mdx";
 import { ProjectStatusBadge } from "./ProjectStatusBadge";
 
@@ -21,7 +21,8 @@ export function ProjectCard({
   priority = false,
   className = "",
 }: ProjectCardProps) {
-  const targetHref = `/projects/${project.slug}`;
+  const isProject = project.type === "project";
+  const targetHref = isProject ? `/projects/${project.slug}` : `/blog/${project.slug}`;
 
   // Gather unique tags prioritizing tech stack then general tags
   const tagsList = (project.tech && project.tech.length > 0)
@@ -33,7 +34,7 @@ export function ProjectCard({
   return (
     <Link
       href={targetHref}
-      aria-label={`View project: ${project.title}`}
+      aria-label={isProject ? `View project: ${project.title}` : `Read article: ${project.title}`}
       className={`group flex flex-col h-full bg-[#ffffff03] border border-white/10 hover:border-white/20 rounded-2xl p-6 sm:p-7 transition-all duration-300 ease-out shadow-[0_4px_24px_rgba(0,0,0,0.2)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)] motion-safe:hover:-translate-y-1 relative overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2A370] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0C] ${className}`}
     >
       {/* Subtle hover gradient */}
@@ -50,13 +51,17 @@ export function ProjectCard({
             </span>
           ) : (
             <span className="text-[11px] uppercase tracking-wider font-mono text-white/30">
-              {project.timeline || "Project"}
+              {project.timeline || (isProject ? "Project" : "Article")}
             </span>
           )}
 
-          {project.status && (
+          {project.status ? (
             <ProjectStatusBadge status={project.status} size="sm" />
-          )}
+          ) : !isProject ? (
+            <span className="inline-flex items-center rounded-sm uppercase tracking-wider font-medium text-white/70 bg-white/10 border border-white/15 px-2 py-0.5 text-[9px] gap-1">
+              Article
+            </span>
+          ) : null}
         </div>
 
         {/* 2. Thumbnail / Screenshot Slot (16:9 aspect ratio) */}
@@ -76,10 +81,10 @@ export function ProjectCard({
             /* Graceful Placeholder with Subtle Pattern & Accent */
             <div className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-gradient-to-br from-white/[0.04] via-[#C2A370]/[0.05] to-transparent">
               <div className="p-3 rounded-full bg-white/[0.04] border border-white/10 text-[#C2A370]/80 mb-2">
-                <Code2 className="w-6 h-6" />
+                {isProject ? <Code2 className="w-6 h-6" /> : <PenTool className="w-6 h-6" />}
               </div>
               <span className="text-[11px] uppercase tracking-[0.2em] font-medium text-white/40">
-                Engineering Case Study
+                {isProject ? "Engineering Case Study" : "Technical Article"}
               </span>
             </div>
           )}
@@ -110,11 +115,11 @@ export function ProjectCard({
           </ul>
         )}
 
-        {/* 6. CTA Affordance ("View Project" with min 44px tap target) */}
+        {/* 6. CTA Affordance (min 44px tap target) */}
         <div className="pt-4 border-t border-white/10 mt-auto">
           <div className="flex items-center justify-between min-h-[44px]">
             <span className="text-xs uppercase tracking-widest font-semibold text-white group-hover:text-[#C2A370] transition-colors">
-              View Project
+              {isProject ? "View Project" : "Read Article"}
             </span>
             <div className="p-2 -mr-2 rounded-full text-white/40 group-hover:text-[#C2A370] transition-colors">
               <ArrowUpRight className="w-4 h-4 transition-transform duration-200 motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />

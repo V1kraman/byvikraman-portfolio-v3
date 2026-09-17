@@ -10,6 +10,7 @@ export interface Post {
   type: 'project' | 'article';
   title: string;
   date: string;
+  updated?: string;
   summary: string;
   content: string;
   tags?: string[];
@@ -70,6 +71,7 @@ export function getAllPosts(): Post[] {
       type,
       title: data.title || slug,
       date: data.date || '',
+      updated: data.updated || '',
       summary: data.summary || '',
       content,
       tags: Array.isArray(data.tags) ? data.tags : [],
@@ -91,6 +93,74 @@ export function getAllPosts(): Post[] {
   return posts
     .filter(post => post.published)
     .sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+}
+
+export function isOngoingStatus(status?: string): boolean {
+  if (!status) return false;
+  const lower = status.toLowerCase().trim();
+  return (
+    lower.includes('ongoing') ||
+    lower.includes('in-progress') ||
+    lower.includes('in progress') ||
+    lower.includes('active') ||
+    lower.includes('wip') ||
+    lower.includes('building')
+  );
+}
+
+/**
+ * Dynamically selects featured work for the homepage.
+ *
+ * Selection Rules:
+ * 1. Filter out draft/unpublished items (published !== false).
+ * 2. Priority 1: Active/Ongoing projects currently being built.
+ * 3. Priority 2: Most recent work (projects/articles) based on publication/update date to fill open slots.
+ * 4. Maximum of `limit` items (defaults to 2).
+ * 5. Strict deduplication (no item can appear twice).
+ * 6. Graceful degradation for 0, 1, or 2+ items.
+ */
+export function getFeaturedWork(allPosts: Post[] = getAllPosts(), limit: number = 2): Post[] {
+  // 1. Only consider published items
+  const validPosts = allPosts.filter((post) => post.published !== false);
+
+  const getPostTimestamp = (post: Post): number => {
+    const dateStr = post.updated || post.date;
+    if (!dateStr) return 0;
+    const time = new Date(dateStr).getTime();
+    return isNaN(time) ? 0 : time;
+  };
+
+  const sortByDateDesc = (a: Post, b: Post) => getPostTimestamp(b) - getPostTimestamp(a);
+
+  const selected: Post[] = [];
+  const selectedSlugs = new Set<string>();
+
+  // Priority 1: Ongoing projects (active work currently being built)
+  const ongoingProjects = validPosts
+    .filter((post) => post.type === 'project' && isOngoingStatus(post.status))
+    .sort(sortByDateDesc);
+
+  for (const project of ongoingProjects) {
+    if (selected.length >= limit) break;
+    selected.push(project);
+    selectedSlugs.add(project.slug);
+  }
+
+  // Priority 2: Fill remaining slots with the most recent work based on publication or update date.
+  // When there are not enough active projects, allow recent projects/posts to fill empty slots.
+  if (selected.length < limit) {
+    const remainingPosts = validPosts
+      .filter((post) => !selectedSlugs.has(post.slug))
+      .sort(sortByDateDesc);
+
+    for (const post of remainingPosts) {
+      if (selected.length >= limit) break;
+      selected.push(post);
+      selectedSlugs.add(post.slug);
+    }
+  }
+
+  return selected;
 }
 
 export function getRelatedContent(currentPost: Post, allPosts: Post[] = getAllPosts()): Post[] {
