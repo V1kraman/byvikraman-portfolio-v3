@@ -104,8 +104,8 @@ export function WorkFeed({ initialPosts }: WorkFeedProps) {
       {filteredPosts.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
           <AnimatePresence mode="popLayout">
-            {filteredPosts.map((post) => (
-              <WorkCard key={post.slug} item={post} />
+            {filteredPosts.map((post, idx) => (
+              <WorkCard key={post.slug} item={post} index={idx} />
             ))}
           </AnimatePresence>
         </div>

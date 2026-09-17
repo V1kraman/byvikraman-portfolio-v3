@@ -49,8 +49,8 @@ export function RelatedContent({ currentPost, relatedItems }: RelatedContentProp
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {relatedItems.map((item) => (
-          <WorkCard key={item.slug} item={item} />
+        {relatedItems.map((item, idx) => (
+          <WorkCard key={item.slug} item={item} index={idx} />
         ))}
       </div>
     </section>

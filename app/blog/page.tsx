@@ -59,8 +59,8 @@ export default function BlogIndex() {
 
           {/* Unified Posts Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-            {(articles.length > 0 ? articles : posts).map((post) => (
-              <WorkCard key={post.slug} item={post} />
+            {(articles.length > 0 ? articles : posts).map((post, idx) => (
+              <WorkCard key={post.slug} item={post} index={idx} />
             ))}
           </div>
         </div>

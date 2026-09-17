@@ -5,15 +5,17 @@ import Image from "next/image";
 import { format, parseISO } from "date-fns";
 import { ArrowUpRight, ArrowRight, Calendar, Clock, Code2, PenTool, Github, ExternalLink } from "lucide-react";
 import type { Post } from "@/lib/content/mdx";
-import { motion } from "motion/react";
+import { motion, useReducedMotion, type Variants } from "motion/react";
 import { ProjectStatusBadge } from "./ProjectStatusBadge";
 
 interface WorkCardProps {
   item: Post;
+  index?: number;
   priority?: boolean;
 }
 
-export function WorkCard({ item, priority = false }: WorkCardProps) {
+export function WorkCard({ item, index = 0, priority = false }: WorkCardProps) {
+  const shouldReduceMotion = useReducedMotion();
   const isProject = item.type === "project";
   const targetHref = isProject ? `/projects/${item.slug}` : `/blog/${item.slug}`;
 
@@ -27,13 +29,41 @@ export function WorkCard({ item, priority = false }: WorkCardProps) {
     formattedDate = item.date;
   }
 
+  // Subtle staggered delay: gently stagger cards based on their grid position
+  const staggerDelay = shouldReduceMotion ? 0 : Math.min((index % 6) * 0.08, 0.35);
+
+  const cardVariants: Variants = {
+    hidden: {
+      opacity: 0,
+      y: shouldReduceMotion ? 0 : 24,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: shouldReduceMotion ? 0.25 : 0.55,
+        delay: staggerDelay,
+        ease: [0.21, 0.47, 0.32, 0.98] as const,
+      },
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.96,
+      transition: {
+        duration: 0.25,
+        ease: "easeIn",
+      },
+    },
+  };
+
   return (
     <motion.article 
       layout="position"
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.96 }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      variants={cardVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-30px" }}
+      exit="exit"
       className="group relative flex flex-col h-full bg-[#ffffff03] border border-white/5 hover:border-white/15 rounded-2xl p-6 sm:p-8 transition-all duration-500 overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.2)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]"
     >
       {/* Subtle hover gradient */}

@@ -58,8 +58,8 @@ export default function ProjectsIndex() {
 
           {/* Unified Projects Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-            {projects.map((project) => (
-              <WorkCard key={project.slug} item={project} />
+            {projects.map((project, idx) => (
+              <WorkCard key={project.slug} item={project} index={idx} />
             ))}
           </div>
         </div>
