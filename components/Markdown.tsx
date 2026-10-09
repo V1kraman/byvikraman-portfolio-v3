@@ -2,6 +2,7 @@
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 import rehypeHighlight from "rehype-highlight";
 import { ExternalLink, Download, FileText } from "lucide-react";
 import "highlight.js/styles/github-dark.css";
@@ -10,12 +11,60 @@ interface MarkdownProps {
   content: string;
 }
 
+function extractClass(props: any): string {
+  if (props.className) {
+    return Array.isArray(props.className) ? props.className.join(" ") : String(props.className);
+  }
+  if (props.classname) {
+    return Array.isArray(props.classname) ? props.classname.join(" ") : String(props.classname);
+  }
+  if (props.class) {
+    return Array.isArray(props.class) ? props.class.join(" ") : String(props.class);
+  }
+  return "";
+}
+
 export function Markdown({ content }: MarkdownProps) {
   return (
     <ReactMarkdown 
       remarkPlugins={[remarkGfm]}
-      rehypePlugins={[rehypeHighlight]}
+      rehypePlugins={[rehypeRaw, rehypeHighlight]}
       components={{
+        div: ({ node, children, ...props }: any) => {
+          const cls = extractClass(props);
+          const { className: _cn, classname: _clsn, class: _c, ...rest } = props;
+          return <div className={cls} {...rest}>{children}</div>;
+        },
+        figure: ({ node, children, ...props }: any) => {
+          const cls = extractClass(props);
+          const { className: _cn, classname: _clsn, class: _c, ...rest } = props;
+          return <figure className={cls} {...rest}>{children}</figure>;
+        },
+        figcaption: ({ node, children, ...props }: any) => {
+          const cls = extractClass(props);
+          const { className: _cn, classname: _clsn, class: _c, ...rest } = props;
+          return <figcaption className={cls} {...rest}>{children}</figcaption>;
+        },
+        span: ({ node, children, ...props }: any) => {
+          const cls = extractClass(props);
+          const { className: _cn, classname: _clsn, class: _c, ...rest } = props;
+          return <span className={cls} {...rest}>{children}</span>;
+        },
+        a: ({ node, href, children, ...props }: any) => {
+          const cls = extractClass(props);
+          const { className: _cn, classname: _clsn, class: _c, ...rest } = props;
+          const isExternal = href?.startsWith("http") || href?.startsWith("/images/");
+          return (
+            <a
+              href={href}
+              className={cls || "text-[#C2A370] hover:underline underline-offset-4"}
+              {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              {...rest}
+            >
+              {children}
+            </a>
+          );
+        },
         p: ({ children, node }) => {
           const hasImage = node?.children?.some(
             (child: any) => child.type === 'element' && child.tagName === 'img'
@@ -27,7 +76,7 @@ export function Markdown({ content }: MarkdownProps) {
 
           return <p className="mb-6 leading-relaxed text-white/70">{children}</p>;
         },
-        img: ({ src, alt, ...props }) => {
+        img: ({ src, alt, ...props }: any) => {
           let normalizedSrc = typeof src === 'string' ? src : '';
           if (normalizedSrc.startsWith('/mnt/data/')) {
             const filename = normalizedSrc.replace('/mnt/data/', '');
@@ -120,16 +169,43 @@ export function Markdown({ content }: MarkdownProps) {
             );
           }
 
+          const customClass = extractClass(props);
+          // If this image already has custom classes (e.g. within an embedded gallery grid), render directly without double wrapping
+          if (customClass) {
+            const { className: _cn, classname: _clsn, class: _c, ...rest } = props;
+            return (
+              <img
+                src={normalizedSrc}
+                alt={alt || ''}
+                referrerPolicy="no-referrer"
+                className={customClass}
+                {...rest}
+              />
+            );
+          }
+
           return (
             <figure className="my-10 group">
               <div className="relative rounded-xl overflow-hidden border border-white/10 bg-[#0d0d11] shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-all duration-300 group-hover:border-white/25">
-                <img
-                  src={normalizedSrc}
-                  alt={alt || ''}
-                  referrerPolicy="no-referrer"
-                  className="w-full h-auto object-cover max-h-[600px] transition-transform duration-500 group-hover:scale-[1.01]"
-                  {...props}
-                />
+                <a
+                  href={normalizedSrc}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block relative cursor-zoom-in group/img"
+                  title="Click to view full-resolution original"
+                >
+                  <img
+                    src={normalizedSrc}
+                    alt={alt || ''}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-auto object-cover max-h-[650px] transition-transform duration-500 group-hover/img:scale-[1.01]"
+                    {...props}
+                  />
+                  <div className="absolute top-3 right-3 opacity-0 group-hover/img:opacity-100 transition-opacity bg-black/80 backdrop-blur-md border border-white/20 rounded-md px-2.5 py-1 text-[10px] uppercase font-mono tracking-wider text-white/90 flex items-center gap-1.5 shadow-xl pointer-events-none">
+                    <ExternalLink className="w-3 h-3 text-[#C2A370]" />
+                    <span>Full Resolution</span>
+                  </div>
+                </a>
               </div>
               {alt && (
                 <figcaption className="mt-3 text-center text-xs font-mono tracking-wide text-white/50 flex items-center justify-center gap-2">
