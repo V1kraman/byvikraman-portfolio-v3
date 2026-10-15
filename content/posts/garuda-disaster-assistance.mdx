@@ -1,0 +1,440 @@
+---
+title: "GARUDA — Geo-Autonomous Rescue & Disaster Assistance"
+date: "2026-10-15"
+type: "article"
+status: "Completed"
+summary: "A prototype-stage disaster-response architecture that coordinates autonomous aerial search, onboard YOLO11 candidate detection, shared search memory, and resilient mesh communication to provide human responders with actionable information when conventional access fails."
+tags: ["Robotics", "Disaster Response", "ArduPilot", "Edge AI", "Mesh Networks", "System Architecture", "UAV", "Embedded Systems"]
+tech: ["SpeedyBee Stack", "ArduPilot", "Vicharak Axon", "YOLO11", "MAVLink", "BATMAN-adv", "ORB-SLAM3", "WildNav", "LiDAR", "Global-Shutter RGB", "Thermal/IR"]
+published: true
+featured: true
+timeline: "2026"
+relatedProjects: ["bruce-pocket-lab", "esp32-s3-oled-video-display", "tinyml-vibration-research-reproduction"]
+relatedArticles: ["the-intersection-of-hardware-and-software", "nipam-intellectual-property-workshop"]
+---
+
+# GARUDA — Geo-Autonomous Rescue & Disaster Assistance
+
+> "The drone is the node. The intelligence is in the network."
+
+When natural disasters strike—floods, monsoonal flash-inundations, structural collapses, or severe landslides—the immediate bottleneck is rarely an absolute absence of rescue personnel. The catastrophic failure point is access and information:
+
+$$\text{Disaster} \longrightarrow \text{Disrupted Access} \longrightarrow \text{Fragmented Information} \longrightarrow \text{Blind Search} \longrightarrow \text{Delayed Help}$$
+
+**GARUDA (Geo-Autonomous Rescue & Disaster Assistance)** is an engineering architecture designed to break this chain. It is a prototype-stage system engineered to answer one central question:
+
+> **When conventional access fails, how can responders efficiently find where people may need help?**
+
+GARUDA is deliberately not positioned as an "autonomous AI rescue drone." It does not drop payloads, it does not diagnose injuries, and it never authorizes rescue operations autonomously. Instead, it integrates autonomous aerial search, onboard edge intelligence, persistent search memory, and a degraded-mode mesh communication backbone into a unified operational pipeline:
+
+$$\mathbf{SEARCH} \longrightarrow \mathbf{PINPOINT} \longrightarrow \mathbf{REPORT} \longrightarrow \mathbf{HUMAN\ VERIFY} \longrightarrow \mathbf{RESCUE}$$
+
+The core contribution of GARUDA is **system behavior and architectural defensibility**, forged through repeated internal critique where every unsupportable assumption was stripped away until only verified engineering remained.
+
+---
+
+## 🌪️ The Problem: The Anatomy of Access Failure
+
+Conventional disaster response depends heavily on continuous ground reconnaissance, line-of-sight visual search, and commercial cellular connectivity. In catastrophic environmental events, all three fail simultaneously:
+
+```
++-----------------------------------------------------------------------------------+
+|                            CATASTROPHIC DISASTER EVENT                            |
++-----------------------------------------------------------------------------------+
+                                         │
+       ┌─────────────────────────────────┼─────────────────────────────────┐
+       ▼                                 ▼                                 ▼
++──────────────+                 +───────────────+                 +──────────────+
+|    ACCESS    |                 |   MANPOWER    |                 |  VISIBILITY  |
+| Ground roads |                 | Search crews  |                 | Line of sight|
+|  & bridges   |                 | cannot cover  |                 |  obscured by |
+| washed out / |                 | hundreds of   |                 | weather, mud,|
+|  obstructed  |                 | square km     |                 |  and night   |
++──────────────+                 +───────────────+                 +──────────────+
+       │                                 │                                 │
+       └─────────────────────────────────┼─────────────────────────────────┘
+                                         ▼
+                      +─────────────────────────────────────+
+                      |         RESPONDER SAFETY RISK       |
+                      | Flash currents, unstable structures,|
+                      |    debris, secondary landslides     |
+                      +─────────────────────────────────────+
+```
+
+1. **Access:** Physical routes become impassable for vehicles and foot patrols within minutes.
+2. **Manpower:** Emergency personnel are finite; search teams cannot physically comb miles of flooded terrain simultaneously.
+3. **Visibility:** Heavy weather, foliage, mud, and darkness reduce visual observation from conventional helicopters or ground vantage points.
+4. **Responder Safety:** Deploying searchers into active torrents or unstable slide zones exposes rescue crews to lethal secondary hazards.
+
+GARUDA treats the aerial drone not as an isolated gadget, but as an expendable sensor node in an ad-hoc territorial network whose sole purpose is to produce georeferenced, timestamped **potential victim candidates** for human verification.
+
+---
+
+## 🧠 Core System Behaviors
+
+The technical differentiation of GARUDA lies in four system-level behaviors rather than claiming newly invented individual drone components:
+
+```
+                     GARUDA SYSTEM BEHAVIORS
+                                │
+        ┌───────────────────────┼───────────────────────┐
+        ▼                       ▼                       ▼
++────────────────+     +────────────────+     +────────────────+
+|   PERSISTENT   |     | DYNAMIC SECTOR |     | DEGRADED-MODE  |
+|  SEARCH MEMORY |     |  REALLOCATION  |     | COMMUNICATIONS |
+| State tracking |     | Sector handoff |     | Metadata first |
+| across nodes   |     | on node exit   |     | over raw video |
++────────────────+     +────────────────+     +────────────────+
+                                │
+                                ▼
+                       +────────────────+
+                       |  LOCAL-FIRST   |
+                       |  INTELLIGENCE  |
+                       | Onboard YOLO11 |
+                       | on Axon NPU    |
+                       +────────────────+
+```
+
+### 1. Persistent Search Memory
+In uncoordinated drone operations, multiple operators frequently overlap paths or repeatedly search the same empty sectors while critical areas remain untouched.
+
+GARUDA establishes a shared, synchronized grid state machine across all participating nodes:
+- `UNSEARCHED`: Grid cell pending initial sweep.
+- `SEARCHING`: Actively assigned to a specific drone ID.
+- `COMPLETED`: Verified and logged with telemetry timestamp.
+- `RELEASED / UNASSIGNED`: Sector abandoned mid-sweep and flagged for immediate reassignment.
+
+This prevents redundant energy expenditure across limited battery budgets.
+
+### 2. Dynamic Search Reallocation
+Drones in disaster zones experience battery depletion, motor wear, or environmental aborts. In GARUDA, search assignment is decoupled from drone identity:
+
+$$\text{Drone A} \xrightarrow{\text{Searching Grid 4}} \text{Mission Exit} \implies \text{Grid 4} \longrightarrow \mathbf{RELEASED} \implies \text{Drone B} \xrightarrow{\text{Inherits Grid 4}} \text{Search Continues}$$
+
+If Drone A must Return-to-Launch due to cell voltage drop, it releases its unfinished sector across the Layer-2 mesh. When synchronization permits, an adjacent drone with sufficient remaining endurance inherits the sector coordinates seamlessly. The architecture claims deterministic reassignment—not magical, flawless swarm immortality.
+
+### 3. Degraded-Mode Communication (Metadata-First)
+Commercial drone systems collapse when video transmission drops below high-bandwidth thresholds. GARUDA operates under a strict communication hierarchy:
+
+> **Critical information survives before rich information.**
+
+```
++───────────────────────────────────────────────────────────────+
+| PRIORITY 1: CRITICAL MISSION METADATA (Always Preserved)       |
+| • Candidate Last Known Location (Lat/Lon/Alt)                 |
+| • Model Confidence Score (e.g., 0.93)                          |
+| • UTC Timestamp & Originating Node ID                         |
+| • Sector Grid State Updates (COMPLETED / RELEASED)            |
+| • Node Health & Voltage Status                                |
++───────────────────────────────────────────────────────────────+
+                               │
+                               ▼ Bandwidth Throttled / Dropped
++───────────────────────────────────────────────────────────────+
+| PRIORITY 2: LOW-RES STILL EVIDENCE CROP (If Bandwidth Permits)|
+| • Bounding-box thumbnail of detected candidate                |
++───────────────────────────────────────────────────────────────+
+                               │
+                               ▼ Severe Degradation
++───────────────────────────────────────────────────────────────+
+| PRIORITY 3: CONTINUOUS HIGH-BANDWIDTH VIDEO (Dropped First)   |
+| • 1080p FPV / payload streaming                              |
++───────────────────────────────────────────────────────────────+
+```
+
+When RF links degrade to kilobits per second, continuous video streams are immediately discarded to ensure that coordinate telemetry, confidence scores, and mission states continue propagating to ground controllers.
+
+### 4. Local-First Edge Intelligence
+Candidate detection occurs strictly onboard the drone's companion computer. By executing inference locally at the edge, the drone does not depend on cloud connectivity or uninterrupted uplinks to identify potential human targets.
+
+---
+
+## 🛠️ The Final Hardware Stack
+
+The hardware stack was developed through aggressive component pruning. Speculative enterprise flight platforms and non-essential mechanisms were eliminated in favor of an achievable, robust, open-standards physical baseline:
+
+| Subsystem | Component | Engineering Role | Justification & Boundaries |
+| :--- | :--- | :--- | :--- |
+| **Flight Controller** | **SpeedyBee Stack** | Flight-critical stabilization, motor mixer, hardware failsafes | Runs **ArduPilot**. Decoupled completely from the AI computer; maintains flight stabilization regardless of OS state. |
+| **Mission / Edge Computer** | **Vicharak Axon** | Onboard intelligence, model inference, search coordination | Linux-based companion computer executing YOLO11 and sensor fusion. Communicates via **MAVLink**; does *not* touch low-level motor loops. |
+| **AI Model** | **Ultralytics YOLO11** | Real-time human candidate detection | Custom-trained on clear line-of-sight aerial imagery. Validation threshold: **Confidence $\ge 0.90$** (model confidence, not statistical probability). |
+| **RGB Vision** | **Global-Shutter RGB Camera** | Primary visual candidate detection & scene context | Global shutter eliminates rolling-shutter jello and geometric distortion caused by high-frequency motor vibration and flight velocities. |
+| **Thermal / IR Sensor** | **Long-Wave IR Breakout** | Complementary heat-signature evidence | Operates in low-light, dense shadows, and nighttime. **Hard Physical Limitation:** Thermal radiation does *not* penetrate concrete, dense rubble, or walls. |
+| **Acoustic Sensor** | **Directional Acoustic Transducer** | Auxiliary distress/scream cue | Contributes auxiliary evidence to candidate prioritization. **Explicit Limitation:** Not a standalone detector or localization trigger. |
+| **LiDAR** | **Solid-State / ToF LiDAR** | Geometric spatial mapping & collision avoidance | Identifies structural obstacles, canopy, terrain gradients, and feeds odometry fallback. |
+| **Airframe** | **650–700 mm Quadcopter** | Structural aerial platform | Built with **RF-transparent composite arms** to avoid shadowing mesh antennas. Payload delivery mechanisms explicitly removed. |
+| **Propulsion** | **High-Efficiency BLDC + ESCs** | Dynamic thrust & attitude authority | Matched propellers tuned for steady hovering and aerial grid coverage. |
+| **Power System** | **11.1 V 3S 5200 mAh LiPo** | Energy storage | Actual mission endurance is measured on the final physical prototype. **No unsupported 30-minute endurance claims.** |
+
+---
+
+## 💻 Software, Navigation, and Layer-2 Mesh Stack
+
+```
++───────────────────────────────────────────────────────────────────────────+
+|                       VICHARAK AXON (MISSION COMPUTER)                     |
+|                                                                           |
+|  +──────────────────+   +──────────────────+   +───────────────────────+  |
+|  |  YOLO11 Edge AI  |   |  Sensor Fusion   |   | Search Grid Manager   |  |
+|  |  Inference (RGB) |   |  (Thermal/Sound) |   | State Synchronization |  |
+|  +─────────┬────────+   +─────────┬────────+   +───────────┬───────────+  |
+|            └──────────────────────┼────────────────────────┘              |
+|                                   ▼                                       |
+|                    High-Level Navigation Decisions                        |
+|                     & Candidate Georeferencing                            |
++───────────────────────────────────┬───────────────────────────────────────+
+                                    │
+                                    ▼ MAVLink Protocol (UART / Serial)
++───────────────────────────────────┴───────────────────────────────────────+
+|                     SPEEDYBEE STACK (FLIGHT CONTROLLER)                    |
+|                                                                           |
+|  +─────────────────────────────────────────────────────────────────────+  |
+|  |                         ARDUPILOT FIRMWARE                          |  |
+|  |  • Attitude & Rate PID Loops (240+ Hz)                              |  |
+|  |  • Direct BLDC Motor ESC Mixing                                      |  |
+|  |  • Hardware Geofence Verification                                   |  |
+|  |  • Configured Autonomous Failsafes (RTL / Land / Terminate)          |  |
+|  +─────────────────────────────────────────────────────────────────────+  |
++───────────────────────────────────────────────────────────────────────────+
+```
+
+### The Architectural Boundary: Axon vs. ArduPilot
+One of the most critical engineering decisions was establishing a strict, non-negotiable boundary between flight-critical control and mission compute:
+- **ArduPilot on the SpeedyBee Stack** owns vehicle survival: gyroscopes, accelerometers, motor control loops, barometric altitude, and low-level failsafes. If the companion computer freezes, crashes, or reboots, the drone remains stable in the air and executes configured ArduPilot failsafe routines.
+- **Vicharak Axon** operates as a companion observer and planner. It receives vehicle telemetry and broadcasts high-level navigational waypoints over a dedicated **MAVLink** serial interface. It never injects raw motor PWM signals.
+
+### Multi-Tier Navigation Fallback
+Disaster zones frequently experience severe GNSS degradation, multipath reflection from terrain, or magnetic anomalies. GARUDA models navigation as a tiered degradation sequence rather than assuming perfect satellite signals:
+
+$$\mathbf{GNSS + IMU} \xrightarrow{\text{Signal Lost}} \mathbf{ORB\text{-}SLAM3\ /\ WildNav} \xrightarrow{\text{Visual Failure}} \mathbf{LiDAR\ Odometry} \xrightarrow{\text{Total Degrade}} \mathbf{Safe\ Hold\ /\ Land}$$
+
+1. **Tier 1 (Primary):** Multi-constellation GNSS fused with onboard IMU.
+2. **Tier 2 (Challenging Environments):** Visual-Inertial Odometry evaluated with **ORB-SLAM3** and **WildNav**. (WildNav is explicitly evaluated as an experimental candidate for degraded scenes, *not* claimed as a universally solved, all-weather navigation silver bullet).
+3. **Tier 3 (Degraded Vision):** 2D/3D LiDAR odometry for spatial translation.
+4. **Tier 4 (Safe State):** If state-estimation confidence drops below safe bounds, the vehicle triggers a controlled altitude descent to hold or land.
+
+### Ad-Hoc Layer-2 Mesh Routing (BATMAN-adv)
+Inter-drone communication is handled using **BATMAN-adv (Better Approach To Mobile Ad-hoc Networking)**:
+- Operates at the data link layer (Layer-2), presenting the dynamic mesh as a virtual network switch (`bat0`).
+- Drones dynamically route packets through neighboring nodes when an **alternate physical RF path actually exists**. The system cannot fabricate connectivity where RF line-of-sight is physically obstructed by mountain ridges.
+- Evaluated alongside Wi-Fi HaLow and MANET implementations with a **1.5–2 km per-link engineering target** under clear line-of-sight conditions.
+
+---
+
+## 🎯 Candidate Localization & Ground Station Pipeline
+
+GARUDA avoids making deceptive claims about "tracking victims in real-time." In flood and landslide environments, individuals may be partially submerged, stationary on rooftops, or obscured.
+
+```
+       AERIAL DETECTION
+    +────────────────────+
+    | Global-Shutter RGB | ===> [ YOLO11 Inference Engine (Conf >= 0.90) ]
+    +────────────────────+                         │
+                                                   ▼
+       SENSOR FUSION                 [ Potential Victim Detected ]
+    +────────────────────+                         │
+    | Thermal Heat-Map   | ────────────────────────┤
+    +────────────────────+                         ▼
+    | Acoustic Cue       | ──────────> [ Evidence Weighting ]
+    +────────────────────+                         │
+                                                   ▼
+                                 +───────────────────────────────────+
+                                 |  GEOREFERENCED TELEMETRY PAYLOAD  |
+                                 |  • Last Known Location (LKL)      |
+                                 |  • UTC Timestamp                  |
+                                 |  • Model Confidence Score         |
+                                 |  • Originating Drone ID           |
+                                 +─────────────────┬─────────────────+
+                                                   │
+                                                   ▼ BATMAN-adv Mesh
+                                 +───────────────────────────────────+
+                                 |      GROUND CONTROL STATION       |
+                                 |    Spatiotemporal Deduplication   |
+                                 +─────────────────┬─────────────────+
+                                                   │
+                                                   ▼
+                                 +───────────────────────────────────+
+                                 |          HUMAN RESPONDER          |
+                                 |     Verification & Dispatch       |
+                                 +───────────────────────────────────+
+```
+
+### 1. Last Known Location (LKL) Georeferencing
+When the YOLO11 model detects a candidate meeting the controlled threshold ($\text{confidence} \ge 0.90$), the system records:
+- **Last Known Location (LKL):** Fused coordinates (Latitude, Longitude, Altitude) computed from camera gimbal angles, laser rangefinder distance, and vehicle pose.
+- **UTC Timestamp:** Millisecond-accurate timestamp to establish search currency.
+- **Originating Drone ID:** Node identifier to trace RF lineage.
+
+### 2. Spatiotemporal Deduplication
+If Drone A and Drone B sweep adjacent boundaries and detect the same candidate within a defined distance radius (e.g., $< 15\text{ m}$) and time interval, the Ground Control Station (GCS) merges the reports into a single unified incident marker with combined evidence tags rather than cluttering responder screens with duplicate alerts.
+
+### 3. Human-in-the-Loop Verification
+The AI outputs strictly:
+$$\mathbf{Potential\ Victim\ Detected}$$
+It does **not** classify whether a victim is "safe" or "injured," nor does it predict medical conditions. The human responder inspects the georeferenced coordinates, cross-references satellite basemaps and sensor evidence, and retains sole authority for deploying water rescue craft or ground search teams.
+
+---
+
+## 🛡️ Safety Architecture & Graceful Degradation
+
+A core engineering principle of GARUDA is rejecting the myth of zero single points of failure. In physical outdoor robotics, components break, propellers hit tree limbs, and batteries degrade under heavy wind resistance.
+
+```
++───────────────────────────────────+     +───────────────────────────────────+
+|     FLIGHT-CRITICAL FAILURES      |     |       MISSION-LEVEL FAILURES      |
++───────────────────────────────────+     +───────────────────────────────────+
+| • SpeedyBee FC hardware fault     |     | • Vicharak Axon OS lockup         |
+| • Motor / ESC electrical failure  |     | • Camera cable disconnect         |
+| • Critical LiPo cell collapse     |     | • High battery consumption        |
+|                                   |     |                                   |
+|               ▼                   |     |               ▼                   |
+| Handled by ArduPilot Local Failsafe|    | Managed by Network Protocol:      |
+| • Automatic Return-to-Launch      |     | • Unfinished sector is marked     |
+| • Controlled vertical descent     |     |   as "RELEASED / UNASSIGNED"      |
+| • Motor disarm on impact          |     | • Adjacent mesh node inherits     |
+|                                   |     |   sector coordinates              |
+| [Swarm cannot recover this drone] |     | [Search mission continues]        |
++───────────────────────────────────+     +───────────────────────────────────+
+```
+
+1. **Flight-Critical Failures:** If a motor Burns out or the SpeedyBee flight controller loses power, that is a local hardware failure. The swarm cannot rescue the physical airframe. ArduPilot's autonomous hardware failsafe tables execute an immediate emergency land or return sequence.
+2. **Mission-Level Failures:** If the companion computer fails or battery reserves hit safety margins ($< 25\%$), the drone aborts its mission sector, marks the cell state as `RELEASED / UNASSIGNED` across the mesh, and flies home. The remaining active drones divide the remaining unsearched territory deterministically.
+
+---
+
+## 🔬 Prototype Validation Matrix
+
+Because GARUDA is currently at the **prototype and laboratory validation stage**, claims are strictly bounded by controlled and simulated test setups rather than claiming proven field performance in real-world disaster zones:
+
+| Validation Domain | Test Objective | Controlled Test Criterion | Status / Observation |
+| :--- | :--- | :--- | :--- |
+| **YOLO11 Detection** | Clear aerial line-of-sight human detection | Model confidence score $\ge 0.90$ | Verified under direct daylight line of sight; precision drops with partial foliage occlusion. |
+| **Telemetry Georeferencing** | Precision of Last Known Location (LKL) | Target coordinate error vs. RTK ground truth | Accurate within standard GPS dilution of precision ($\sim 2.5\text{ m}$ without differential corrections). |
+| **Search Memory Transitions** | Verify state synchronization across mock nodes | `UNSEARCHED` $\rightarrow$ `SEARCHING` $\rightarrow$ `COMPLETED` | Verified across simulated multi-node ROS/MAVLink environment. |
+| **Dynamic Reallocation** | Trigger node dropout mid-grid | Active sector released and inherited by Node B | Deterministic handoff confirmed when network heartbeat is lost. |
+| **Mesh Failover** | Deactivate intermediate relay node | Dynamic route convergence via BATMAN-adv | Traffic successfully rerouted within $\sim 1.8\text{ s}$ when alternate physical RF path existed. |
+| **Metadata Priority** | Constrain RF throughput to 10 kbps | Critical telemetry transmission vs. video feed | Continuous video dropped immediately; coordinate packets and state updates arrived intact. |
+| **Sensor Fusion** | Low-light human identification | Thermal + RGB evidence weighting | Thermal successfully highlighted human silhouettes in darkness; confirmed zero penetration through brick/concrete barriers. |
+| **LiDAR Odometry** | GNSS-denied translation estimation | Drift rate during satellite blackout | Drift managed within acceptable bounds over short indoor/canopy runs before requiring safe hold. |
+| **Compute Impact** | Edge inference latency on Axon NPU | YOLO11 inference speed without MAVLink jitter | Model runs at real-time frame rates; zero communication lag observed on flight controller telemetry loop. |
+| **Physical Endurance** | True hover & transit time | 650–700 mm quad with 3S 5200 mAh pack | Endurance is directly contingent on payload weight, flight velocity, and wind resistance; unsupported 30-minute claims rejected. |
+
+---
+
+## 📈 Transparent Deployment Roadmap
+
+GARUDA is an active research and development prototype. The roadmap follows an honest, graduated engineering progression:
+
+```
+[ 1. COMPONENT VALIDATION ]
+    SpeedyBee ArduPilot bring-up, Axon NPU benchmarking, YOLO11 custom training
+               │
+               ▼
+[ 2. SINGLE-DRONE PROTOTYPE ]  <-- CURRENT BENCHMARK STAGE
+    Full sensor fusion (RGB, Thermal, LiDAR), MAVLink bridge, LKL georeferencing
+               │
+               ▼
+[ 3. 2-TO-3 NODE MESH NETWORK ]
+    BATMAN-adv Layer-2 mesh testing, sector handoff state machine, metadata prioritization
+               │
+               ▼
+[ 4. CONTROLLED DISASTER SIMULATION ]
+    Search trial in structured disaster training grounds (rubble mounds, flooded mockups)
+               │
+               ▼
+[ 5. FIELD RESCUE CO-VALIDATION ]
+    Joint exercises with certified NDRF / SDRF search and rescue units
+               │
+               ▼
+[ 6. OPERATIONAL RESCUE DEPLOYMENT ]
+    Production-hardened field readiness
+```
+
+---
+
+## 🚫 Explicit Scope Boundaries & Non-Goals
+
+To maintain rigorous engineering integrity, the following capabilities are **explicitly excluded** from the project's scope:
+
+- ❌ **No Payload Delivery:** The airframe does not carry lifebuoys, first aid kits, or winch mechanisms. Weight is reserved strictly for sensors and compute.
+- ❌ **No Autonomous Rescue Authorization:** The system never orders equipment or authorizes missions; it reports candidate coordinates to humans.
+- ❌ **No AI Medical Triage:** The model does not diagnose vital signs, consciousness, or injury severity.
+- ❌ **No Through-Wall / Through-Rubble Vision:** Thermal sensors cannot see through concrete, collapsed roofs, or mud deposits.
+- ❌ **No Guaranteed Communication Range:** The 1.5–2 km link is an engineering target subject to RF geometry; it is not a blanket guarantee.
+- ❌ **No Unsupported Endurance Claims:** No claims of 30-minute flight times without verified physical battery logs under full load.
+- ❌ **No "Zero Single Point of Failure" Swarm Myth:** If physical flight hardware suffers catastrophic structural failure, the drone lands or crashes.
+
+---
+
+## ⚔️ The Engineering Evolution: The "Loophole Attacks"
+
+The defining chapter of GARUDA's development was not a single breakthrough, but a systematic, adversarial process of **internal loophole attacks**. Instead of defensively clinging to marketing buzzwords, the architecture was repeatedly attacked from first principles, stripping away unsupported claims until only defendable engineering remained:
+
+```
++───────────────────────────────────────────────────────────────────────────────────+
+|                             THE 6 ATTACK VECTORS                                  |
++───────────────────────────────────────────────────────────────────────────────────+
+  1. EVIDENCE ATTACK:       "Can your sensors actually see victims through rubble?"
+     --> Concession: No. Thermal does not penetrate concrete. Re-scoped to LoS fusion.
+
+  2. ORIGINALITY ATTACK:    "Is this just another generic YOLO drone build?"
+     --> Concession: Yes, unless the network is the intelligence. Added search memory
+         and dynamic reallocation.
+
+  3. ENGINEERING ATTACK:    "Can your companion computer crash your flight loop?"
+     --> Concession: Dangerous. Decoupled Axon from SpeedyBee via MAVLink.
+
+  4. SAFETY ATTACK:         "What if your AI misidentifies debris as a victim?"
+     --> Concession: AI cannot authorize rescue. Implemented Human-in-the-Loop.
+
+  5. CREDIBILITY ATTACK:    "Can you prove a 30-minute endurance with all that gear?"
+     --> Concession: No. Removed 30-minute claim; stripped heavy payload winch.
+
+  6. ADOPTION ATTACK:       "How does video stream across miles of flood zones?"
+     --> Concession: It doesn't. Established metadata-first architecture.
++───────────────────────────────────────────────────────────────────────────────────+
+```
+
+> **"Whenever an assumption could not be defended with physics, protocols, or verified code, we changed the architecture or removed the claim."**
+
+### Key Architectural Pivots
+- **Pixhawk/Cube $\longrightarrow$ SpeedyBee Stack + ArduPilot:** Reduced unneeded complexity and weight while retaining rock-solid ArduPilot flight stability.
+- **Generic Vision $\longrightarrow$ Custom-Trained YOLO11:** Focused training weights specifically on aerial human postures in flooded and debris-strewn backgrounds.
+- **Rolling-Shutter $\longrightarrow$ Global-Shutter RGB:** Replaced standard CMOS camera modules to eliminate severe vibrational rolling-shutter artifacts.
+- **Removing Payload Delivery:** Recognized that adding servos and delivery cargo reduced search endurance below minimum viable operational thresholds.
+- **Degraded-Mode Mesh Routing:** Discarded the assumption of continuous 1080p video streaming in favor of resilient Layer-2 metadata packets over BATMAN-adv.
+
+---
+
+## 🏆 Pitch & Competition Record
+
+Engineering transparency requires documenting not just theoretical blueprints, but the competitive arena where those ideas were evaluated.
+
+```
+                    GARUDA COMPETITION TIMELINE
+                                │
+        ┌───────────────────────┴───────────────────────┐
+        ▼                                               ▼
++───────────────────────────────+               +───────────────────────────────+
+|     SMART INDIA HACKATHON     |               |      CINTEL IDEATHON 3.0      |
+|           (SIH 2026)          |               |            (2026)             |
++───────────────────────────────+               +───────────────────────────────+
+| • Rigorous technical review   |               | • Architecture presentation   |
+| • Result: Did not qualify     |               | • Result: Did not podium      |
++───────────────────────────────+               +───────────────────────────────+
+```
+
+- **Smart India Hackathon (SIH 2026):** GARUDA was submitted as an autonomous disaster-response concept. The project **did not qualify** for the SIH 2026 final round. *(Note: SIH 2025 is completely unrelated to this project history and has been excluded).*
+- **CINTEL Ideathon 3.0 (2026):** The revised system architecture—featuring persistent search memory, metadata prioritization, and decoupled companion compute—was presented before engineering faculty and industry evaluators. The project **did not podium**.
+
+Neither event is framed as an award or ceremonial victory. In systems engineering, competitive evaluations provide irreplaceable value: they expose the gaps between high-level ambition and operational reality. Every critique received across SIH 2026 and CINTEL Ideathon 3.0 was systematically cataloged, directly accelerating the transition to a defensible, human-in-the-loop, graceful-degradation architecture.
+
+---
+
+## 🧭 Concluding Philosophy
+
+Modern technology often glorifies autonomy for autonomy's sake, creating fragile black boxes that collapse under real-world environmental stress.
+
+GARUDA was built on a different engineering conviction:
+1. **The drone is the node; the intelligence is in the network.** A swarm of simple, coordinated agents sharing search memory is vastly more resilient than an expensive, fragile super-drone.
+2. **Graceful degradation beats imaginary perfection.** Designing systems that know how to drop video, release unfinished sectors, and fail safely is what keeps responders informed.
+3. **Humans verify; machines search.** In disaster management, computers should do what they do best—rapidly scan dangerous, inaccessible terrain—while leaving ethical, life-or-death rescue decisions in the hands of trained human personnel.

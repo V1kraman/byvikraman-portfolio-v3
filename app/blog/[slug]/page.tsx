@@ -7,6 +7,7 @@ import { BackButton } from "@/components/navigation/BackButton";
 import { Breadcrumbs } from "@/components/navigation/Breadcrumbs";
 import { ReadingProgress } from "@/components/navigation/ReadingProgress";
 import { RelatedContent } from "@/components/RelatedContent";
+import { ProjectStatusBadge } from "@/components/ProjectStatusBadge";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Contact";
 
@@ -83,9 +84,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 </div>
               )}
               
-              <div className={`px-2.5 py-1 rounded-sm text-[9px] uppercase tracking-widest font-medium flex items-center gap-1.5 ${post.type === 'project' ? 'bg-[#C2A370]/10 text-[#C2A370]' : 'bg-white/10 text-white/70'}`}>
-                {post.type === 'project' ? <Code2 className="w-3 h-3" /> : <PenTool className="w-3 h-3" />}
-                {post.type}
+              <div className="flex items-center gap-2">
+                <div className={`px-2.5 py-1 rounded-sm text-[9px] uppercase tracking-widest font-medium flex items-center gap-1.5 ${post.type === 'project' ? 'bg-[#C2A370]/10 text-[#C2A370]' : 'bg-white/10 text-white/70'}`}>
+                  {post.type === 'project' ? <Code2 className="w-3 h-3" /> : <PenTool className="w-3 h-3" />}
+                  {post.type}
+                </div>
+
+                {post.status && (
+                  <ProjectStatusBadge status={post.status} size="md" />
+                )}
               </div>
             </div>
             
