@@ -7,9 +7,14 @@ tags: ["development", "Mdx"]
 published: true
 featured: true
 image: "/images/projects/pp.png"
-tech: ["gen ai"]
+tech: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "MDX"]
+status: "Completed"
+timeline: "2026"
+refId: "U6"
+category: "WEB SYSTEMS · MDX ARCHITECTURE"
+role: "Individual Design & Engineering — Full-Stack Next.js App Router, MDX Pipeline & Design System"
+subsystem: "Next.js · TypeScript · Tailwind CSS · MDX Content Engine"
 github: "https://github.com/V1kraman/portfolio-reimagined"
-
 ---
 
 # Portfolio Website: From Foundation to a Digital Identity

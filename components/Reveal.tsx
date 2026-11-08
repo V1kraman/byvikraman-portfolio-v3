@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 
 interface RevealProps {
   children: React.ReactNode;
@@ -15,10 +15,16 @@ export function Reveal({
   delay = 0,
   width = "w-full",
   className = "",
-  yOffset = 50,
+  yOffset = 28,
 }: RevealProps) {
+  const prefersReducedMotion = useReducedMotion();
+
+  if (prefersReducedMotion) {
+    return <div className={`relative ${width} ${className}`}>{children}</div>;
+  }
+
   return (
-    <div className={`relative overflow-hidden ${width} ${className}`}>
+    <div className={`relative ${width} ${className}`}>
       <motion.div
         variants={{
           hidden: { opacity: 0, y: yOffset },
@@ -26,8 +32,8 @@ export function Reveal({
         }}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-10%" }}
-        transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
+        viewport={{ once: true, margin: "-8%" }}
+        transition={{ duration: 0.65, delay, ease: [0.16, 1, 0.3, 1] }}
       >
         {children}
       </motion.div>

@@ -9,21 +9,22 @@ import { getAllPosts, getFeaturedWork } from "@/lib/content/mdx";
 
 export default function Home() {
   const allPosts = getAllPosts();
-  const featuredWork = getFeaturedWork(allPosts, 2);
+  // Retrieve strictly the single most recently published project (limit = 1)
+  const latestProject = getFeaturedWork(allPosts, 1);
 
   return (
-    <main className="relative min-h-screen flex flex-col">
+    <main id="main-content" className="relative min-h-screen flex flex-col">
       <Navbar />
-      <Hero />
+      <Hero projects={latestProject} />
+      <Projects
+        projects={latestProject}
+        totalProjectsCount={allPosts.length}
+        viewAllLink="/work"
+        viewAllText="Explore Work"
+        showIndex={true}
+      />
       <About />
       <Skills />
-      <Projects 
-        projects={featuredWork} 
-        totalProjectsCount={allPosts.length}
-        viewAllLink="/work" 
-        viewAllText="Explore Work" 
-        showIndex={false}
-      />
       <Education />
       <Contact />
       <Footer />

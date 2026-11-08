@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { WorkCard } from "./WorkCard";
 import type { Post } from "@/lib/content/mdx";
 
@@ -16,20 +16,19 @@ export function RelatedContent({ currentPost, relatedItems }: RelatedContentProp
   }
 
   const isProject = currentPost.type === "project";
-  const sectionTitle = isProject ? "Related Articles & Reflections" : "Related Projects & Builds";
+  const sectionTitle = isProject
+    ? "Connected Field Notes & Architecture Logs"
+    : "Connected Hardware & Software Modules";
   const sectionDescription = isProject
-    ? "Explore technical articles documenting the theories, architecture, and lessons learned."
-    : "Explore real-world projects and hardware prototypes that bring these concepts to life.";
+    ? "Technical articles documenting the underlying engineering concepts, architecture decisions, and reflections."
+    : "Engineered prototypes and builds that apply these principles on physical hardware.";
 
   return (
-    <section aria-labelledby="related-content-heading" className="mt-24 pt-16 border-t border-border">
+    <section aria-labelledby="related-content-heading" className="mt-20 pt-14 border-t-2 border-border">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10">
         <div>
-          <div className="flex items-center gap-2 mb-2">
-            <Sparkles className="w-3.5 h-3.5 text-primary" />
-            <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-primary">
-              Connected Knowledge
-            </span>
+          <div className="font-mono text-xs uppercase tracking-[0.22em] text-primary mb-2">
+            {"/// CROSS-REFERENCED MODULES"}
           </div>
           <h2 id="related-content-heading" className="text-2xl sm:text-3xl font-light text-foreground tracking-tight">
             {sectionTitle}
@@ -41,14 +40,14 @@ export function RelatedContent({ currentPost, relatedItems }: RelatedContentProp
 
         <Link
           href="/work"
-          className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors shrink-0"
+          className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-primary hover:underline shrink-0"
         >
-          <span>Browse All Work</span>
+          <span>[ BROWSE FULL WORKBENCH ]</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
         {relatedItems.map((item, idx) => (
           <WorkCard key={item.slug} item={item} index={idx} />
         ))}

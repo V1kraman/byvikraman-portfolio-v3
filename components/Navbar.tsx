@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect, useSyncExternalStore } from "react";
-import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Menu, X, Sun, Moon } from "lucide-react";
+import { Menu, X, Sun, Moon, Pause, Play } from "lucide-react";
 
-function subscribeToTheme(callback: () => void) {
+function subscribeToHtmlClasses(callback: () => void) {
   if (typeof document === "undefined") return () => {};
   const observer = new MutationObserver(callback);
   observer.observe(document.documentElement, {
@@ -26,16 +26,29 @@ function getServerThemeSnapshot() {
   return true;
 }
 
+function getCalmSnapshot() {
+  if (typeof document === "undefined") return false;
+  return document.documentElement.classList.contains("calm");
+}
+
+function getServerCalmSnapshot() {
+  return false;
+}
+
 export function Navbar() {
-  const { scrollY } = useScroll();
   const pathname = usePathname();
-  const [hidden, setHidden] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   const isDark = useSyncExternalStore(
-    subscribeToTheme,
+    subscribeToHtmlClasses,
     getThemeSnapshot,
     getServerThemeSnapshot
+  );
+
+  const isCalm = useSyncExternalStore(
+    subscribeToHtmlClasses,
+    getCalmSnapshot,
+    getServerCalmSnapshot
   );
 
   const toggleTheme = () => {
@@ -53,18 +66,20 @@ export function Navbar() {
     }
   };
 
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    const previous = scrollY.getPrevious() ?? 0;
-    if (mobileMenuOpen) return;
-
-    if (latest > previous && latest > 150) {
-      setHidden(true);
+  const toggleMotion = () => {
+    const nextCalm = !isCalm;
+    if (nextCalm) {
+      document.documentElement.classList.add("calm");
+      try {
+        localStorage.setItem("portfolio-motion", "paused");
+      } catch {}
     } else {
-      setHidden(false);
+      document.documentElement.classList.remove("calm");
+      try {
+        localStorage.setItem("portfolio-motion", "active");
+      } catch {}
     }
-    
-    setIsScrolled(latest > 50);
-  });
+  };
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -76,158 +91,215 @@ export function Navbar() {
   }, [mobileMenuOpen]);
 
   const links = [
-    { name: "About", href: "/#about" },
-    { name: "Work", href: "/work" },
-    { name: "Experience", href: "/#experience" },
-    { name: "Contact", href: "/#contact" },
+    { name: "Work", code: "WORK", href: "/work" },
+    { name: "About", code: "ENGINEER", href: "/#about" },
+    { name: "Capabilities", code: "STACK", href: "/#capabilities" },
+    { name: "Notes", code: "NOTES", href: "/blog" },
+    { name: "Contact", code: "CONTACT", href: "/#contact" },
   ];
 
   const isLinkActive = (href: string) => {
     if (href === "/work") {
-      return pathname === "/work" || pathname.startsWith("/projects") || pathname.startsWith("/blog");
+      return pathname === "/work" || pathname.startsWith("/projects");
+    }
+    if (href === "/blog") {
+      return pathname.startsWith("/blog");
     }
     return false;
   };
 
   return (
     <>
-      <motion.header
-        variants={{
-          visible: { y: 0 },
-          hidden: { y: "-100%" },
-        }}
-        animate={hidden ? "hidden" : "visible"}
-        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed top-0 inset-x-0 z-50 flex justify-between items-center pt-6 px-6 md:pt-8 md:px-12 pointer-events-none"
-      >
-        <div className="pointer-events-auto">
+      <header className="fixed top-0 inset-x-0 z-50 bg-background/90 backdrop-blur-md border-b border-border/80 transition-colors duration-200">
+        {/* Top copper trace hairline */}
+        <div
+          aria-hidden="true"
+          className="h-[2px] w-full bg-gradient-to-r from-transparent via-primary/70 to-transparent"
+        />
+
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 h-14 sm:h-16 flex items-center justify-between gap-3">
+          {/* Left: System Console Brand Badge (Pin-1 + Wordmark + Role) */}
           <Link
             id="navbar-brand-logo"
             href="/"
-            className="flex items-center group transition-opacity duration-200 hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
             onClick={() => setMobileMenuOpen(false)}
-            aria-label="Vikraman V - Home"
+            aria-label="Vikraman V — Home"
+            className="group inline-flex items-center gap-2.5 px-2.5 py-1.5 rounded-md bg-card/90 border border-border hover:border-primary/60 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <svg
-              viewBox="22.04 58.88 467.92 378.88"
-              className="h-7 sm:h-8 w-auto fill-foreground group-hover:fill-primary transition-all duration-300 group-hover:scale-105"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <polygon points="22.04,58.88 155.40,58.88 200.43,153.60 67.08,153.60" />
-              <polygon points="356.60,58.88 489.96,58.88 444.92,153.60 311.57,153.60" />
-              <polygon points="75.37,171.03 208.72,171.03 256.00,270.46 189.32,410.70" />
-              <polygon points="303.28,171.03 436.63,171.03 322.68,410.70 256.00,270.46" />
-              <polygon points="256.00,289.76 193.91,420.35 202.19,437.76 309.81,437.76 318.09,420.35" />
-            </svg>
+            {/* Pin-1 registration mark + geometric V */}
+            <span className="w-5 h-5 rounded-[4px] bg-primary/15 border border-primary/40 flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+              <svg
+                viewBox="22.04 58.88 467.92 378.88"
+                className="h-3 w-auto fill-primary group-hover:fill-primary-foreground transition-colors"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <polygon points="22.04,58.88 155.40,58.88 200.43,153.60 67.08,153.60" />
+                <polygon points="356.60,58.88 489.96,58.88 444.92,153.60 311.57,153.60" />
+                <polygon points="75.37,171.03 208.72,171.03 256.00,270.46 189.32,410.70" />
+                <polygon points="303.28,171.03 436.63,171.03 322.68,410.70 256.00,270.46" />
+                <polygon points="256.00,289.76 193.91,420.35 202.19,437.76 309.81,437.76 318.09,420.35" />
+              </svg>
+            </span>
+
+            <span className="font-mono text-[11px] sm:text-xs tracking-[0.12em] font-semibold text-foreground">
+              VIKRAMAN V
+            </span>
+            <span className="hidden xl:inline-block font-mono text-[10px] tracking-[0.1em] text-muted-foreground border-l border-border pl-2.5">
+              ECE STUDENT · INDIA
+            </span>
           </Link>
-        </div>
-        
-        {/* Desktop Navigation */}
-        <nav
-          className={cn(
-            "hidden md:flex items-center gap-8 px-6 py-2.5 rounded-full border transition-all duration-500 pointer-events-auto",
-            isScrolled 
-              ? "bg-background/85 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(25,26,24,0.28)] border-border" 
-              : "bg-transparent border-transparent"
-          )}
-        >
-          <ul className="flex items-center gap-8">
+
+          {/* Center: Silkscreen Console Navigation */}
+          <nav aria-label="Main navigation" className="hidden lg:flex items-center gap-1">
             {links.map((link) => {
               const active = isLinkActive(link.href);
               return (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    className={cn(
-                      "text-[11px] uppercase tracking-widest transition-colors duration-300 relative py-1",
-                      active
-                        ? "text-primary font-semibold"
-                        : "text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    {link.name}
-                    {active && (
-                      <span className="absolute -bottom-0.5 left-0 right-0 h-[1.5px] bg-primary rounded-full" />
-                    )}
-                  </Link>
-                </li>
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={cn(
+                    "relative px-3 py-2 rounded-md font-mono text-[11px] tracking-[0.1em] uppercase transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    active
+                      ? "text-primary font-semibold bg-primary/10"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"
+                  )}
+                >
+                  <span>[ {link.code} ]</span>
+                  {active && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute bottom-1 left-3 right-3 h-[1.5px] bg-primary rounded-full"
+                    />
+                  )}
+                </Link>
               );
             })}
-          </ul>
-        </nav>
+          </nav>
 
-        {/* Right Controls: Theme Toggle, Location & Mobile Menu */}
-        <div className="flex items-center gap-4 pointer-events-auto">
-          <div id="navbar-location" className="hidden md:block text-[10px] text-muted-foreground/75 uppercase tracking-tighter">
-            Based in India
-          </div>
-
-          <button
-            type="button"
-            onClick={toggleTheme}
-            aria-label={isDark ? "Switch to Bone light theme" : "Switch to Obsidian dark theme"}
-            title={isDark ? "Switch to Light Mode (Bone)" : "Switch to Dark Mode (Obsidian)"}
-            className="p-2 rounded-full border border-border/70 bg-card/60 text-muted-foreground hover:text-primary hover:border-primary/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            {isDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-          </button>
-
-          {/* Mobile Menu Toggle */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden relative z-[60] p-2 -mr-2 text-muted-foreground hover:text-foreground transition-colors"
-            aria-label="Toggle Menu"
-          >
-            <AnimatePresence mode="wait">
-              {mobileMenuOpen ? (
-                <motion.div key="close" initial={{ opacity: 0, rotate: -90 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: 90 }} transition={{ duration: 0.2 }}>
-                  <X className="w-5 h-5" />
-                </motion.div>
-              ) : (
-                <motion.div key="menu" initial={{ opacity: 0, rotate: 90 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: -90 }} transition={{ duration: 0.2 }}>
-                  <Menu className="w-5 h-5" />
-                </motion.div>
+          {/* Right: Pause Motion Switch, Theme Toggle, Status LED & Mobile Trigger */}
+          <div className="flex items-center gap-2">
+            {/* Pause / Resume Motion Control (WCAG 2.2.2) */}
+            <button
+              type="button"
+              onClick={toggleMotion}
+              aria-pressed={isCalm}
+              aria-label={isCalm ? "Resume interface animations" : "Pause interface animations"}
+              title={isCalm ? "Resume motion" : "Pause motion"}
+              className={cn(
+                "hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 min-h-[34px] rounded-md font-mono text-[10px] uppercase tracking-[0.1em] border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                isCalm
+                  ? "bg-primary/15 border-primary text-primary font-medium"
+                  : "bg-card/80 border-border text-muted-foreground hover:text-foreground hover:border-primary/50"
               )}
-            </AnimatePresence>
-          </button>
-        </div>
-      </motion.header>
+            >
+              {isCalm ? <Play className="w-3 h-3" /> : <Pause className="w-3 h-3" />}
+              <span>{isCalm ? "MOTION: OFF" : "PAUSE MOTION"}</span>
+            </button>
 
-      {/* Mobile Full Screen Menu */}
+            {/* Theme Switch (Obsidian / Bone) */}
+            <button
+              type="button"
+              onClick={toggleTheme}
+              aria-label={isDark ? "Switch to Bone light theme" : "Switch to Obsidian dark theme"}
+              title={isDark ? "Switch to Light Mode (Bone)" : "Switch to Dark Mode (Obsidian)"}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 min-h-[34px] rounded-md border border-border bg-card/80 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground hover:text-primary hover:border-primary/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {isDark ? <Sun className="w-3.5 h-3.5 text-primary" /> : <Moon className="w-3.5 h-3.5 text-primary" />}
+              <span className="hidden md:inline">{isDark ? "BONE" : "OBSIDIAN"}</span>
+            </button>
+
+            {/* Power / System Status Pill */}
+            <div
+              id="navbar-status"
+              className="hidden md:inline-flex items-center gap-2 px-2.5 py-1.5 min-h-[34px] rounded-md bg-card/80 border border-border font-mono text-[10px] tracking-[0.1em] text-foreground/85"
+            >
+              <span className="relative flex h-2 w-2" aria-hidden="true">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+              </span>
+              <span>PWR·OK</span>
+            </div>
+
+            {/* Mobile Menu Toggle */}
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-md border border-border bg-card text-foreground hover:border-primary/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={mobileMenuOpen}
+            >
+              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Drawer Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 z-40 bg-background/95 backdrop-blur-2xl md:hidden flex flex-col justify-center items-center"
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-40 pt-16 bg-background/98 backdrop-blur-xl lg:hidden flex flex-col justify-between p-6 overflow-y-auto"
           >
-            <nav className="flex flex-col items-center gap-8">
-              {links.map((link, idx) => {
-                const active = isLinkActive(link.href);
-                return (
-                  <motion.div
-                    key={link.name}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: idx * 0.05 + 0.1, ease: [0.16, 1, 0.3, 1] }}
-                  >
-                    <Link 
-                      href={link.href} 
+            <div className="space-y-2 mt-4">
+              <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground pb-2 border-b border-border">
+                {"/// SYSTEM NAVIGATION"}
+              </div>
+              <nav aria-label="Mobile navigation" className="flex flex-col divide-y divide-border/60">
+                {links.map((link, idx) => {
+                  const active = isLinkActive(link.href);
+                  return (
+                    <Link
+                      key={link.name}
+                      href={link.href}
                       onClick={() => setMobileMenuOpen(false)}
                       className={cn(
-                        "text-2xl uppercase tracking-[0.15em] font-light transition-colors",
-                        active ? "text-primary font-medium" : "text-muted-foreground hover:text-foreground"
+                        "py-4 flex items-center justify-between font-mono text-sm uppercase tracking-[0.14em] transition-colors",
+                        active ? "text-primary font-semibold" : "text-foreground hover:text-primary"
                       )}
                     >
-                      {link.name}
+                      <span>[ {link.code} ] — {link.name}</span>
+                      <span className="text-xs text-muted-foreground">0{idx + 1}</span>
                     </Link>
-                  </motion.div>
-                );
-              })}
-            </nav>
+                  );
+                })}
+              </nav>
+            </div>
+
+            <div className="pt-6 border-t border-border flex flex-col gap-3">
+              <div className="flex items-center justify-between gap-2">
+                <button
+                  type="button"
+                  onClick={toggleMotion}
+                  aria-pressed={isCalm}
+                  className={cn(
+                    "flex-1 inline-flex items-center justify-center gap-2 py-3 px-4 rounded-md font-mono text-xs uppercase tracking-widest border",
+                    isCalm
+                      ? "bg-primary/15 border-primary text-primary font-semibold"
+                      : "bg-card border-border text-foreground"
+                  )}
+                >
+                  {isCalm ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
+                  <span>{isCalm ? "Resume Motion" : "Pause Motion"}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={toggleTheme}
+                  className="flex-1 inline-flex items-center justify-center gap-2 py-3 px-4 rounded-md font-mono text-xs uppercase tracking-widest border border-border bg-card text-foreground"
+                >
+                  {isDark ? <Sun className="w-3.5 h-3.5 text-primary" /> : <Moon className="w-3.5 h-3.5 text-primary" />}
+                  <span>{isDark ? "Bone Theme" : "Obsidian Theme"}</span>
+                </button>
+              </div>
+              <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-widest text-muted-foreground pt-2">
+                <span>VIKRAMAN V · SRM IST ECE &apos;29</span>
+                <span className="text-primary">PWR·OK</span>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

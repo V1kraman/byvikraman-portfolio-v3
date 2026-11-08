@@ -6,9 +6,9 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Contact";
 
 export const metadata = {
-  title: "Work | Vikraman V",
+  title: "Work Archive | Vikraman V",
   description:
-    "A unified archive of engineering projects and technical writing. Projects show what I built; articles show what I learned.",
+    "A unified workbench archive of engineered project modules (U1–U6) and technical field notes (FN1–FN5).",
 };
 
 export default function WorkPage() {
@@ -17,48 +17,53 @@ export default function WorkPage() {
   return (
     <>
       <Navbar />
-      <main className="relative min-h-screen pt-32 pb-24 flex flex-col">
+      <main id="main-content" className="relative min-h-screen pt-28 pb-24 flex flex-col">
         <div className="container px-6 md:px-12 mx-auto relative z-10 flex-grow">
-          
           {/* Navigation Bar & Breadcrumbs */}
           <div className="flex flex-col mb-8">
             <BackButton fallback="/" />
-            <Breadcrumbs 
+            <Breadcrumbs
               items={[
                 { label: "Home", href: "/" },
-                { label: "Work" }
-              ]} 
+                { label: "Work Archive" },
+              ]}
             />
           </div>
 
-          {/* Hero Header */}
-          <header className="mb-14 md:mb-20 max-w-4xl">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="h-[1px] w-8 bg-primary"></div>
-              <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-primary">
-                Engineering & Insights
-              </span>
-            </div>
+          {/* Silkscreen Archive Header */}
+          <header className="mb-12 md:mb-16 pb-8 border-b-2 border-primary/50">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <div className="max-w-3xl">
+                <div className="font-mono text-xs uppercase tracking-[0.22em] text-primary mb-3">
+                  {"/// WORKBENCH ARCHIVE · BILL OF MODULES & FIELD NOTES"}
+                </div>
 
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-[-0.03em] text-foreground mb-6 leading-tight">
-              Work.
-            </h1>
+                <h1 className="text-4xl sm:text-5xl md:text-6xl font-light tracking-[-0.03em] text-foreground mb-4 leading-tight">
+                  Engineered Modules &amp;{" "}
+                  <span className="font-[family-name:var(--font-cormorant)] italic text-primary font-normal">
+                    Field Notes
+                  </span>
+                </h1>
 
-            <p className="text-lg sm:text-xl text-muted-foreground font-light leading-relaxed mb-6">
-              A single unified archive of everything I build and everything I write.
-            </p>
+                <p className="text-base sm:text-lg text-muted-foreground font-light leading-relaxed">
+                  A single unified archive of everything I build on the bench and everything I document in writing. Projects are indexed as hardware/software units (<span className="font-mono text-xs text-primary">U1–Un</span>); articles and architectural essays are indexed as field notes (<span className="font-mono text-xs text-primary">FN1–FNn</span>).
+                </p>
+              </div>
 
-            {/* Editorial Philosophy Statement */}
-            <div className="relative pl-6 py-2 border-l border-primary/60 bg-card/60 rounded-r-xl max-w-2xl">
-              <p className="text-sm md:text-base font-light text-foreground/80 italic leading-relaxed">
-                &ldquo;Projects show what I built. Articles show what I learned. Both belong together.&rdquo;
-              </p>
+              {/* Editorial Philosophy Box */}
+              <div className="p-4 rounded-xl bg-card border border-border max-w-sm shrink-0">
+                <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-primary mb-1.5">
+                  SYSTEM PRINCIPLE
+                </div>
+                <p className="text-xs sm:text-sm font-light text-foreground/85 italic leading-relaxed">
+                  &ldquo;Projects show what I built. Articles show what I learned. Both belong on the same workbench.&rdquo;
+                </p>
+              </div>
             </div>
           </header>
 
-          {/* Main Interactive Work Feed */}
+          {/* Interactive Work Feed */}
           <WorkFeed initialPosts={posts} />
-
         </div>
       </main>
       <Footer />

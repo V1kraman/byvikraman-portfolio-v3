@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "motion/react";
 import { usePathname } from "next/navigation";
 import React from "react";
 
@@ -21,33 +20,33 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
     if (items) return items;
     const paths = pathname.split("/").filter(Boolean);
     const autoItems: BreadcrumbItem[] = [{ label: "Home", href: "/" }];
-    
+
     let currentPath = "";
     paths.forEach((segment, index) => {
       currentPath += `/${segment}`;
       const isLast = index === paths.length - 1;
       autoItems.push({
         label: segment.replace(/-/g, " "),
-        href: isLast ? undefined : currentPath
+        href: isLast ? undefined : currentPath,
       });
     });
-    
+
     return autoItems;
   }, [items, pathname]);
 
   const displayItems = items || generatedItems;
 
   return (
-    <motion.nav 
+    <nav
       aria-label="Breadcrumb"
-      initial={{ opacity: 0, y: -5 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-      className="flex flex-wrap items-center gap-2 text-[10px] sm:text-xs uppercase tracking-widest text-muted-foreground mt-2 mb-12"
+      className="flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground mt-3 mb-8"
     >
+      <span className="text-primary font-semibold" aria-hidden="true">
+        PATH //
+      </span>
       {displayItems.map((item, index) => {
         const isLast = index === displayItems.length - 1;
-        
+
         return (
           <div key={item.label} className="flex items-center gap-2">
             {isLast || !item.href ? (
@@ -55,20 +54,18 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
                 {item.label}
               </span>
             ) : (
-              <Link 
+              <Link
                 href={item.href}
                 className="hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded-sm"
               >
                 {item.label}
               </Link>
             )}
-            
-            {!isLast && (
-              <span className="text-border select-none">/</span>
-            )}
+
+            {!isLast && <span className="text-border select-none">/</span>}
           </div>
         );
       })}
-    </motion.nav>
+    </nav>
   );
 }

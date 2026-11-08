@@ -26,6 +26,11 @@ export interface Post {
   timeline?: string;
   relatedProjects?: string[];
   relatedArticles?: string[];
+  /** Optional systems-design metadata (backwards-compatible with all existing MDX files) */
+  refId?: string;
+  category?: string;
+  role?: string;
+  subsystem?: string;
 }
 
 function normalizeImagePath(img?: string): string {
@@ -40,7 +45,7 @@ function getMDXFiles(dir: string) {
   try {
     if (!fs.existsSync(dir)) return [];
     return fs.readdirSync(dir).filter((file) => path.extname(file) === '.mdx' || path.extname(file) === '.md');
-  } catch (e) {
+  } catch {
     return [];
   }
 }
@@ -48,23 +53,30 @@ function getMDXFiles(dir: string) {
 export function getAllPosts(): Post[] {
   const mdxFiles = getMDXFiles(contentDirectory);
 
-  const posts = mdxFiles.map((file) => {
+  const rawPosts = mdxFiles.map((file) => {
     const filePath = path.join(contentDirectory, file);
     const rawContent = fs.readFileSync(filePath, 'utf-8');
     const { data, content } = matter(rawContent);
     const slug = file.replace(/\.mdx?$/, '');
 
     const rawType = String(data.type || '').toLowerCase().trim();
-    const type: 'project' | 'article' = 
+    const type: 'project' | 'article' =
       rawType === 'project' || rawType === 'case-study' ? 'project' : 'article';
 
-    const relatedProjects = Array.isArray(data.relatedProjects) 
-      ? data.relatedProjects 
-      : (typeof data.relatedProjects === 'string' ? [data.relatedProjects] : []);
+    const relatedProjects = Array.isArray(data.relatedProjects)
+      ? data.relatedProjects
+      : typeof data.relatedProjects === 'string'
+        ? [data.relatedProjects]
+        : [];
 
-    const relatedArticles = Array.isArray(data.relatedArticles) 
-      ? data.relatedArticles 
-      : (typeof data.relatedArticles === 'string' ? [data.relatedArticles] : []);
+    const relatedArticles = Array.isArray(data.relatedArticles)
+      ? data.relatedArticles
+      : typeof data.relatedArticles === 'string'
+        ? [data.relatedArticles]
+        : [];
+
+    const tags = Array.isArray(data.tags) ? data.tags : [];
+    const tech = Array.isArray(data.tech) ? data.tech : [];
 
     return {
       slug,
@@ -74,12 +86,12 @@ export function getAllPosts(): Post[] {
       updated: data.updated || '',
       summary: data.summary || '',
       content,
-      tags: Array.isArray(data.tags) ? data.tags : [],
+      tags,
       readingTime: readingTime(content).text,
       published: data.published !== false,
       featured: data.featured === true,
       image: normalizeImagePath(data.image),
-      tech: Array.isArray(data.tech) ? data.tech : [],
+      tech,
       github: data.github || '',
       demo: data.demo || '',
       docs: data.docs || '',
@@ -87,12 +99,48 @@ export function getAllPosts(): Post[] {
       timeline: data.timeline || (data.date ? new Date(data.date).getFullYear().toString() : undefined),
       relatedProjects,
       relatedArticles,
+      refId: typeof data.refId === 'string' ? data.refId : undefined,
+      category:
+        typeof data.category === 'string'
+          ? data.category
+          : tags[0]
+            ? String(tags[0]).toUpperCase()
+            : type === 'project'
+              ? 'ENGINEERING MODULE'
+              : 'FIELD NOTE',
+      role: typeof data.role === 'string' ? data.role : undefined,
+      subsystem:
+        typeof data.subsystem === 'string'
+          ? data.subsystem
+          : tech.length > 0
+            ? tech.slice(0, 4).join(' · ')
+            : tags.slice(0, 3).join(' · '),
     } as Post;
   });
 
-  return posts
-    .filter(post => post.published)
+  const sortedPosts = rawPosts
+    .filter((post) => post.published)
     .sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+
+  // Deterministically assign reference designators (U1..Un for projects, FN1..FNn for articles)
+  // if not explicitly defined in frontmatter, ensuring 100% backwards compatibility.
+  let projectCounter = 1;
+  let articleCounter = 1;
+
+  return sortedPosts.map((post) => {
+    if (post.refId) {
+      return post;
+    }
+    if (post.type === 'project') {
+      const assigned = `U${projectCounter}`;
+      projectCounter += 1;
+      return { ...post, refId: assigned };
+    } else {
+      const assigned = `FN${articleCounter}`;
+      articleCounter += 1;
+      return { ...post, refId: assigned };
+    }
+  });
 }
 
 export function isOngoingStatus(status?: string): boolean {
@@ -113,97 +161,71 @@ export function isOngoingStatus(status?: string): boolean {
  *
  * Selection Rules:
  * 1. Filter out draft/unpublished items (published !== false).
- * 2. Priority 1: Active/Ongoing projects currently being built.
- * 3. Priority 2: Most recent work (projects/articles) based on publication/update date to fill open slots.
- * 4. Maximum of `limit` items (defaults to 2).
- * 5. Strict deduplication (no item can appear twice).
- * 6. Graceful degradation for 0, 1, or 2+ items.
+ * 2. Sort published projects (`type === 'project'`) strictly by publication date descending.
+ * 3. Default `limit` is 1 so the homepage displays only the single most recently published project.
  */
-export function getFeaturedWork(allPosts: Post[] = getAllPosts(), limit: number = 2): Post[] {
-  // 1. Only consider published items
+export function getFeaturedWork(allPosts: Post[] = getAllPosts(), limit: number = 1): Post[] {
   const validPosts = allPosts.filter((post) => post.published !== false);
 
-  const getPostTimestamp = (post: Post): number => {
-    const dateStr = post.updated || post.date;
+  const getPublicationTimestamp = (post: Post): number => {
+    const dateStr = post.date || post.updated;
     if (!dateStr) return 0;
     const time = new Date(dateStr).getTime();
     return isNaN(time) ? 0 : time;
   };
 
-  const sortByDateDesc = (a: Post, b: Post) => getPostTimestamp(b) - getPostTimestamp(a);
+  const sortByPubDateDesc = (a: Post, b: Post) =>
+    getPublicationTimestamp(b) - getPublicationTimestamp(a);
 
-  const selected: Post[] = [];
-  const selectedSlugs = new Set<string>();
+  const publishedProjects = validPosts
+    .filter((post) => post.type === 'project')
+    .sort(sortByPubDateDesc);
 
-  // Priority 1: Ongoing projects (active work currently being built)
-  const ongoingProjects = validPosts
-    .filter((post) => post.type === 'project' && isOngoingStatus(post.status))
-    .sort(sortByDateDesc);
-
-  for (const project of ongoingProjects) {
-    if (selected.length >= limit) break;
-    selected.push(project);
-    selectedSlugs.add(project.slug);
-  }
-
-  // Priority 2: Fill remaining slots with the most recent work based on publication or update date.
-  // When there are not enough active projects, allow recent projects/posts to fill empty slots.
-  if (selected.length < limit) {
-    const remainingPosts = validPosts
-      .filter((post) => !selectedSlugs.has(post.slug))
-      .sort(sortByDateDesc);
-
-    for (const post of remainingPosts) {
-      if (selected.length >= limit) break;
-      selected.push(post);
-      selectedSlugs.add(post.slug);
-    }
-  }
-
-  return selected;
+  return publishedProjects.slice(0, limit);
 }
 
 export function getRelatedContent(currentPost: Post, allPosts: Post[] = getAllPosts()): Post[] {
   if (currentPost.type === 'project') {
-    // Recommend related articles for a project
     const explicitSlugs = currentPost.relatedArticles || [];
     const explicit = allPosts.filter(
-      p => p.type === 'article' && p.slug !== currentPost.slug && explicitSlugs.includes(p.slug)
+      (p) => p.type === 'article' && p.slug !== currentPost.slug && explicitSlugs.includes(p.slug)
     );
     const tagMatches = allPosts.filter(
-      p => p.type === 'article' &&
-           p.slug !== currentPost.slug &&
-           !explicitSlugs.includes(p.slug) &&
-           (p.tags?.some(t => currentPost.tags?.includes(t) || currentPost.tech?.includes(t)) ||
-            p.tech?.some(t => currentPost.tags?.includes(t) || currentPost.tech?.includes(t)))
+      (p) =>
+        p.type === 'article' &&
+        p.slug !== currentPost.slug &&
+        !explicitSlugs.includes(p.slug) &&
+        (p.tags?.some((t) => currentPost.tags?.includes(t) || currentPost.tech?.includes(t)) ||
+          p.tech?.some((t) => currentPost.tags?.includes(t) || currentPost.tech?.includes(t)))
     );
     const remaining = allPosts.filter(
-      p => p.type === 'article' &&
-           p.slug !== currentPost.slug &&
-           !explicit.some(e => e.slug === p.slug) &&
-           !tagMatches.some(t => t.slug === p.slug)
+      (p) =>
+        p.type === 'article' &&
+        p.slug !== currentPost.slug &&
+        !explicit.some((e) => e.slug === p.slug) &&
+        !tagMatches.some((t) => t.slug === p.slug)
     );
     return [...explicit, ...tagMatches, ...remaining].slice(0, 2);
   } else {
-    // Recommend related projects for an article
     const explicitSlugs = currentPost.relatedProjects || [];
     const explicit = allPosts.filter(
-      p => p.type === 'project' && p.slug !== currentPost.slug && explicitSlugs.includes(p.slug)
+      (p) => p.type === 'project' && p.slug !== currentPost.slug && explicitSlugs.includes(p.slug)
     );
     const tagMatches = allPosts.filter(
-      p => p.type === 'project' &&
-           p.slug !== currentPost.slug &&
-           !explicitSlugs.includes(p.slug) &&
-           (p.tags?.some(t => currentPost.tags?.includes(t) || currentPost.tech?.includes(t)) ||
-            p.tech?.some(t => currentPost.tags?.includes(t) || currentPost.tech?.includes(t)))
+      (p) =>
+        p.type === 'project' &&
+        p.slug !== currentPost.slug &&
+        !explicitSlugs.includes(p.slug) &&
+        (p.tags?.some((t) => currentPost.tags?.includes(t) || currentPost.tech?.includes(t)) ||
+          p.tech?.some((t) => currentPost.tags?.includes(t) || currentPost.tech?.includes(t)))
     );
     const remaining = allPosts.filter(
-      p => p.type === 'project' &&
-           p.slug !== currentPost.slug &&
-           !explicit.some(e => e.slug === p.slug) &&
-           !tagMatches.some(t => t.slug === p.slug)
+      (p) =>
+        p.type === 'project' &&
+        p.slug !== currentPost.slug &&
+        !explicit.some((e) => e.slug === p.slug) &&
+        !tagMatches.some((t) => t.slug === p.slug)
     );
     return [...explicit, ...tagMatches, ...remaining].slice(0, 2);
   }
 }
-

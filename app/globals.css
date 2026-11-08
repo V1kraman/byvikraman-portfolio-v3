@@ -24,7 +24,7 @@
   --secondary-foreground: #191A18;
 
   --muted: #E1D9C9;
-  --muted-foreground: #625D53;
+  --muted-foreground: #5C574D;
 
   --accent: #A95332;
   --accent-foreground: #F9F5EC;
@@ -35,41 +35,45 @@
 
   --surface-subtle: rgba(25, 26, 24, 0.03);
   --surface-hover: rgba(25, 26, 24, 0.06);
-  --grid-line: rgba(25, 26, 24, 0.05);
+  --grid-line: rgba(25, 26, 24, 0.045);
 }
 
 .dark {
   --background: #191A18;
   --foreground: #E9E2D2;
 
-  --card: #242521;
+  --card: #222320;
   --card-foreground: #E9E2D2;
 
-  --popover: #292A25;
+  --popover: #272824;
   --popover-foreground: #E9E2D2;
 
   --primary: #C46B45;
   --primary-foreground: #191A18;
 
-  --secondary: #302F29;
+  --secondary: #2D2E29;
   --secondary-foreground: #E9E2D2;
 
-  --muted: #292A25;
-  --muted-foreground: #BDB5A6;
+  --muted: #262723;
+  --muted-foreground: #B8B0A0;
 
   --accent: #C46B45;
   --accent-foreground: #191A18;
 
-  --border: #3A3932;
-  --input: #3A3932;
+  --border: #383933;
+  --input: #383933;
   --ring: #D9825B;
 
   --surface-subtle: rgba(233, 226, 210, 0.03);
   --surface-hover: rgba(233, 226, 210, 0.06);
-  --grid-line: rgba(233, 226, 210, 0.04);
+  --grid-line: rgba(233, 226, 210, 0.035);
 }
 
 @theme inline {
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-cormorant), ui-serif, Georgia, serif;
+  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
   --color-obsidian: var(--color-obsidian);
   --color-bone: var(--color-bone);
   --color-burnt-orange: var(--color-burnt-orange);
@@ -106,12 +110,52 @@
   }
 
   ::selection {
-    background-color: rgba(196, 107, 69, 0.25);
+    background-color: rgba(196, 107, 69, 0.28);
     color: var(--foreground);
   }
 }
 
-/* Editorial Prose & Code Highlighting Adaptations for Obsidian × Bone × Burnt Orange */
+/* Marquee / Signal Ticker Animation */
+@keyframes signal-ticker {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-signal-ticker {
+  animation: signal-ticker 38s linear infinite;
+}
+
+/* Respect both OS prefers-reduced-motion and user-toggled html.calm mode */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+  .animate-signal-ticker,
+  .animate-ping,
+  .animate-pulse {
+    animation: none !important;
+  }
+}
+
+html.calm {
+  scroll-behavior: auto !important;
+}
+
+html.calm .animate-signal-ticker,
+html.calm .animate-ping,
+html.calm .animate-pulse {
+  animation: none !important;
+}
+
+html.calm * {
+  transition-duration: 0.01ms !important;
+}
+
+/* Editorial Prose & Engineering Dossier Adaptations for Obsidian × Bone × Burnt Orange */
 .prose {
   --tw-prose-body: var(--muted-foreground);
   --tw-prose-headings: var(--foreground);

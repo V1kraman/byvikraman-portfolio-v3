@@ -20,70 +20,74 @@ interface ProjectsProps {
 export function Projects({
   projects,
   totalProjectsCount,
-  viewAllLink,
+  viewAllLink = "/work",
   viewAllText = "Explore Work",
-  showIndex = false,
-  title = "Featured Work",
-  subtitle = "Currently building, recently finished, and worth exploring.",
-  eyebrow = "Selected Work",
+  showIndex = true,
+  title = "Latest Engineered Module",
+  subtitle = "My most recently published engineering project—dynamically loaded from the MDX workbench archive.",
+  eyebrow = "/// 01 · SELECTED WORK",
 }: ProjectsProps) {
+  const displayedProjects = projects.slice(0, 1);
+
   return (
-    <section id="projects" className="py-24 md:py-32 relative border-t border-border/60">
+    <section id="projects" className="py-20 md:py-28 relative border-t border-border/70">
       <div className="container px-6 sm:px-8 md:px-12 mx-auto">
         <Reveal>
-          <div className="mb-12 md:mb-16">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="h-[1px] w-8 bg-primary"></div>
-              <h2 className="text-[10px] font-medium uppercase tracking-[0.25em] text-primary">
+          {/* Silkscreen Section Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 mb-12 border-b-2 border-primary/50 relative">
+            <div>
+              <div className="font-mono text-xs uppercase tracking-[0.22em] text-primary mb-2">
                 {eyebrow}
+              </div>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-[-0.025em] text-foreground leading-tight">
+                {title}
               </h2>
+              {subtitle && (
+                <p className="text-sm sm:text-base text-muted-foreground font-light mt-2 max-w-2xl">
+                  {subtitle}
+                </p>
+              )}
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-              <div>
-                <h3 className="text-[36px] sm:text-[46px] md:text-[52px] font-light tracking-[-0.02em] text-foreground leading-tight">
-                  {title}
-                </h3>
-                {subtitle && (
-                  <p className="text-sm sm:text-base text-muted-foreground font-light mt-2 max-w-xl">
-                    {subtitle}
-                  </p>
-                )}
-              </div>
-
+            <div className="flex flex-col sm:items-end gap-1 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground shrink-0">
+              <span>SOURCE: MDX REPOSITORY</span>
               {typeof totalProjectsCount === "number" && (
-                <div className="text-xs font-mono uppercase tracking-widest text-muted-foreground pb-1">
-                  Showing {projects.length} of {totalProjectsCount} works
-                </div>
+                <span className="text-primary">
+                  LATEST 1 OF {totalProjectsCount} ARCHIVED WORKS
+                </span>
               )}
             </div>
           </div>
         </Reveal>
 
-        {/* Project Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
-          {projects.map((project, idx) => (
-            <Reveal key={project.slug} delay={idx * 0.1}>
+        {/* Single Latest Project Module Spotlight */}
+        <div className="max-w-4xl mx-auto">
+          {displayedProjects.map((project, idx) => (
+            <Reveal key={project.slug} delay={0.05}>
               <ProjectCard
                 project={project}
                 index={idx}
                 showIndex={showIndex}
-                priority={idx === 0}
+                priority={true}
               />
             </Reveal>
           ))}
         </div>
 
-        {/* Secondary Button CTA to Explore All Work */}
+        {/* CTA to Explore All Work */}
         {viewAllLink && (
-          <Reveal delay={0.2}>
-            <div className="mt-14 md:mt-16 flex justify-center">
+          <Reveal delay={0.15}>
+            <div className="mt-12 md:mt-14 max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-xl bg-card/70 border border-border">
+              <div className="font-mono text-xs text-muted-foreground">
+                <span className="text-primary font-semibold mr-2">{"ARCHIVE INDEX //"}</span>
+                Browse all hardware builds, lab repairs, and technical articles in the unified Work archive.
+              </div>
               <Link
                 href={viewAllLink}
-                className="group relative inline-flex items-center gap-3 px-8 py-3.5 bg-card hover:bg-secondary border border-border hover:border-primary/60 text-foreground text-xs uppercase tracking-widest font-semibold rounded-md shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                className="group inline-flex items-center gap-3 px-6 py-3 bg-primary text-primary-foreground font-mono text-xs uppercase tracking-[0.16em] font-semibold rounded-md transition-all hover:opacity-95 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <span>{viewAllText}</span>
-                <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all duration-200" />
+                <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
               </Link>
             </div>
           </Reveal>
