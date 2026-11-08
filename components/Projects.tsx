@@ -28,31 +28,31 @@ export function Projects({
   eyebrow = "Selected Work",
 }: ProjectsProps) {
   return (
-    <section id="projects" className="py-24 md:py-32 relative border-t border-white/5">
+    <section id="projects" className="py-24 md:py-32 relative border-t border-border/60">
       <div className="container px-6 sm:px-8 md:px-12 mx-auto">
         <Reveal>
           <div className="mb-12 md:mb-16">
             <div className="flex items-center gap-3 mb-4">
-              <div className="h-[1px] w-8 bg-[#C2A370]"></div>
-              <h2 className="text-[10px] font-medium uppercase tracking-[0.25em] text-[#C2A370]">
+              <div className="h-[1px] w-8 bg-primary"></div>
+              <h2 className="text-[10px] font-medium uppercase tracking-[0.25em] text-primary">
                 {eyebrow}
               </h2>
             </div>
 
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <div>
-                <h3 className="text-[36px] sm:text-[46px] md:text-[52px] font-light tracking-[-0.02em] text-white leading-tight">
+                <h3 className="text-[36px] sm:text-[46px] md:text-[52px] font-light tracking-[-0.02em] text-foreground leading-tight">
                   {title}
                 </h3>
                 {subtitle && (
-                  <p className="text-sm sm:text-base text-white/50 font-light mt-2 max-w-xl">
+                  <p className="text-sm sm:text-base text-muted-foreground font-light mt-2 max-w-xl">
                     {subtitle}
                   </p>
                 )}
               </div>
 
               {typeof totalProjectsCount === "number" && (
-                <div className="text-xs font-mono uppercase tracking-widest text-white/45 pb-1">
+                <div className="text-xs font-mono uppercase tracking-widest text-muted-foreground pb-1">
                   Showing {projects.length} of {totalProjectsCount} works
                 </div>
               )}
@@ -80,10 +80,10 @@ export function Projects({
             <div className="mt-14 md:mt-16 flex justify-center">
               <Link
                 href={viewAllLink}
-                className="group relative inline-flex items-center gap-3 px-8 py-3.5 bg-white/[0.03] hover:bg-white/[0.08] border border-white/20 hover:border-[#C2A370]/60 text-white text-xs uppercase tracking-widest font-semibold rounded-md shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2A370] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0C]"
+                className="group relative inline-flex items-center gap-3 px-8 py-3.5 bg-card hover:bg-secondary border border-border hover:border-primary/60 text-foreground text-xs uppercase tracking-widest font-semibold rounded-md shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 <span>{viewAllText}</span>
-                <ArrowRight className="w-4 h-4 text-white/60 group-hover:text-[#C2A370] group-hover:translate-x-1 transition-all duration-200" />
+                <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all duration-200" />
               </Link>
             </div>
           </Reveal>
@@ -92,4 +92,3 @@ export function Projects({
     </section>
   );
 }
-

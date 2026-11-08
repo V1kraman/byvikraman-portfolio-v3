@@ -36,21 +36,21 @@ export default function BlogIndex() {
           {/* Header Section */}
           <div className="mb-12 md:mb-16">
             <div className="flex items-center gap-3 mb-6">
-              <div className="h-[1px] w-8 bg-[#C2A370]"></div>
-              <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-[#C2A370]">Writing &amp; Guides</span>
+              <div className="h-[1px] w-8 bg-primary"></div>
+              <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-primary">Writing &amp; Guides</span>
             </div>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-light tracking-[-0.02em] text-white mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-light tracking-[-0.02em] text-foreground mb-6">
               Articles &amp; Journal.
             </h1>
-            <p className="text-lg text-white/50 font-light max-w-2xl leading-relaxed mb-8">
+            <p className="text-lg text-muted-foreground font-light max-w-2xl leading-relaxed mb-8">
               Technical articles, design reflections, and deep dives into engineering problem solving.
             </p>
 
             {/* Unified Experience Notice */}
-            <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/[0.02] border border-white/10 text-xs text-white/60">
-              <Sparkles className="w-4 h-4 text-[#C2A370]" />
+            <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-card/70 border border-border text-xs text-muted-foreground">
+              <Sparkles className="w-4 h-4 text-primary" />
               <span>Looking for engineering projects and hardware builds too?</span>
-              <Link href="/work" className="text-[#C2A370] hover:underline font-semibold inline-flex items-center gap-1">
+              <Link href="/work" className="text-primary hover:underline font-semibold inline-flex items-center gap-1">
                 <span>Explore the unified Work hub</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
@@ -69,4 +69,3 @@ export default function BlogIndex() {
     </>
   );
 }
-

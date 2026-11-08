@@ -369,6 +369,8 @@ To maintain rigorous engineering integrity, the following capabilities are **exp
 
 The defining chapter of GARUDA's development was not a single breakthrough, but a systematic, adversarial process of **internal loophole attacks**. Instead of defensively clinging to marketing buzzwords, the architecture was repeatedly attacked from first principles, stripping away unsupported claims until only defendable engineering remained:
 
+<div data-timeline="garuda" id="garuda-engineering-timeline"></div>
+
 ```
 +───────────────────────────────────────────────────────────────────────────────────+
 |                             THE 6 ATTACK VECTORS                                  |
@@ -396,7 +398,7 @@ The defining chapter of GARUDA's development was not a single breakthrough, but 
 
 > **"Whenever an assumption could not be defended with physics, protocols, or verified code, we changed the architecture or removed the claim."**
 
-### Key Architectural Pivots
+### Summary of Key Architectural Pivots
 - **Pixhawk/Cube $\longrightarrow$ SpeedyBee Stack + ArduPilot:** Reduced unneeded complexity and weight while retaining rock-solid ArduPilot flight stability.
 - **Generic Vision $\longrightarrow$ Custom-Trained YOLO11:** Focused training weights specifically on aerial human postures in flooded and debris-strewn backgrounds.
 - **Rolling-Shutter $\longrightarrow$ Global-Shutter RGB:** Replaced standard CMOS camera modules to eliminate severe vibrational rolling-shutter artifacts.

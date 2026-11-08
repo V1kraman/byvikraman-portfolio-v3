@@ -17,7 +17,6 @@ interface BreadcrumbsProps {
 export function Breadcrumbs({ items }: BreadcrumbsProps) {
   const pathname = usePathname();
 
-  // If no items are explicitly passed, automatically generate from route
   const generatedItems: BreadcrumbItem[] = React.useMemo(() => {
     if (items) return items;
     const paths = pathname.split("/").filter(Boolean);
@@ -44,7 +43,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
       initial={{ opacity: 0, y: -5 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-      className="flex flex-wrap items-center gap-2 text-[10px] sm:text-xs uppercase tracking-widest text-white/40 mt-2 mb-12"
+      className="flex flex-wrap items-center gap-2 text-[10px] sm:text-xs uppercase tracking-widest text-muted-foreground mt-2 mb-12"
     >
       {displayItems.map((item, index) => {
         const isLast = index === displayItems.length - 1;
@@ -52,20 +51,20 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
         return (
           <div key={item.label} className="flex items-center gap-2">
             {isLast || !item.href ? (
-              <span className="text-white/70 font-medium" aria-current="page">
+              <span className="text-foreground font-medium" aria-current="page">
                 {item.label}
               </span>
             ) : (
               <Link 
                 href={item.href}
-                className="hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/20 rounded-sm"
+                className="hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded-sm"
               >
                 {item.label}
               </Link>
             )}
             
             {!isLast && (
-              <span className="text-white/10 select-none">/</span>
+              <span className="text-border select-none">/</span>
             )}
           </div>
         );

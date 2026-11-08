@@ -34,23 +34,23 @@ export default function WorkPage() {
           {/* Hero Header */}
           <header className="mb-14 md:mb-20 max-w-4xl">
             <div className="flex items-center gap-3 mb-6">
-              <div className="h-[1px] w-8 bg-[#C2A370]"></div>
-              <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-[#C2A370]">
+              <div className="h-[1px] w-8 bg-primary"></div>
+              <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-primary">
                 Engineering & Insights
               </span>
             </div>
 
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-[-0.03em] text-white mb-6 leading-tight">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-[-0.03em] text-foreground mb-6 leading-tight">
               Work.
             </h1>
 
-            <p className="text-lg sm:text-xl text-white/60 font-light leading-relaxed mb-6">
+            <p className="text-lg sm:text-xl text-muted-foreground font-light leading-relaxed mb-6">
               A single unified archive of everything I build and everything I write.
             </p>
 
             {/* Editorial Philosophy Statement */}
-            <div className="relative pl-6 py-2 border-l border-[#C2A370]/60 bg-white/[0.015] rounded-r-xl max-w-2xl">
-              <p className="text-sm md:text-base font-light text-white/70 italic leading-relaxed">
+            <div className="relative pl-6 py-2 border-l border-primary/60 bg-card/60 rounded-r-xl max-w-2xl">
+              <p className="text-sm md:text-base font-light text-foreground/80 italic leading-relaxed">
                 &ldquo;Projects show what I built. Articles show what I learned. Both belong together.&rdquo;
               </p>
             </div>
