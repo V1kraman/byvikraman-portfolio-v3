@@ -135,8 +135,8 @@ export const beyondTheBench: BeyondTheBenchItem[] = [
     tag: "FIELD NOTES · ESSAYS",
     description:
       "Writing reflections on the boundary between hardware and software, mathematical UI design, and lessons from workshops and lab repairs.",
-    detail: "Published in the unified /work & /blog journal",
-    href: "/blog",
+    detail: "Published in the unified /work archive",
+    href: "/work",
   },
 ];
 

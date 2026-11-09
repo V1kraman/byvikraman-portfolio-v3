@@ -10,7 +10,6 @@ image: "/images/projects/pp.png"
 tech: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "MDX"]
 status: "Completed"
 timeline: "2026"
-refId: "U6"
 category: "WEB SYSTEMS · MDX ARCHITECTURE"
 role: "Individual Design & Engineering — Full-Stack Next.js App Router, MDX Pipeline & Design System"
 subsystem: "Next.js · TypeScript · Tailwind CSS · MDX Content Engine"

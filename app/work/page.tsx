@@ -17,10 +17,10 @@ export default function WorkPage() {
   return (
     <>
       <Navbar />
-      <main id="main-content" className="relative min-h-screen pt-28 pb-24 flex flex-col">
-        <div className="container px-6 md:px-12 mx-auto relative z-10 flex-grow">
+      <main id="main-content" className="relative min-h-screen pt-24 sm:pt-28 pb-20 sm:pb-24 flex flex-col">
+        <div className="container px-4 sm:px-6 md:px-12 mx-auto relative z-10 flex-grow">
           {/* Navigation Bar & Breadcrumbs */}
-          <div className="flex flex-col mb-8">
+          <div className="flex flex-col mb-6 sm:mb-8">
             <BackButton fallback="/" />
             <Breadcrumbs
               items={[
@@ -31,27 +31,27 @@ export default function WorkPage() {
           </div>
 
           {/* Silkscreen Archive Header */}
-          <header className="mb-12 md:mb-16 pb-8 border-b-2 border-primary/50">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <header className="mb-10 sm:mb-12 md:mb-16 pb-6 sm:pb-8 border-b-2 border-primary/50">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
               <div className="max-w-3xl">
-                <div className="font-mono text-xs uppercase tracking-[0.22em] text-primary mb-3">
+                <div className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.18em] sm:tracking-[0.22em] text-primary mb-2.5 sm:mb-3">
                   {"/// WORKBENCH ARCHIVE · BILL OF MODULES & FIELD NOTES"}
                 </div>
 
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-light tracking-[-0.03em] text-foreground mb-4 leading-tight">
+                <h1 className="text-3xl sm:text-5xl md:text-6xl font-light tracking-[-0.03em] text-foreground mb-3.5 sm:mb-4 leading-tight text-balance">
                   Engineered Modules &amp;{" "}
                   <span className="font-[family-name:var(--font-cormorant)] italic text-primary font-normal">
                     Field Notes
                   </span>
                 </h1>
 
-                <p className="text-base sm:text-lg text-muted-foreground font-light leading-relaxed">
+                <p className="text-sm sm:text-lg text-muted-foreground font-light leading-relaxed">
                   A single unified archive of everything I build on the bench and everything I document in writing. Projects are indexed as hardware/software units (<span className="font-mono text-xs text-primary">U1–Un</span>); articles and architectural essays are indexed as field notes (<span className="font-mono text-xs text-primary">FN1–FNn</span>).
                 </p>
               </div>
 
               {/* Editorial Philosophy Box */}
-              <div className="p-4 rounded-xl bg-card border border-border max-w-sm shrink-0">
+              <div className="p-4 rounded-xl bg-card border border-border lg:max-w-sm shrink-0">
                 <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-primary mb-1.5">
                   SYSTEM PRINCIPLE
                 </div>

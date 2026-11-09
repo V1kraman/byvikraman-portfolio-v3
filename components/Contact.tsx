@@ -73,14 +73,14 @@ export function Contact() {
 
         {/* Test-Point Pads Grid (TP1 - TP3: Email, LinkedIn, GitHub) */}
         <Reveal delay={0.08}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* TP1: Email Pad (Click to Copy + Mailto) */}
             <button
               id="contact-copy-email"
               type="button"
               onClick={handleCopy}
               aria-label={copied ? "Email copied to clipboard" : `Copy email address ${personalInfo.email}`}
-              className="group relative flex items-center gap-4 p-4 sm:p-5 rounded-xl bg-card border border-border hover:border-primary/60 text-left transition-all duration-200 hover:-translate-y-0.5 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+              className="group relative flex items-center gap-4 p-4 sm:p-5 min-h-[76px] rounded-xl bg-card border border-border hover:border-primary/60 text-left transition-all duration-200 hover:-translate-y-0.5 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
             >
               {/* Solder pad indicator dot */}
               <span
@@ -111,7 +111,7 @@ export function Contact() {
               href={personalInfo.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative flex items-center gap-4 p-4 sm:p-5 rounded-xl bg-card border border-border hover:border-primary/60 transition-all duration-200 hover:-translate-y-0.5 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="group relative flex items-center gap-4 p-4 sm:p-5 min-h-[76px] rounded-xl bg-card border border-border hover:border-primary/60 transition-all duration-200 hover:-translate-y-0.5 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <span
                 aria-hidden="true"
@@ -137,7 +137,7 @@ export function Contact() {
               href={personalInfo.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative flex items-center gap-4 p-4 sm:p-5 rounded-xl bg-card border border-border hover:border-primary/60 transition-all duration-200 hover:-translate-y-0.5 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="group relative flex items-center gap-4 p-4 sm:p-5 min-h-[76px] rounded-xl bg-card border border-border hover:border-primary/60 transition-all duration-200 hover:-translate-y-0.5 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <span
                 aria-hidden="true"
@@ -167,7 +167,7 @@ export function Contact() {
             download="Vikraman_V_Resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="group mt-4 flex items-center justify-between gap-4 p-5 sm:p-6 rounded-xl bg-primary/10 hover:bg-primary/15 border border-primary/40 hover:border-primary transition-all duration-200 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="group mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-xl bg-primary/10 hover:bg-primary/15 border border-primary/40 hover:border-primary transition-all duration-200 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <div className="flex items-center gap-4 min-w-0">
               <span className="w-11 h-11 rounded-lg bg-primary text-primary-foreground font-mono text-xs font-semibold flex items-center justify-center shrink-0 shadow-sm">
@@ -177,14 +177,14 @@ export function Contact() {
                 <strong className="block text-base sm:text-lg font-medium text-foreground group-hover:text-primary transition-colors">
                   Download Curriculum Vitae (Résumé)
                 </strong>
-                <span className="block font-mono text-[10px] sm:text-xs uppercase tracking-[0.14em] text-muted-foreground mt-0.5 truncate">
+                <span className="block font-mono text-[10px] sm:text-xs uppercase tracking-[0.14em] text-muted-foreground mt-0.5 sm:truncate">
                   TP4 · OPERATOR DATASHEET · EDUCATION, PROJECTS &amp; TECHNICAL STACK
                 </span>
               </div>
             </div>
 
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-primary-foreground font-mono text-xs uppercase tracking-widest font-semibold shrink-0">
-              <span className="hidden sm:inline">DOWNLOAD</span>
+            <span className="inline-flex items-center justify-center gap-2 px-4 py-2.5 min-h-[42px] rounded-md bg-primary text-primary-foreground font-mono text-xs uppercase tracking-widest font-semibold shrink-0 w-full sm:w-auto">
+              <span>DOWNLOAD</span>
               <Download className="w-4 h-4 transition-transform duration-200 group-hover:translate-y-0.5" />
             </span>
           </a>
@@ -196,9 +196,9 @@ export function Contact() {
 
 export function Footer() {
   return (
-    <footer className="mt-auto py-8 border-t border-border/80 bg-background font-mono text-xs">
-      <div className="container px-6 md:px-12 mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-muted-foreground">
+    <footer className="mt-auto py-8 pb-[max(2rem,env(safe-area-inset-bottom))] border-t border-border/80 bg-background font-mono text-xs">
+      <div className="container px-4 sm:px-6 md:px-12 mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-muted-foreground text-center sm:text-left">
           <span className="text-foreground font-semibold tracking-[0.14em]">
             © {new Date().getFullYear()} VIKRAMAN V
           </span>
@@ -208,23 +208,23 @@ export function Footer() {
           </span>
         </div>
 
-        <nav aria-label="Footer navigation" className="flex flex-wrap items-center justify-center gap-5 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-          <Link href="/" className="hover:text-primary transition-colors">
+        <nav aria-label="Footer navigation" className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:gap-5 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+          <Link href="/" className="py-1.5 min-h-[38px] inline-flex items-center hover:text-primary transition-colors">
             [ HOME ]
           </Link>
-          <Link href="/work" className="text-primary font-semibold hover:underline">
-            [ WORK ]
+          <Link href="/work" className="py-1.5 min-h-[38px] inline-flex items-center text-primary font-semibold hover:underline">
+            [ WORKS ]
           </Link>
-          <Link href="/#about" className="hover:text-primary transition-colors">
+          <Link href="/#about" className="py-1.5 min-h-[38px] inline-flex items-center hover:text-primary transition-colors">
             [ ABOUT ]
           </Link>
-          <Link href="/#capabilities" className="hover:text-primary transition-colors">
+          <Link href="/#capabilities" className="py-1.5 min-h-[38px] inline-flex items-center hover:text-primary transition-colors">
             [ STACK ]
           </Link>
-          <Link href="/blog" className="hover:text-primary transition-colors">
-            [ NOTES ]
+          <Link href="/#experience" className="py-1.5 min-h-[38px] inline-flex items-center hover:text-primary transition-colors">
+            [ LOG ]
           </Link>
-          <Link href="/#contact" className="hover:text-primary transition-colors">
+          <Link href="/#contact" className="py-1.5 min-h-[38px] inline-flex items-center hover:text-primary transition-colors">
             [ CONTACT ]
           </Link>
         </nav>

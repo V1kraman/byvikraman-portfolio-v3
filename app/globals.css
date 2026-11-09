@@ -101,18 +101,41 @@
   html {
     background-color: var(--background);
     color: var(--foreground);
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   body {
     background-color: var(--background);
     color: var(--foreground);
     transition: background-color 0.25s ease, color 0.25s ease;
+    overflow-x: clip;
+  }
+
+  a,
+  button,
+  [role="button"],
+  input,
+  select,
+  textarea {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(196, 107, 69, 0.16);
   }
 
   ::selection {
     background-color: rgba(196, 107, 69, 0.28);
     color: var(--foreground);
   }
+}
+
+/* Hide scrollbars on horizontal filter rails while keeping scrollability */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Marquee / Signal Ticker Animation */
@@ -173,10 +196,26 @@ html.calm * {
   --tw-prose-pre-bg: #141513;
   --tw-prose-th-borders: var(--border);
   --tw-prose-td-borders: var(--border);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .prose pre {
   background-color: #141513 !important;
   color: #E9E2D2 !important;
   border: 1px solid var(--border);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+  font-size: 0.75rem;
+  line-height: 1.55;
+  padding: 0.875rem 1rem;
 }
+
+@media (min-width: 640px) {
+  .prose pre {
+    font-size: 0.85rem;
+    padding: 1.125rem 1.25rem;
+  }
+}
+

@@ -318,13 +318,13 @@ export function EngineeringTimeline() {
       className="my-14 not-prose text-foreground"
     >
       {/* Top Architectural Header Banner */}
-      <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 mb-8 shadow-[0_8px_30px_rgba(25,26,24,0.18)] relative overflow-hidden">
+      <div className="rounded-2xl border border-border bg-card p-5 sm:p-8 mb-8 shadow-[0_8px_30px_rgba(25,26,24,0.18)] relative overflow-hidden">
         <div className="absolute top-0 right-0 w-72 h-72 bg-primary/[0.05] rounded-full blur-3xl pointer-events-none" />
 
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div className="flex items-center gap-2.5">
             <span className="w-2 h-2 rounded-full bg-primary" />
-            <span className="text-[11px] font-mono uppercase tracking-[0.25em] text-primary font-semibold">
+            <span className="text-[11px] font-mono uppercase tracking-[0.22em] text-primary font-semibold">
               Iterative Architecture Log
             </span>
           </div>
@@ -332,21 +332,21 @@ export function EngineeringTimeline() {
             <button
               type="button"
               onClick={expandAll}
-              className="px-2.5 py-1 rounded text-[11px] font-mono text-muted-foreground hover:text-foreground bg-secondary/60 hover:bg-secondary border border-border transition-colors"
+              className="px-3 py-1.5 min-h-[36px] rounded text-[11px] font-mono text-muted-foreground hover:text-foreground bg-secondary/60 hover:bg-secondary border border-border transition-colors cursor-pointer"
             >
               Expand All Pivots
             </button>
             <button
               type="button"
               onClick={collapseAll}
-              className="px-2.5 py-1 rounded text-[11px] font-mono text-muted-foreground hover:text-foreground bg-secondary/60 hover:bg-secondary border border-border transition-colors"
+              className="px-3 py-1.5 min-h-[36px] rounded text-[11px] font-mono text-muted-foreground hover:text-foreground bg-secondary/60 hover:bg-secondary border border-border transition-colors cursor-pointer"
             >
               Collapse All
             </button>
           </div>
         </div>
 
-        <h3 className="text-2xl sm:text-3xl font-light tracking-[-0.02em] text-foreground mb-3">
+        <h3 className="text-xl sm:text-3xl font-light tracking-[-0.02em] text-foreground mb-3">
           Engineering Evolution &amp; &ldquo;Loophole Attack&rdquo; Timeline
         </h3>
         <p className="text-sm sm:text-base text-muted-foreground font-light leading-relaxed max-w-3xl mb-6">
@@ -357,8 +357,8 @@ export function EngineeringTimeline() {
           —replacing every indefensible claim with a bounded, verifiable architectural decision.
         </p>
 
-        {/* Category Filter Bar */}
-        <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-border">
+        {/* Category Filter Bar — Horizontally scrollable on mobile, wrapped on tablet/PC */}
+        <div className="flex sm:flex-wrap items-center gap-2 pt-4 border-t border-border overflow-x-auto no-scrollbar -mx-1 px-1 pb-1 sm:mx-0 sm:px-0 sm:pb-0">
           {(Object.keys(CATEGORY_META) as TimelineCategory[]).map((cat) => {
             const Icon = CATEGORY_META[cat].icon;
             const isActive = selectedCategory === cat;
@@ -367,13 +367,13 @@ export function EngineeringTimeline() {
                 key={cat}
                 type="button"
                 onClick={() => setSelectedCategory(cat)}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono tracking-wide transition-all ${
+                className={`inline-flex items-center gap-1.5 px-3 py-2 sm:py-1.5 min-h-[40px] sm:min-h-[36px] rounded-lg text-xs font-mono tracking-wide whitespace-nowrap shrink-0 transition-all cursor-pointer ${
                   isActive
                     ? "bg-primary text-primary-foreground font-semibold shadow-sm"
                     : "bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary border border-border"
                 }`}
               >
-                <Icon className="w-3.5 h-3.5" />
+                <Icon className="w-3.5 h-3.5 shrink-0" />
                 <span>{CATEGORY_META[cat].label}</span>
               </button>
             );

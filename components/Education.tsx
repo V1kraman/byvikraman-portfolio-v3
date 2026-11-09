@@ -65,10 +65,10 @@ function TimelineItem({
 
 export function Education() {
   return (
-    <section id="experience" className="py-20 md:py-28 relative border-t border-border/70">
-      <div className="container px-6 sm:px-8 md:px-12 mx-auto">
+    <section id="experience" className="py-16 sm:py-20 md:py-28 relative border-t border-border/70">
+      <div className="container px-4 sm:px-6 md:px-12 mx-auto">
         <Reveal>
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 mb-12 border-b-2 border-primary/50">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 mb-10 sm:mb-12 border-b-2 border-primary/50">
             <div>
               <div className="font-mono text-xs uppercase tracking-[0.22em] text-primary mb-2">
                 {"/// 04 · BENCH & ACADEMIC LOG"}
@@ -86,7 +86,7 @@ export function Education() {
           </div>
         </Reveal>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-12 items-start">
           {/* Experience Column */}
           <div className="lg:col-span-5">
             {experience.length > 0 && (

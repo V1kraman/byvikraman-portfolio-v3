@@ -7,12 +7,12 @@ export function Skills() {
   return (
     <section
       id="capabilities"
-      className="py-20 md:py-28 relative border-t border-border/70 bg-card/25"
+      className="py-16 sm:py-20 md:py-28 relative border-t border-border/70 bg-card/25"
     >
-      <div className="container px-6 md:px-12 mx-auto">
+      <div className="container px-4 sm:px-6 md:px-12 mx-auto">
         <Reveal>
           {/* Silkscreen Section Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 mb-12 border-b-2 border-primary/50">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 mb-10 sm:mb-12 border-b-2 border-primary/50">
             <div>
               <div className="font-mono text-xs uppercase tracking-[0.22em] text-primary mb-2">
                 {"/// 03 · LAYER STACK-UP"}
@@ -39,7 +39,7 @@ export function Skills() {
             {capabilityLayers.map((layer) => (
               <div
                 key={layer.id}
-                className="group relative p-5 sm:p-6 md:px-8 transition-all duration-200 hover:bg-secondary/35"
+                className="group relative p-4 sm:p-6 md:px-8 transition-all duration-200 hover:bg-secondary/35"
               >
                 {/* Copper edge trace that illuminates on hover */}
                 <span

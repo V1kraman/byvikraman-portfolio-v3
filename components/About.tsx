@@ -54,11 +54,11 @@ export function About() {
   ];
 
   return (
-    <section id="about" className="py-20 md:py-28 relative border-t border-border/70 overflow-hidden">
-      <div className="container px-6 md:px-12 mx-auto relative z-10">
+    <section id="about" className="py-16 sm:py-20 md:py-28 relative border-t border-border/70 overflow-hidden">
+      <div className="container px-4 sm:px-6 md:px-12 mx-auto relative z-10">
         {/* Silkscreen Section Header */}
         <Reveal>
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 mb-12 border-b-2 border-primary/50">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 mb-10 sm:mb-12 border-b-2 border-primary/50">
             <div>
               <div className="font-mono text-xs uppercase tracking-[0.22em] text-primary mb-2">
                 {"/// 02 · THE ENGINEER & STUDENT"}
@@ -78,33 +78,33 @@ export function About() {
         </Reveal>
 
         {/* Main Engineer Grid: Spec Dossier + Narrative */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-12 items-start">
           {/* Left Column: System Identity Card & Spec Table */}
           <div className="lg:col-span-5">
             <Reveal>
-              <div className="rounded-xl bg-card border border-border p-6 relative overflow-hidden">
+              <div className="rounded-xl bg-card border border-border p-4 sm:p-6 relative overflow-hidden">
                 <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground pb-4 mb-5 border-b border-border">
                   <span>FIG. 01 — OPERATOR SPECIFICATION</span>
                   <span className="text-primary">REV 2026</span>
                 </div>
 
                 {/* Key Metrics / Identity Strip (Authentic to Vikraman) */}
-                <div className="grid grid-cols-3 gap-3 mb-6">
-                  <div className="p-3.5 rounded-lg bg-background/70 border border-border">
-                    <div className="font-mono text-2xl sm:text-3xl font-semibold text-primary">ECE</div>
-                    <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mt-1">
+                <div className="grid grid-cols-3 gap-2.5 sm:gap-3 mb-6">
+                  <div className="p-3 sm:p-3.5 rounded-lg bg-background/70 border border-border">
+                    <div className="font-mono text-xl sm:text-3xl font-semibold text-primary">ECE</div>
+                    <div className="font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-muted-foreground mt-1">
                       Discipline
                     </div>
                   </div>
-                  <div className="p-3.5 rounded-lg bg-background/70 border border-border">
-                    <div className="font-mono text-2xl sm:text-3xl font-semibold text-foreground">2029</div>
-                    <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mt-1">
+                  <div className="p-3 sm:p-3.5 rounded-lg bg-background/70 border border-border">
+                    <div className="font-mono text-xl sm:text-3xl font-semibold text-foreground">2029</div>
+                    <div className="font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-muted-foreground mt-1">
                       Cohort
                     </div>
                   </div>
-                  <div className="p-3.5 rounded-lg bg-background/70 border border-border">
-                    <div className="font-mono text-2xl sm:text-3xl font-semibold text-foreground">IN</div>
-                    <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mt-1">
+                  <div className="p-3 sm:p-3.5 rounded-lg bg-background/70 border border-border">
+                    <div className="font-mono text-xl sm:text-3xl font-semibold text-foreground">IN</div>
+                    <div className="font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-muted-foreground mt-1">
                       Tamil Nadu
                     </div>
                   </div>

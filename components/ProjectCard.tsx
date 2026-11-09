@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Cpu, FileText, Github, ExternalLink, BookOpen } from "lucide-react";
+import { ArrowUpRight, Github, ExternalLink, BookOpen } from "lucide-react";
 import type { Post } from "@/lib/content/mdx";
 import { ProjectStatusBadge } from "./ProjectStatusBadge";
 
@@ -55,6 +55,11 @@ export function ProjectCard({
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
+          {project.date && (
+            <span className="hidden sm:inline-block font-mono text-[10px] tracking-wider text-muted-foreground">
+              {project.date}
+            </span>
+          )}
           {project.status ? (
             <ProjectStatusBadge status={project.status} size="sm" />
           ) : (
@@ -70,7 +75,7 @@ export function ProjectCard({
         href={targetHref}
         tabIndex={-1}
         aria-hidden="true"
-        className="relative aspect-[16/10] w-full overflow-hidden border-b border-border/80 bg-secondary/50 block"
+        className="relative aspect-[16/10] sm:aspect-[21/9] w-full overflow-hidden border-b border-border/80 bg-secondary/50 block"
       >
         {project.image ? (
           <>
@@ -82,7 +87,7 @@ export function ProjectCard({
               priority={priority}
               referrerPolicy="no-referrer"
               className="object-cover opacity-92 group-hover:opacity-100 transition-transform duration-500 ease-out motion-safe:group-hover:scale-[1.03]"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 896px"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-obsidian/75 via-transparent to-obsidian/25 opacity-60 group-hover:opacity-35 transition-opacity duration-300 pointer-events-none" />
             <span className="absolute bottom-2.5 left-3 z-10 px-2 py-0.5 rounded bg-obsidian/85 text-bone border border-bone/20 font-mono text-[9px] uppercase tracking-[0.16em]">
@@ -90,28 +95,42 @@ export function ProjectCard({
             </span>
           </>
         ) : (
-          /* Technical Schematic Blueprint Fallback for non-photo modules (like GARUDA or essays) */
-          <div className="absolute inset-0 flex flex-col justify-between p-5 bg-[linear-gradient(to_right,var(--grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-line)_1px,transparent_1px)] bg-[size:1.5rem_1.5rem]">
-            <div className="flex items-center justify-between font-mono text-[10px] text-muted-foreground">
-              <span>SCHEMATIC DOSSIER // {refCode}</span>
-              <span>{project.timeline || "2026"}</span>
+          /* Technical Schematic Blueprint Fallback for architecture projects (e.g., GARUDA) */
+          <div className="absolute inset-0 flex flex-col justify-between p-5 sm:p-7 bg-[linear-gradient(to_right,var(--grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-line)_1px,transparent_1px)] bg-[size:1.5rem_1.5rem]">
+            <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+              <span>SYSTEM ARCHITECTURE SCHEMATIC // {refCode}</span>
+              <span className="text-primary font-semibold">PUBLISHED {project.date || project.timeline || "2026"}</span>
             </div>
-            <div className="my-auto flex items-center gap-3">
-              <div className="w-11 h-11 rounded-lg bg-card border border-primary/40 flex items-center justify-center text-primary font-mono text-sm font-semibold shadow-sm">
-                {refCode}
+
+            <div className="my-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-3 px-4 rounded-xl bg-background/85 border border-primary/35 backdrop-blur-sm">
+              <div className="flex items-center gap-3.5 min-w-0">
+                <div className="w-11 h-11 rounded-lg bg-primary/15 border border-primary/40 flex items-center justify-center text-primary font-mono text-sm font-semibold shrink-0">
+                  {refCode}
+                </div>
+                <div className="min-w-0">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-primary font-semibold">
+                    {isProject ? "COORDINATED SYSTEM ARCHITECTURE" : "TECHNICAL DOSSIER"}
+                  </div>
+                  <div className="font-mono text-xs sm:text-sm text-foreground truncate mt-0.5">
+                    {project.subsystem || "Hardware & Software Architecture"}
+                  </div>
+                </div>
               </div>
-              <div className="min-w-0">
-                <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">
-                  {isProject ? "SYSTEM ARCHITECTURE" : "TECHNICAL DOSSIER"}
-                </div>
-                <div className="font-mono text-xs text-foreground/85 truncate">
-                  {project.subsystem || "Hardware & Software Architecture"}
-                </div>
+
+              <div className="hidden md:flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground shrink-0">
+                <span className="px-2 py-1 rounded bg-card border border-border text-foreground">SEARCH</span>
+                <span className="text-primary">→</span>
+                <span className="px-2 py-1 rounded bg-card border border-border text-foreground">PINPOINT</span>
+                <span className="text-primary">→</span>
+                <span className="px-2 py-1 rounded bg-card border border-border text-foreground">VERIFY</span>
               </div>
             </div>
-            <div className="flex items-center justify-between font-mono text-[9px] uppercase tracking-widest text-muted-foreground border-t border-border/60 pt-2">
-              <span>EVIDENCE-LED CASE STUDY</span>
-              <span className="text-primary">INSPECT →</span>
+
+            <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-widest text-muted-foreground border-t border-border/70 pt-2.5">
+              <span>CASE STUDY · ARCHITECTURE &amp; SUBSYSTEM ANALYSIS</span>
+              <span className="text-primary font-semibold group-hover:translate-x-0.5 transition-transform">
+                OPEN CASE STUDY →
+              </span>
             </div>
           </div>
         )}
@@ -167,7 +186,7 @@ export function ProjectCard({
         <div className="pt-4 mt-auto border-t border-border/80 flex items-center justify-between gap-3">
           <Link
             href={targetHref}
-            className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] font-semibold text-foreground group-hover:text-primary transition-colors min-h-[36px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+            className="inline-flex items-center gap-2 py-2 font-mono text-xs uppercase tracking-[0.15em] font-semibold text-foreground group-hover:text-primary transition-colors min-h-[42px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
           >
             <span>{isProject ? "INSPECT MODULE" : "READ DOSSIER"}</span>
             <ArrowUpRight className="w-4 h-4 text-primary transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -181,9 +200,9 @@ export function ProjectCard({
                 rel="noopener noreferrer"
                 aria-label={`Documentation for ${project.title}`}
                 title="Documentation"
-                className="p-2 rounded-md bg-secondary/60 hover:bg-secondary text-muted-foreground hover:text-primary border border-border transition-colors"
+                className="inline-flex items-center justify-center min-w-[40px] min-h-[40px] sm:min-w-[36px] sm:min-h-[36px] p-2 rounded-md bg-secondary/60 hover:bg-secondary text-muted-foreground hover:text-primary border border-border transition-colors"
               >
-                <BookOpen className="w-3.5 h-3.5" />
+                <BookOpen className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
               </a>
             )}
             {project.github && (
@@ -193,9 +212,9 @@ export function ProjectCard({
                 rel="noopener noreferrer"
                 aria-label={`GitHub repository for ${project.title}`}
                 title="GitHub Repository"
-                className="p-2 rounded-md bg-secondary/60 hover:bg-secondary text-muted-foreground hover:text-primary border border-border transition-colors"
+                className="inline-flex items-center justify-center min-w-[40px] min-h-[40px] sm:min-w-[36px] sm:min-h-[36px] p-2 rounded-md bg-secondary/60 hover:bg-secondary text-muted-foreground hover:text-primary border border-border transition-colors"
               >
-                <Github className="w-3.5 h-3.5" />
+                <Github className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
               </a>
             )}
             {project.demo && (
@@ -205,9 +224,9 @@ export function ProjectCard({
                 rel="noopener noreferrer"
                 aria-label={`Live tool or demo for ${project.title}`}
                 title="Live Tool / Demo"
-                className="p-2 rounded-md bg-secondary/60 hover:bg-secondary text-muted-foreground hover:text-primary border border-border transition-colors"
+                className="inline-flex items-center justify-center min-w-[40px] min-h-[40px] sm:min-w-[36px] sm:min-h-[36px] p-2 rounded-md bg-secondary/60 hover:bg-secondary text-muted-foreground hover:text-primary border border-border transition-colors"
               >
-                <ExternalLink className="w-3.5 h-3.5" />
+                <ExternalLink className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
               </a>
             )}
           </div>

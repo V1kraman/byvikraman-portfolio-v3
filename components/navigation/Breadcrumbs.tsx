@@ -39,30 +39,34 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
   return (
     <nav
       aria-label="Breadcrumb"
-      className="flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground mt-3 mb-8"
+      className="flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground mt-3 mb-6 sm:mb-8"
     >
-      <span className="text-primary font-semibold" aria-hidden="true">
+      <span className="text-primary font-semibold shrink-0" aria-hidden="true">
         PATH //
       </span>
       {displayItems.map((item, index) => {
         const isLast = index === displayItems.length - 1;
 
         return (
-          <div key={item.label} className="flex items-center gap-2">
+          <div key={item.label} className="flex items-center gap-2 min-w-0">
             {isLast || !item.href ? (
-              <span className="text-foreground font-medium" aria-current="page">
+              <span
+                className="text-foreground font-medium truncate max-w-[220px] sm:max-w-[380px] md:max-w-none"
+                aria-current="page"
+                title={item.label}
+              >
                 {item.label}
               </span>
             ) : (
               <Link
                 href={item.href}
-                className="hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded-sm"
+                className="hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded-sm py-1 whitespace-nowrap"
               >
                 {item.label}
               </Link>
             )}
 
-            {!isLast && <span className="text-border select-none">/</span>}
+            {!isLast && <span className="text-border select-none shrink-0">/</span>}
           </div>
         );
       })}

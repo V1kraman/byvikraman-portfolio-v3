@@ -1,4 +1,4 @@
-import type {Metadata} from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Manrope, Cormorant_Garamond, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 import { SafeJsonProtection } from '@/components/SafeJsonProtection';
@@ -23,6 +23,17 @@ const ibmPlexMono = IBM_Plex_Mono({
   weight: ['400', '500', '600'],
 });
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: 'cover',
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#191A18' },
+    { media: '(prefers-color-scheme: light)', color: '#E9E2D2' },
+  ],
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://byvikraman.me'),
   title: {
@@ -34,6 +45,16 @@ export const metadata: Metadata = {
   creator: 'Vikraman V',
   alternates: {
     canonical: 'https://byvikraman.me',
+  },
+  formatDetection: {
+    telephone: false,
+    email: false,
+    address: false,
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Vikraman V',
   },
   keywords: [
     'Vikraman V',
@@ -80,7 +101,7 @@ export const metadata: Metadata = {
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
     <html lang="en" className="dark scroll-smooth bg-background text-foreground" data-scroll-behavior="smooth" suppressHydrationWarning>
-      <body className={`${manrope.className} ${manrope.variable} ${cormorant.variable} ${ibmPlexMono.variable} bg-background text-foreground antialiased selection:bg-primary/25 selection:text-foreground overflow-x-hidden`} suppressHydrationWarning>
+      <body className={`${manrope.className} ${manrope.variable} ${cormorant.variable} ${ibmPlexMono.variable} bg-background text-foreground antialiased selection:bg-primary/25 selection:text-foreground overflow-x-hidden min-h-[100dvh] flex flex-col`} suppressHydrationWarning>
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-md focus:bg-primary focus:text-primary-foreground focus:font-mono focus:text-xs focus:uppercase focus:tracking-widest focus:shadow-lg"

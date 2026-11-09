@@ -31,18 +31,18 @@ export function Hero({ projects = [] }: HeroProps) {
   return (
     <section
       id="top"
-      className="relative pt-24 sm:pt-28 pb-10 flex flex-col justify-between overflow-hidden"
+      className="relative pt-20 sm:pt-28 pb-8 sm:pb-10 flex flex-col justify-between overflow-hidden"
     >
-      <div className="container px-6 md:px-12 mx-auto relative z-10">
+      <div className="container px-4 sm:px-6 md:px-12 mx-auto relative z-10">
         {/* Top Silkscreen Registration Strip */}
-        <div className="flex flex-wrap items-center justify-between gap-2 pb-4 mb-8 border-b border-border/70 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-          <div className="flex items-center gap-2.5">
-            <span className="inline-block w-2 h-2 rounded-full bg-primary" aria-hidden="true" />
-            <span id="hero-tagline" className="text-primary font-medium">
+        <div className="flex flex-wrap items-center justify-between gap-2 pb-3 sm:pb-4 mb-6 sm:mb-8 border-b border-border/70 font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.16em] sm:tracking-[0.18em] text-muted-foreground">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="inline-block w-2 h-2 rounded-full bg-primary shrink-0" aria-hidden="true" />
+            <span id="hero-tagline" className="text-primary font-medium truncate">
               {"SYS·BENCH // VIKRAMAN V · TAMIL NADU, IN"}
             </span>
           </div>
-          <div className="hidden sm:flex items-center gap-4 text-[10px]">
+          <div className="hidden sm:flex items-center gap-4 text-[10px] shrink-0">
             <span>REV 2026.4</span>
             <span>•</span>
             <span>DISCIPLINE: B.TECH ECE (2025–2029)</span>
@@ -50,16 +50,16 @@ export function Hero({ projects = [] }: HeroProps) {
         </div>
 
         {/* Main 12-Column Technical Hero Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-8 items-start">
           {/* Left Column: Role Headline, Signal Lifecycle & Actions */}
           <div className="lg:col-span-7 flex flex-col justify-center">
-            <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3">
+            <div className="inline-flex items-center gap-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.16em] sm:tracking-[0.2em] text-muted-foreground mb-2.5 sm:mb-3">
               <span>[ ELECTRONICS &amp; COMMUNICATION ENGINEERING STUDENT ]</span>
             </div>
 
-            <h1 className="text-5xl sm:text-6xl md:text-7xl xl:text-[82px] leading-[0.94] font-light tracking-[-0.035em] text-foreground mb-6">
+            <h1 className="text-4xl sm:text-6xl md:text-7xl xl:text-[82px] leading-[0.98] sm:leading-[0.94] font-light tracking-[-0.035em] text-foreground mb-5 sm:mb-6 text-balance">
               Vikraman V
-              <span className="block text-2xl sm:text-3xl md:text-4xl font-light tracking-[-0.02em] text-muted-foreground mt-3">
+              <span className="block text-xl sm:text-3xl md:text-4xl font-light tracking-[-0.02em] text-muted-foreground mt-2.5 sm:mt-3 leading-snug">
                 Hardware prototypes,{" "}
                 <span className="font-[family-name:var(--font-cormorant)] italic font-normal text-primary">
                   embedded firmware
@@ -69,27 +69,27 @@ export function Hero({ projects = [] }: HeroProps) {
             </h1>
 
             {/* Signal Lifecycle Statement */}
-            <div className="my-4 p-4 rounded-lg bg-card/90 border border-border font-mono text-xs sm:text-[13px] leading-relaxed text-foreground/90 shadow-sm">
-              <div className="text-primary">
+            <div className="my-3 sm:my-4 p-3.5 sm:p-4 rounded-lg bg-card/90 border border-border font-mono text-[11px] sm:text-[13px] leading-relaxed text-foreground/90 shadow-sm">
+              <div className="text-primary break-words">
                 {"// curiosity → breadboard circuit → firmware bring-up → documented build"}
               </div>
-              <div className="text-muted-foreground mt-1">
+              <div className="text-muted-foreground mt-1 break-words">
                 {"// embedded systems · sensor interfacing · edge AI · web architecture · creative craft"}
               </div>
             </div>
 
             <p
               id="hero-bio"
-              className="max-w-2xl text-base sm:text-lg text-muted-foreground font-light leading-relaxed mt-3 mb-8"
+              className="max-w-2xl text-sm sm:text-lg text-muted-foreground font-light leading-relaxed mt-2.5 sm:mt-3 mb-6 sm:mb-8"
             >
               An undergraduate <strong className="font-medium text-foreground">ECE student at SRM IST</strong> exploring how physical circuits, microcontrollers, and clean software come together. Every module on this workbench documents real hardware wiring, register-level debugging, and honest lessons learned.
             </p>
 
-            {/* Primary & Secondary Actions */}
-            <div className="flex flex-wrap items-center gap-4">
+            {/* Primary & Secondary Actions — Thumb-friendly 46px height on mobile, side-by-side on tablet/PC */}
+            <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4">
               <Link
                 href="/work"
-                className="group relative inline-flex items-center gap-3 px-6 py-3.5 bg-primary text-primary-foreground font-mono text-xs uppercase tracking-[0.16em] font-semibold rounded-md shadow-sm hover:opacity-95 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                className="group relative inline-flex items-center justify-center gap-3 px-6 py-3.5 min-h-[46px] bg-primary text-primary-foreground font-mono text-xs uppercase tracking-[0.16em] font-semibold rounded-md shadow-sm hover:opacity-95 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 <span>Explore Work</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
@@ -100,7 +100,7 @@ export function Hero({ projects = [] }: HeroProps) {
                 download="Vikraman_V_Resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2.5 px-5 py-3.5 bg-card hover:bg-secondary text-foreground border border-border hover:border-primary/60 font-mono text-xs uppercase tracking-[0.16em] rounded-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="inline-flex items-center justify-center gap-2.5 px-5 py-3.5 min-h-[46px] bg-card hover:bg-secondary text-foreground border border-border hover:border-primary/60 font-mono text-xs uppercase tracking-[0.16em] rounded-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <span>RÉSUMÉ / CV</span>
                 <Download className="w-3.5 h-3.5 text-primary" />
@@ -108,14 +108,14 @@ export function Hero({ projects = [] }: HeroProps) {
 
               <Link
                 href="/#about"
-                className="inline-flex items-center gap-2 px-4 py-3.5 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground hover:text-primary transition-colors"
+                className="inline-flex items-center justify-center gap-2 px-4 py-3 min-h-[44px] font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground hover:text-primary transition-colors"
               >
                 <span>[ INSPECT PROFILE ]</span>
               </Link>
             </div>
 
             {/* Three Core Engineering Principles (Preserving Resolve, Curiosity, Craft) */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-10 pt-8 border-t border-border/70">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-border/70">
               <div
                 id="hero-card-resolve"
                 className="p-3.5 rounded-lg bg-card/70 border border-border/80 hover:border-primary/45 transition-colors"

@@ -119,11 +119,15 @@ export function getAllPosts(): Post[] {
   });
 
   const sortedPosts = rawPosts
-    .filter((post) => post.published)
-    .sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+    .filter((post) => post.published !== false)
+    .sort((a, b) => {
+      const diff = parsePostDate(b.date) - parsePostDate(a.date);
+      if (diff !== 0) return diff;
+      return parsePostDate(b.updated) - parsePostDate(a.updated);
+    });
 
   // Deterministically assign reference designators (U1..Un for projects, FN1..FNn for articles)
-  // if not explicitly defined in frontmatter, ensuring 100% backwards compatibility.
+  // in strict descending publication-date order if not explicitly defined in frontmatter.
   let projectCounter = 1;
   let articleCounter = 1;
 
@@ -141,6 +145,14 @@ export function getAllPosts(): Post[] {
       return { ...post, refId: assigned };
     }
   });
+}
+
+export function parsePostDate(dateStr?: string): number {
+  if (!dateStr) return 0;
+  const trimmed = String(dateStr).trim();
+  if (!trimmed) return 0;
+  const parsed = Date.parse(trimmed);
+  return Number.isNaN(parsed) ? 0 : parsed;
 }
 
 export function isOngoingStatus(status?: string): boolean {
@@ -161,25 +173,18 @@ export function isOngoingStatus(status?: string): boolean {
  *
  * Selection Rules:
  * 1. Filter out draft/unpublished items (published !== false).
- * 2. Sort published projects (`type === 'project'`) strictly by publication date descending.
- * 3. Default `limit` is 1 so the homepage displays only the single most recently published project.
+ * 2. Filter strictly to projects (`type === 'project'`).
+ * 3. Sort published projects strictly by publication date descending (`parsePostDate(b.date) - parsePostDate(a.date)`).
+ * 4. Default `limit` is 1 so the homepage displays only the single most recently published project.
  */
 export function getFeaturedWork(allPosts: Post[] = getAllPosts(), limit: number = 1): Post[] {
-  const validPosts = allPosts.filter((post) => post.published !== false);
-
-  const getPublicationTimestamp = (post: Post): number => {
-    const dateStr = post.date || post.updated;
-    if (!dateStr) return 0;
-    const time = new Date(dateStr).getTime();
-    return isNaN(time) ? 0 : time;
-  };
-
-  const sortByPubDateDesc = (a: Post, b: Post) =>
-    getPublicationTimestamp(b) - getPublicationTimestamp(a);
-
-  const publishedProjects = validPosts
-    .filter((post) => post.type === 'project')
-    .sort(sortByPubDateDesc);
+  const publishedProjects = allPosts
+    .filter((post) => post.published !== false && post.type === 'project')
+    .sort((a, b) => {
+      const diff = parsePostDate(b.date) - parsePostDate(a.date);
+      if (diff !== 0) return diff;
+      return parsePostDate(b.updated) - parsePostDate(a.updated);
+    });
 
   return publishedProjects.slice(0, limit);
 }

@@ -81,53 +81,70 @@ export function Navbar() {
     }
   };
 
-  // Lock body scroll when mobile menu is open
+  // Lock body scroll when mobile menu is open & close on Escape or desktop resize
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
     }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileMenuOpen(false);
+    };
+
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) setMobileMenuOpen(false);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      document.body.style.overflow = "unset";
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("resize", handleResize);
+    };
   }, [mobileMenuOpen]);
 
   const links = [
-    { name: "Work", code: "WORK", href: "/work" },
+    { name: "Works", code: "WORKS", href: "/work" },
     { name: "About", code: "ENGINEER", href: "/#about" },
     { name: "Capabilities", code: "STACK", href: "/#capabilities" },
-    { name: "Notes", code: "NOTES", href: "/blog" },
+    { name: "Experience", code: "LOG", href: "/#experience" },
     { name: "Contact", code: "CONTACT", href: "/#contact" },
   ];
 
   const isLinkActive = (href: string) => {
     if (href === "/work") {
-      return pathname === "/work" || pathname.startsWith("/projects");
-    }
-    if (href === "/blog") {
-      return pathname.startsWith("/blog");
+      return (
+        pathname === "/work" ||
+        pathname.startsWith("/projects") ||
+        pathname.startsWith("/blog")
+      );
     }
     return false;
   };
 
   return (
     <>
-      <header className="fixed top-0 inset-x-0 z-50 bg-background/90 backdrop-blur-md border-b border-border/80 transition-colors duration-200">
+      <header className="fixed top-0 inset-x-0 z-50 pt-[env(safe-area-inset-top)] bg-background/92 backdrop-blur-md border-b border-border/80 transition-colors duration-200">
         {/* Top copper trace hairline */}
         <div
           aria-hidden="true"
           className="h-[2px] w-full bg-gradient-to-r from-transparent via-primary/70 to-transparent"
         />
 
-        <div className="container mx-auto px-4 sm:px-6 md:px-12 h-14 sm:h-16 flex items-center justify-between gap-3">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-3">
           {/* Left: System Console Brand Badge (Pin-1 + Wordmark + Role) */}
           <Link
             id="navbar-brand-logo"
             href="/"
             onClick={() => setMobileMenuOpen(false)}
             aria-label="Vikraman V — Home"
-            className="group inline-flex items-center gap-2.5 px-2.5 py-1.5 rounded-md bg-card/90 border border-border hover:border-primary/60 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="group inline-flex items-center gap-2.5 px-2.5 py-2 min-h-[40px] sm:min-h-[36px] rounded-md bg-card/90 border border-border hover:border-primary/60 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shrink-0"
           >
             {/* Pin-1 registration mark + geometric V */}
-            <span className="w-5 h-5 rounded-[4px] bg-primary/15 border border-primary/40 flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+            <span className="w-5 h-5 rounded-[4px] bg-primary/15 border border-primary/40 flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors shrink-0">
               <svg
                 viewBox="22.04 58.88 467.92 378.88"
                 className="h-3 w-auto fill-primary group-hover:fill-primary-foreground transition-colors"
@@ -142,15 +159,15 @@ export function Navbar() {
               </svg>
             </span>
 
-            <span className="font-mono text-[11px] sm:text-xs tracking-[0.12em] font-semibold text-foreground">
+            <span className="font-mono text-[11px] sm:text-xs tracking-[0.12em] font-semibold text-foreground whitespace-nowrap">
               VIKRAMAN V
             </span>
-            <span className="hidden xl:inline-block font-mono text-[10px] tracking-[0.1em] text-muted-foreground border-l border-border pl-2.5">
+            <span className="hidden xl:inline-block font-mono text-[10px] tracking-[0.1em] text-muted-foreground border-l border-border pl-2.5 whitespace-nowrap">
               ECE STUDENT · INDIA
             </span>
           </Link>
 
-          {/* Center: Silkscreen Console Navigation */}
+          {/* Center: Silkscreen Console Navigation (Desktop & Large Tablet Landscape) */}
           <nav aria-label="Main navigation" className="hidden lg:flex items-center gap-1">
             {links.map((link) => {
               const active = isLinkActive(link.href);
@@ -159,7 +176,7 @@ export function Navbar() {
                   key={link.name}
                   href={link.href}
                   className={cn(
-                    "relative px-3 py-2 rounded-md font-mono text-[11px] tracking-[0.1em] uppercase transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    "relative px-3 py-2 min-h-[38px] inline-flex items-center rounded-md font-mono text-[11px] tracking-[0.1em] uppercase whitespace-nowrap transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     active
                       ? "text-primary font-semibold bg-primary/10"
                       : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"
@@ -177,8 +194,8 @@ export function Navbar() {
             })}
           </nav>
 
-          {/* Right: Pause Motion Switch, Theme Toggle, Status LED & Mobile Trigger */}
-          <div className="flex items-center gap-2">
+          {/* Right: Pause Motion Switch, Theme Toggle, Status LED & Mobile/Tablet Trigger */}
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {/* Pause / Resume Motion Control (WCAG 2.2.2) */}
             <button
               type="button"
@@ -187,7 +204,7 @@ export function Navbar() {
               aria-label={isCalm ? "Resume interface animations" : "Pause interface animations"}
               title={isCalm ? "Resume motion" : "Pause motion"}
               className={cn(
-                "hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 min-h-[34px] rounded-md font-mono text-[10px] uppercase tracking-[0.1em] border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                "hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 min-h-[38px] rounded-md font-mono text-[10px] uppercase tracking-[0.1em] border whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer",
                 isCalm
                   ? "bg-primary/15 border-primary text-primary font-medium"
                   : "bg-card/80 border-border text-muted-foreground hover:text-foreground hover:border-primary/50"
@@ -197,22 +214,22 @@ export function Navbar() {
               <span>{isCalm ? "MOTION: OFF" : "PAUSE MOTION"}</span>
             </button>
 
-            {/* Theme Switch (Obsidian / Bone) */}
+            {/* Theme Switch (Obsidian / Bone) — 44x44px touch target on mobile */}
             <button
               type="button"
               onClick={toggleTheme}
               aria-label={isDark ? "Switch to Bone light theme" : "Switch to Obsidian dark theme"}
               title={isDark ? "Switch to Light Mode (Bone)" : "Switch to Dark Mode (Obsidian)"}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 min-h-[34px] rounded-md border border-border bg-card/80 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground hover:text-primary hover:border-primary/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 min-h-[42px] min-w-[42px] sm:min-h-[38px] sm:min-w-0 rounded-md border border-border bg-card/80 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground hover:text-primary hover:border-primary/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
             >
-              {isDark ? <Sun className="w-3.5 h-3.5 text-primary" /> : <Moon className="w-3.5 h-3.5 text-primary" />}
+              {isDark ? <Sun className="w-4 h-4 sm:w-3.5 sm:h-3.5 text-primary" /> : <Moon className="w-4 h-4 sm:w-3.5 sm:h-3.5 text-primary" />}
               <span className="hidden md:inline">{isDark ? "BONE" : "OBSIDIAN"}</span>
             </button>
 
             {/* Power / System Status Pill */}
             <div
               id="navbar-status"
-              className="hidden md:inline-flex items-center gap-2 px-2.5 py-1.5 min-h-[34px] rounded-md bg-card/80 border border-border font-mono text-[10px] tracking-[0.1em] text-foreground/85"
+              className="hidden md:inline-flex items-center gap-2 px-2.5 py-1.5 min-h-[38px] rounded-md bg-card/80 border border-border font-mono text-[10px] tracking-[0.1em] text-foreground/85 whitespace-nowrap"
             >
               <span className="relative flex h-2 w-2" aria-hidden="true">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
@@ -221,11 +238,11 @@ export function Navbar() {
               <span>PWR·OK</span>
             </div>
 
-            {/* Mobile Menu Toggle */}
+            {/* Mobile & Tablet Menu Toggle (44x44px touch target) */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-md border border-border bg-card text-foreground hover:border-primary/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="lg:hidden inline-flex items-center justify-center min-w-[42px] min-h-[42px] rounded-md border border-border bg-card text-foreground hover:border-primary/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
               aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={mobileMenuOpen}
             >
@@ -235,15 +252,15 @@ export function Navbar() {
         </div>
       </header>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile & Portrait Tablet Drawer Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-40 pt-16 bg-background/98 backdrop-blur-xl lg:hidden flex flex-col justify-between p-6 overflow-y-auto"
+            transition={{ duration: 0.2 }}
+            className="fixed inset-x-0 top-0 h-[100dvh] z-40 pt-16 pb-[max(1.5rem,env(safe-area-inset-bottom))] px-5 sm:px-8 bg-background/98 backdrop-blur-xl lg:hidden flex flex-col justify-between overflow-y-auto"
           >
             <div className="space-y-2 mt-4">
               <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground pb-2 border-b border-border">
@@ -258,7 +275,7 @@ export function Navbar() {
                       href={link.href}
                       onClick={() => setMobileMenuOpen(false)}
                       className={cn(
-                        "py-4 flex items-center justify-between font-mono text-sm uppercase tracking-[0.14em] transition-colors",
+                        "py-4 min-h-[52px] flex items-center justify-between font-mono text-sm sm:text-base uppercase tracking-[0.14em] transition-colors",
                         active ? "text-primary font-semibold" : "text-foreground hover:text-primary"
                       )}
                     >
@@ -271,13 +288,13 @@ export function Navbar() {
             </div>
 
             <div className="pt-6 border-t border-border flex flex-col gap-3">
-              <div className="flex items-center justify-between gap-2">
+              <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 gap-2.5">
                 <button
                   type="button"
                   onClick={toggleMotion}
                   aria-pressed={isCalm}
                   className={cn(
-                    "flex-1 inline-flex items-center justify-center gap-2 py-3 px-4 rounded-md font-mono text-xs uppercase tracking-widest border",
+                    "min-h-[46px] inline-flex items-center justify-center gap-2 py-3 px-4 rounded-md font-mono text-xs uppercase tracking-widest border cursor-pointer",
                     isCalm
                       ? "bg-primary/15 border-primary text-primary font-semibold"
                       : "bg-card border-border text-foreground"
@@ -289,7 +306,7 @@ export function Navbar() {
                 <button
                   type="button"
                   onClick={toggleTheme}
-                  className="flex-1 inline-flex items-center justify-center gap-2 py-3 px-4 rounded-md font-mono text-xs uppercase tracking-widest border border-border bg-card text-foreground"
+                  className="min-h-[46px] inline-flex items-center justify-center gap-2 py-3 px-4 rounded-md font-mono text-xs uppercase tracking-widest border border-border bg-card text-foreground cursor-pointer"
                 >
                   {isDark ? <Sun className="w-3.5 h-3.5 text-primary" /> : <Moon className="w-3.5 h-3.5 text-primary" />}
                   <span>{isDark ? "Bone Theme" : "Obsidian Theme"}</span>

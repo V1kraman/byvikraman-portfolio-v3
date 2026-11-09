@@ -106,24 +106,24 @@ export function Markdown({ content }: MarkdownProps) {
                         Official Certificate (PDF)
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
                       <a
                         href={normalizedSrc}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium text-foreground/85 hover:text-foreground bg-card hover:bg-secondary border border-border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 min-h-[40px] sm:min-h-[34px] rounded text-xs font-medium text-foreground/85 hover:text-foreground bg-card hover:bg-secondary border border-border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         title="Open document in a new tab"
                       >
-                        <ExternalLink className="w-3.5 h-3.5 text-primary" />
-                        <span>Open in New Tab</span>
+                        <ExternalLink className="w-3.5 h-3.5 text-primary shrink-0" />
+                        <span>Open PDF</span>
                       </a>
                       <a
                         href={normalizedSrc}
                         download="NIPAM_Certificate_Vikraman.pdf"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium text-foreground/85 hover:text-foreground bg-card hover:bg-secondary border border-border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 min-h-[40px] sm:min-h-[34px] rounded text-xs font-medium text-foreground/85 hover:text-foreground bg-card hover:bg-secondary border border-border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         title="Download certificate PDF"
                       >
-                        <Download className="w-3.5 h-3.5 text-primary" />
+                        <Download className="w-3.5 h-3.5 text-primary shrink-0" />
                         <span>Download</span>
                       </a>
                     </div>

@@ -44,7 +44,7 @@ export function BackToTop({ threshold = 420 }: BackToTopProps) {
           transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
           aria-label="Scroll back to top"
           title="Back to top"
-          className="fixed bottom-6 right-6 z-40 group inline-flex items-center gap-2.5 px-3.5 py-2.5 min-h-[44px] rounded-lg bg-card/95 backdrop-blur-md border border-border hover:border-primary text-foreground hover:text-primary shadow-[0_8px_30px_rgba(25,26,24,0.32)] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background cursor-pointer"
+          className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-[max(1rem,env(safe-area-inset-right))] sm:bottom-6 sm:right-6 z-40 group inline-flex items-center gap-2.5 px-3.5 py-2.5 min-h-[44px] min-w-[44px] rounded-lg bg-card/95 backdrop-blur-md border border-border hover:border-primary text-foreground hover:text-primary shadow-[0_8px_30px_rgba(25,26,24,0.32)] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background cursor-pointer"
         >
           {/* Burnt Orange icon pad */}
           <span className="w-6 h-6 rounded bg-primary/15 border border-primary/40 group-hover:bg-primary group-hover:text-primary-foreground text-primary flex items-center justify-center transition-colors">

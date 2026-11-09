@@ -30,11 +30,11 @@ export function Projects({
   const displayedProjects = projects.slice(0, 1);
 
   return (
-    <section id="projects" className="py-20 md:py-28 relative border-t border-border/70">
-      <div className="container px-6 sm:px-8 md:px-12 mx-auto">
+    <section id="projects" className="py-16 sm:py-20 md:py-28 relative border-t border-border/70">
+      <div className="container px-4 sm:px-6 md:px-12 mx-auto">
         <Reveal>
           {/* Silkscreen Section Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 mb-12 border-b-2 border-primary/50 relative">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 mb-10 sm:mb-12 border-b-2 border-primary/50 relative">
             <div>
               <div className="font-mono text-xs uppercase tracking-[0.22em] text-primary mb-2">
                 {eyebrow}
@@ -77,14 +77,14 @@ export function Projects({
         {/* CTA to Explore All Work */}
         {viewAllLink && (
           <Reveal delay={0.15}>
-            <div className="mt-12 md:mt-14 max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-xl bg-card/70 border border-border">
-              <div className="font-mono text-xs text-muted-foreground">
+            <div className="mt-10 sm:mt-12 md:mt-14 max-w-4xl mx-auto flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-xl bg-card/70 border border-border">
+              <div className="font-mono text-xs text-muted-foreground leading-relaxed">
                 <span className="text-primary font-semibold mr-2">{"ARCHIVE INDEX //"}</span>
                 Browse all hardware builds, lab repairs, and technical articles in the unified Work archive.
               </div>
               <Link
                 href={viewAllLink}
-                className="group inline-flex items-center gap-3 px-6 py-3 bg-primary text-primary-foreground font-mono text-xs uppercase tracking-[0.16em] font-semibold rounded-md transition-all hover:opacity-95 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="group inline-flex items-center justify-center gap-3 px-6 py-3.5 min-h-[46px] bg-primary text-primary-foreground font-mono text-xs uppercase tracking-[0.16em] font-semibold rounded-md transition-all hover:opacity-95 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <span>{viewAllText}</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
