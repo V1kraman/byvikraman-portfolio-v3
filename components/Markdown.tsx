@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
@@ -10,6 +11,29 @@ import "highlight.js/styles/github-dark.css";
 
 interface MarkdownProps {
   content: string;
+}
+
+export function slugifyHeading(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[`*_~]/g, "")
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
+function extractTextFromChildren(children: React.ReactNode): string {
+  if (typeof children === "string" || typeof children === "number") {
+    return String(children);
+  }
+  if (Array.isArray(children)) {
+    return children.map(extractTextFromChildren).join("");
+  }
+  if (React.isValidElement(children)) {
+    const props = children.props as { children?: React.ReactNode };
+    return extractTextFromChildren(props.children);
+  }
+  return "";
 }
 
 function extractClass(props: any): string {
@@ -27,32 +51,69 @@ function extractClass(props: any): string {
 
 export function Markdown({ content }: MarkdownProps) {
   return (
-    <ReactMarkdown 
+    <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       rehypePlugins={[rehypeRaw, rehypeHighlight]}
       components={{
+        h2: ({ node, children, ...props }: any) => {
+          const text = extractTextFromChildren(children);
+          const id = props.id || slugifyHeading(text);
+          return (
+            <h2 id={id} className="scroll-mt-24" {...props}>
+              {children}
+            </h2>
+          );
+        },
+        h3: ({ node, children, ...props }: any) => {
+          const text = extractTextFromChildren(children);
+          const id = props.id || slugifyHeading(text);
+          return (
+            <h3 id={id} className="scroll-mt-24" {...props}>
+              {children}
+            </h3>
+          );
+        },
         div: ({ node, children, ...props }: any) => {
-          if (props["data-timeline"] === "garuda" || props.id === "garuda-engineering-timeline") {
+          if (
+            props["data-timeline"] === "garuda" ||
+            props.id === "garuda-engineering-timeline"
+          ) {
             return <EngineeringTimeline />;
           }
           const cls = extractClass(props);
           const { className: _cn, classname: _clsn, class: _c, ...rest } = props;
-          return <div className={cls} {...rest}>{children}</div>;
+          return (
+            <div className={cls} {...rest}>
+              {children}
+            </div>
+          );
         },
         figure: ({ node, children, ...props }: any) => {
           const cls = extractClass(props);
           const { className: _cn, classname: _clsn, class: _c, ...rest } = props;
-          return <figure className={cls} {...rest}>{children}</figure>;
+          return (
+            <figure className={cls} {...rest}>
+              {children}
+            </figure>
+          );
         },
         figcaption: ({ node, children, ...props }: any) => {
           const cls = extractClass(props);
           const { className: _cn, classname: _clsn, class: _c, ...rest } = props;
-          return <figcaption className={cls} {...rest}>{children}</figcaption>;
+          return (
+            <figcaption className={cls} {...rest}>
+              {children}
+            </figcaption>
+          );
         },
         span: ({ node, children, ...props }: any) => {
           const cls = extractClass(props);
           const { className: _cn, classname: _clsn, class: _c, ...rest } = props;
-          return <span className={cls} {...rest}>{children}</span>;
+          return (
+            <span className={cls} {...rest}>
+              {children}
+            </span>
+          );
         },
         a: ({ node, href, children, ...props }: any) => {
           const cls = extractClass(props);
@@ -88,7 +149,11 @@ export function Markdown({ content }: MarkdownProps) {
           } else if (normalizedSrc.startsWith("images/")) {
             const filename = normalizedSrc.replace("images/", "");
             normalizedSrc = `/images/projects/esp32-s3-oled/${filename}`;
-          } else if (normalizedSrc && !normalizedSrc.startsWith("/") && !normalizedSrc.startsWith("http")) {
+          } else if (
+            normalizedSrc &&
+            !normalizedSrc.startsWith("/") &&
+            !normalizedSrc.startsWith("http")
+          ) {
             normalizedSrc = `/images/projects/esp32-s3-oled/${normalizedSrc}`;
           }
 
@@ -97,9 +162,8 @@ export function Markdown({ content }: MarkdownProps) {
           if (isPdf) {
             return (
               <figure className="my-10">
-                <div className="rounded-xl overflow-hidden border border-border bg-card shadow-[0_8px_30px_rgba(25,26,24,0.25)] transition-all duration-300 hover:border-primary/40">
-                  {/* Top Control Bar */}
-                  <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-secondary/50 border-b border-border">
+                <div className="rounded-sm overflow-hidden border border-border bg-card transition-all duration-300 hover:border-primary/40">
+                  <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-surface border-b border-border">
                     <div className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-primary" />
                       <span className="text-xs font-mono uppercase tracking-wider text-foreground">
@@ -111,7 +175,7 @@ export function Markdown({ content }: MarkdownProps) {
                         href={normalizedSrc}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 min-h-[40px] sm:min-h-[34px] rounded text-xs font-medium text-foreground/85 hover:text-foreground bg-card hover:bg-secondary border border-border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 min-h-[38px] sm:min-h-[32px] rounded-sm text-xs font-mono uppercase tracking-wider text-foreground bg-card hover:bg-secondary border border-border transition-colors"
                         title="Open document in a new tab"
                       >
                         <ExternalLink className="w-3.5 h-3.5 text-primary shrink-0" />
@@ -120,7 +184,7 @@ export function Markdown({ content }: MarkdownProps) {
                       <a
                         href={normalizedSrc}
                         download="NIPAM_Certificate_Vikraman.pdf"
-                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 min-h-[40px] sm:min-h-[34px] rounded text-xs font-medium text-foreground/85 hover:text-foreground bg-card hover:bg-secondary border border-border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 min-h-[38px] sm:min-h-[32px] rounded-sm text-xs font-mono uppercase tracking-wider text-foreground bg-card hover:bg-secondary border border-border transition-colors"
                         title="Download certificate PDF"
                       >
                         <Download className="w-3.5 h-3.5 text-primary shrink-0" />
@@ -129,8 +193,7 @@ export function Markdown({ content }: MarkdownProps) {
                     </div>
                   </div>
 
-                  {/* Responsive Embedded Viewer */}
-                  <div className="relative w-full aspect-[4/3] sm:aspect-[16/11] md:h-[640px] bg-obsidian">
+                  <div className="relative w-full aspect-[4/3] sm:aspect-[16/11] md:h-[640px] bg-background">
                     <object
                       data={`${normalizedSrc}#toolbar=0&navpanes=0`}
                       type="application/pdf"
@@ -144,15 +207,18 @@ export function Markdown({ content }: MarkdownProps) {
                       >
                         <div className="flex flex-col items-center justify-center h-full p-8 text-center">
                           <FileText className="w-12 h-12 text-primary mb-4" />
-                          <p className="text-bone text-base font-medium mb-2">{alt || "PDF Certificate"}</p>
-                          <p className="text-bone/60 text-xs mb-6 max-w-sm">
-                            Your browser does not support inline PDF viewing. You can view or download the certificate directly.
+                          <p className="text-foreground text-base font-medium mb-2">
+                            {alt || "PDF Certificate"}
+                          </p>
+                          <p className="text-muted-foreground text-xs mb-6 max-w-sm">
+                            Your browser does not support inline PDF viewing. You can view or
+                            download the certificate directly.
                           </p>
                           <a
                             href={normalizedSrc}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-primary text-primary-foreground font-semibold text-xs tracking-wide hover:opacity-90 transition-colors"
+                            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-sm bg-primary text-primary-foreground font-mono uppercase text-xs tracking-wider hover:opacity-90 transition-opacity"
                           >
                             <ExternalLink className="w-4 h-4" />
                             View Certificate PDF
@@ -189,7 +255,7 @@ export function Markdown({ content }: MarkdownProps) {
 
           return (
             <figure className="my-10 group">
-              <div className="relative rounded-xl overflow-hidden border border-border bg-card shadow-[0_8px_30px_rgba(25,26,24,0.25)] transition-all duration-300 group-hover:border-primary/45">
+              <div className="relative rounded-sm overflow-hidden border border-border bg-card transition-all duration-300 group-hover:border-primary/45">
                 <a
                   href={normalizedSrc}
                   target="_blank"
@@ -204,7 +270,7 @@ export function Markdown({ content }: MarkdownProps) {
                     className="w-full h-auto object-cover max-h-[650px] transition-transform duration-500 group-hover/img:scale-[1.01]"
                     {...props}
                   />
-                  <div className="absolute top-3 right-3 opacity-0 group-hover/img:opacity-100 transition-opacity bg-obsidian/90 backdrop-blur-md border border-border rounded-md px-2.5 py-1 text-[10px] uppercase font-mono tracking-wider text-bone flex items-center gap-1.5 shadow-xl pointer-events-none">
+                  <div className="absolute top-3 right-3 opacity-0 group-hover/img:opacity-100 transition-opacity bg-background/90 backdrop-blur-md border border-border rounded-sm px-2.5 py-1 text-[10px] uppercase font-mono tracking-wider text-foreground flex items-center gap-1.5 pointer-events-none">
                     <ExternalLink className="w-3 h-3 text-primary" />
                     <span>Full Resolution</span>
                   </div>
@@ -220,19 +286,28 @@ export function Markdown({ content }: MarkdownProps) {
           );
         },
         table: ({ children, ...props }) => (
-          <div className="overflow-x-auto my-8 rounded-xl border border-border bg-card/60">
-            <table className="w-full text-left text-sm text-foreground/90 border-collapse" {...props}>
+          <div className="overflow-x-auto my-8 rounded-sm border border-border bg-card/60">
+            <table
+              className="w-full text-left text-sm text-foreground/90 border-collapse"
+              {...props}
+            >
               {children}
             </table>
           </div>
         ),
         th: ({ children, ...props }) => (
-          <th className="px-4 py-3 border-b border-border bg-secondary/50 text-xs font-mono uppercase tracking-widest text-primary" {...props}>
+          <th
+            className="px-4 py-3 border-b border-border bg-surface text-xs font-mono uppercase tracking-widest text-primary"
+            {...props}
+          >
             {children}
           </th>
         ),
         td: ({ children, ...props }) => (
-          <td className="px-4 py-3 border-b border-border/60 text-sm text-muted-foreground" {...props}>
+          <td
+            className="px-4 py-3 border-b border-border/60 text-sm text-muted-foreground"
+            {...props}
+          >
             {children}
           </td>
         ),

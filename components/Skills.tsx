@@ -1,83 +1,90 @@
 "use client";
 
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import { Reveal } from "./Reveal";
-import { capabilityLayers } from "@/lib/data";
+import { skillCategories } from "@/lib/data";
 
 export function Skills() {
   return (
     <section
       id="capabilities"
-      className="py-16 sm:py-20 md:py-28 relative border-t border-border/70 bg-card/25"
+      className="py-16 sm:py-24 md:py-28 relative border-t border-border/80 bg-surface/25"
     >
       <div className="container px-4 sm:px-6 md:px-12 mx-auto">
         <Reveal>
-          {/* Silkscreen Section Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 mb-10 sm:mb-12 border-b-2 border-primary/50">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 mb-10 sm:mb-12 border-b border-border">
             <div>
-              <div className="font-mono text-xs uppercase tracking-[0.22em] text-primary mb-2">
-                {"/// 03 · LAYER STACK-UP"}
+              <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary mb-2">
+                04 · Technical Capabilities
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-[-0.025em] text-foreground leading-tight">
-                Capabilities &amp;{" "}
-                <span className="font-[family-name:var(--font-cormorant)] italic text-primary font-normal">
-                  Technical Stack
-                </span>
+              <h2 className="font-[family-name:var(--font-cormorant)] text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-foreground leading-[1.08]">
+                Skills &amp;{" "}
+                <span className="italic text-primary">Engineering Stack</span>
               </h2>
-              <p className="text-sm sm:text-base text-muted-foreground font-light mt-2 max-w-2xl">
-                Organized as a 5-layer engineering stack—from physical microcontrollers and analog circuits up to firmware, web systems, and documentation.
+              <p className="text-sm sm:text-base text-muted-foreground mt-2 max-w-2xl">
+                Grouped across six practical domains—from programming and discrete electronics to
+                embedded experimentation, circuit design, development tools, and creative software.
               </p>
             </div>
-            <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground shrink-0">
-              5-LAYER SUBSTRATE · NO ARBITRARY SCORE BARS
+            <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground shrink-0">
+              6 DOMAINS · VERIFIED BY BUILD LOGS
             </div>
           </div>
         </Reveal>
 
-        {/* Karthick-inspired Layer Stack-Up Table */}
-        <Reveal delay={0.08}>
-          <div className="rounded-xl overflow-hidden border border-border bg-card shadow-[0_8px_30px_rgba(25,26,24,0.12)] divide-y divide-border">
-            {capabilityLayers.map((layer) => (
+        {/* 6-Category Structured Skills Matrix (No arbitrary percentage bars) */}
+        <Reveal delay={0.06}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border border border-border">
+            {skillCategories.map((group) => (
               <div
-                key={layer.id}
-                className="group relative p-4 sm:p-6 md:px-8 transition-all duration-200 hover:bg-secondary/35"
+                key={group.id}
+                className="p-5 sm:p-6 md:p-7 bg-background hover:bg-card/60 transition-colors flex flex-col justify-between gap-5"
               >
-                {/* Copper edge trace that illuminates on hover */}
-                <span
-                  aria-hidden="true"
-                  className="absolute left-0 top-0 bottom-0 w-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                />
-
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-start lg:items-center">
-                  {/* Layer Number & Title */}
-                  <div className="lg:col-span-5 flex items-start gap-4">
-                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-md bg-primary/15 border border-primary/40 font-mono text-xs font-semibold text-primary shrink-0">
-                      {layer.id}
-                    </span>
-                    <div>
-                      <div className="font-mono text-xs sm:text-sm font-semibold tracking-[0.08em] text-foreground group-hover:text-primary transition-colors">
-                        {layer.name}
-                      </div>
-                      <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground mt-0.5">
-                        {layer.domain}
-                      </div>
-                      <p className="text-xs text-muted-foreground font-light mt-1.5 leading-relaxed">
-                        {layer.summary}
-                      </p>
-                    </div>
+                <div className="space-y-3.5">
+                  <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-border/70 font-mono text-[10px] uppercase tracking-[0.16em]">
+                    <span className="text-primary font-semibold">{group.code}</span>
+                    <span className="text-muted-foreground truncate">{group.subtitle}</span>
                   </div>
 
-                  {/* Layer Capabilities / Components */}
-                  <div className="lg:col-span-7 flex flex-wrap lg:justify-end gap-2">
-                    {layer.items.map((skill) => (
-                      <span
-                        key={skill}
-                        className="px-2.5 py-1 rounded bg-background/80 border border-border group-hover:border-primary/35 font-mono text-[11px] tracking-wide text-foreground/85 transition-colors"
+                  <h3 className="font-[family-name:var(--font-cormorant)] text-2xl sm:text-[26px] font-normal text-foreground tracking-tight">
+                    {group.title}
+                  </h3>
+
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                    {group.description}
+                  </p>
+
+                  <ul
+                    className="flex flex-wrap gap-1.5 pt-1"
+                    aria-label={`${group.title} skills`}
+                  >
+                    {group.items.map((item) => (
+                      <li
+                        key={item}
+                        className="px-2.5 py-1 rounded-sm bg-surface border border-border font-mono text-[10px] tracking-[0.06em] text-foreground/90"
                       >
-                        {skill}
-                      </span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {group.evidence && group.evidence.length > 0 && (
+                  <div className="pt-3 border-t border-border/60 flex flex-wrap items-center gap-x-4 gap-y-1.5 font-mono text-[10px] uppercase tracking-[0.12em]">
+                    <span className="text-muted-foreground">Applied in:</span>
+                    {group.evidence.map((ev) => (
+                      <Link
+                        key={ev.href}
+                        href={ev.href}
+                        className="inline-flex items-center gap-0.5 text-primary hover:underline"
+                      >
+                        <span>{ev.label}</span>
+                        <ArrowUpRight className="w-3 h-3" />
+                      </Link>
                     ))}
                   </div>
-                </div>
+                )}
               </div>
             ))}
           </div>

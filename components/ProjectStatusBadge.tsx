@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle, Clock } from "lucide-react";
+import { CheckCircle, Clock, Sparkles, Archive } from "lucide-react";
 
 interface ProjectStatusBadgeProps {
   status?: string;
@@ -27,10 +27,22 @@ export function ProjectStatusBadge({
     lower.includes("done") ||
     lower.includes("finished") ||
     lower.includes("shipped");
-  const isPlanned =
+  const isExperimental =
+    lower.includes("experimental") ||
+    lower.includes("prototype") ||
     lower.includes("planned") ||
-    lower.includes("concept") ||
-    lower.includes("upcoming");
+    lower.includes("concept");
+  const isArchived = lower.includes("archived") || lower.includes("legacy");
+
+  const normalizedLabel = isOngoing
+    ? "ONGOING"
+    : isCompleted
+      ? "COMPLETED"
+      : isExperimental
+        ? "EXPERIMENTAL"
+        : isArchived
+          ? "ARCHIVED"
+          : status.toUpperCase();
 
   const sizeClasses =
     size === "md"
@@ -43,13 +55,13 @@ export function ProjectStatusBadge({
   if (isOngoing) {
     return (
       <span
-        className={`inline-flex items-center rounded-sm uppercase tracking-wider font-semibold text-primary bg-primary/10 border border-primary/35 ${sizeClasses} ${className}`}
+        className={`inline-flex items-center rounded-sm font-mono uppercase tracking-[0.14em] font-semibold text-primary bg-primary/10 border border-primary/35 ${sizeClasses} ${className}`}
       >
         <span className={`relative flex ${dotSize}`}>
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
           <span className="relative inline-flex rounded-full h-full w-full bg-primary" />
         </span>
-        <span>{status}</span>
+        <span>{normalizedLabel}</span>
       </span>
     );
   }
@@ -57,31 +69,42 @@ export function ProjectStatusBadge({
   if (isCompleted) {
     return (
       <span
-        className={`inline-flex items-center rounded-sm uppercase tracking-wider font-medium text-foreground/85 bg-secondary border border-border ${sizeClasses} ${className}`}
+        className={`inline-flex items-center rounded-sm font-mono uppercase tracking-[0.14em] font-medium text-foreground/85 bg-secondary/80 border border-border ${sizeClasses} ${className}`}
       >
         <CheckCircle className={`${iconSize} text-primary`} />
-        <span>{status}</span>
+        <span>{normalizedLabel}</span>
       </span>
     );
   }
 
-  if (isPlanned) {
+  if (isExperimental) {
     return (
       <span
-        className={`inline-flex items-center rounded-sm uppercase tracking-wider font-medium text-muted-foreground bg-muted border border-border ${sizeClasses} ${className}`}
+        className={`inline-flex items-center rounded-sm font-mono uppercase tracking-[0.14em] font-medium text-muted-foreground bg-muted border border-border ${sizeClasses} ${className}`}
       >
-        <Clock className={`${iconSize} text-primary`} />
-        <span>{status}</span>
+        <Sparkles className={`${iconSize} text-primary`} />
+        <span>{normalizedLabel}</span>
+      </span>
+    );
+  }
+
+  if (isArchived) {
+    return (
+      <span
+        className={`inline-flex items-center rounded-sm font-mono uppercase tracking-[0.14em] font-medium text-muted-foreground bg-muted/60 border border-border ${sizeClasses} ${className}`}
+      >
+        <Archive className={`${iconSize} text-muted-foreground`} />
+        <span>{normalizedLabel}</span>
       </span>
     );
   }
 
   return (
     <span
-      className={`inline-flex items-center rounded-sm uppercase tracking-wider font-medium text-muted-foreground bg-secondary border border-border ${sizeClasses} ${className}`}
+      className={`inline-flex items-center rounded-sm font-mono uppercase tracking-[0.14em] font-medium text-muted-foreground bg-secondary/70 border border-border ${sizeClasses} ${className}`}
     >
-      <span className={`rounded-full bg-primary ${dotSize}`} />
-      <span>{status}</span>
+      <Clock className={`${iconSize} text-primary`} />
+      <span>{normalizedLabel}</span>
     </span>
   );
 }

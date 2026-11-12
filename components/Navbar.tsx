@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useSyncExternalStore } from "react";
+import { useState, useEffect, useRef, useSyncExternalStore } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -38,6 +38,9 @@ function getServerCalmSnapshot() {
 export function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [hiddenOnScroll, setHiddenOnScroll] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const lastScrollY = useRef(0);
 
   const isDark = useSyncExternalStore(
     subscribeToHtmlClasses,
@@ -50,6 +53,27 @@ export function Navbar() {
     getCalmSnapshot,
     getServerCalmSnapshot
   );
+
+  // Scroll-aware header: hides smoothly on downward scroll, reappears immediately on upward scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      setScrolled(currentY > 16);
+
+      if (currentY <= 64) {
+        setHiddenOnScroll(false);
+      } else if (currentY > lastScrollY.current + 6 && !mobileMenuOpen) {
+        setHiddenOnScroll(true);
+      } else if (currentY < lastScrollY.current - 4) {
+        setHiddenOnScroll(false);
+      }
+
+      lastScrollY.current = currentY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [mobileMenuOpen]);
 
   const toggleTheme = () => {
     const nextDark = !isDark;
@@ -81,7 +105,6 @@ export function Navbar() {
     }
   };
 
-  // Lock body scroll when mobile menu is open & close on Escape or desktop resize
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -107,11 +130,10 @@ export function Navbar() {
   }, [mobileMenuOpen]);
 
   const links = [
-    { name: "Works", code: "WORKS", href: "/work" },
-    { name: "About", code: "ENGINEER", href: "/#about" },
-    { name: "Capabilities", code: "STACK", href: "/#capabilities" },
-    { name: "Experience", code: "LOG", href: "/#experience" },
-    { name: "Contact", code: "CONTACT", href: "/#contact" },
+    { name: "Works", index: "01", href: "/work" },
+    { name: "About", index: "02", href: "/about" },
+    { name: "Now", index: "03", href: "/now" },
+    { name: "Contact", index: "04", href: "/#contact" },
   ];
 
   const isLinkActive = (href: string) => {
@@ -122,53 +144,49 @@ export function Navbar() {
         pathname.startsWith("/blog")
       );
     }
+    if (href === "/about") {
+      return pathname === "/about";
+    }
+    if (href === "/now") {
+      return pathname === "/now";
+    }
     return false;
   };
 
   return (
     <>
-      <header className="fixed top-0 inset-x-0 z-50 pt-[env(safe-area-inset-top)] bg-background/92 backdrop-blur-md border-b border-border/80 transition-colors duration-200">
-        {/* Top copper trace hairline */}
-        <div
-          aria-hidden="true"
-          className="h-[2px] w-full bg-gradient-to-r from-transparent via-primary/70 to-transparent"
-        />
-
-        <div className="container mx-auto px-4 sm:px-6 md:px-12 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-3">
-          {/* Left: System Console Brand Badge (Pin-1 + Wordmark + Role) */}
+      <header
+        className={cn(
+          "fixed top-0 inset-x-0 z-50 pt-[env(safe-area-inset-top)] transition-all duration-300 ease-out will-change-transform",
+          hiddenOnScroll && !mobileMenuOpen ? "-translate-y-full" : "translate-y-0",
+          scrolled
+            ? "bg-background/92 backdrop-blur-md border-b border-border/85"
+            : "bg-background/75 backdrop-blur-sm border-b border-border/45"
+        )}
+      >
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 h-14 sm:h-16 flex items-center justify-between gap-3">
+          {/* Typographic Wordmark: VIKRAMAN V. */}
           <Link
             id="navbar-brand-logo"
             href="/"
             onClick={() => setMobileMenuOpen(false)}
-            aria-label="Vikraman V — Home"
-            className="group inline-flex items-center gap-2.5 px-2.5 py-2 min-h-[40px] sm:min-h-[36px] rounded-md bg-card/90 border border-border hover:border-primary/60 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shrink-0"
+            aria-label="Vikraman V. — Home"
+            className="group inline-flex items-baseline gap-2.5 py-1.5 min-h-[40px] sm:min-h-[36px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm shrink-0"
           >
-            {/* Pin-1 registration mark + geometric V */}
-            <span className="w-5 h-5 rounded-[4px] bg-primary/15 border border-primary/40 flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors shrink-0">
-              <svg
-                viewBox="22.04 58.88 467.92 378.88"
-                className="h-3 w-auto fill-primary group-hover:fill-primary-foreground transition-colors"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <polygon points="22.04,58.88 155.40,58.88 200.43,153.60 67.08,153.60" />
-                <polygon points="356.60,58.88 489.96,58.88 444.92,153.60 311.57,153.60" />
-                <polygon points="75.37,171.03 208.72,171.03 256.00,270.46 189.32,410.70" />
-                <polygon points="303.28,171.03 436.63,171.03 322.68,410.70 256.00,270.46" />
-                <polygon points="256.00,289.76 193.91,420.35 202.19,437.76 309.81,437.76 318.09,420.35" />
-              </svg>
+            <span className="font-[family-name:var(--font-antonio)] text-lg sm:text-xl tracking-[0.08em] font-semibold text-foreground uppercase leading-none transition-colors group-hover:text-primary">
+              VIKRAMAN{" "}
+              <span className="font-[family-name:var(--font-cormorant)] italic font-semibold tracking-normal">
+                V
+              </span>
+              <span className="text-primary">.</span>
             </span>
-
-            <span className="font-mono text-[11px] sm:text-xs tracking-[0.12em] font-semibold text-foreground whitespace-nowrap">
-              VIKRAMAN V
-            </span>
-            <span className="hidden xl:inline-block font-mono text-[10px] tracking-[0.1em] text-muted-foreground border-l border-border pl-2.5 whitespace-nowrap">
-              ECE STUDENT · INDIA
+            <span className="hidden xl:inline-block font-mono text-[10px] tracking-[0.16em] uppercase text-muted-foreground border-l border-border pl-2.5">
+              ECE · SRM IST &apos;29
             </span>
           </Link>
 
-          {/* Center: Silkscreen Console Navigation (Desktop & Large Tablet Landscape) */}
-          <nav aria-label="Main navigation" className="hidden lg:flex items-center gap-1">
+          {/* Compact Text-Based Editorial Navigation */}
+          <nav aria-label="Main navigation" className="hidden lg:flex items-center gap-6">
             {links.map((link) => {
               const active = isLinkActive(link.href);
               return (
@@ -176,27 +194,30 @@ export function Navbar() {
                   key={link.name}
                   href={link.href}
                   className={cn(
-                    "relative px-3 py-2 min-h-[38px] inline-flex items-center rounded-md font-mono text-[11px] tracking-[0.1em] uppercase whitespace-nowrap transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    "group relative py-1.5 inline-flex items-baseline gap-1.5 text-sm tracking-[-0.01em] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm",
                     active
-                      ? "text-primary font-semibold bg-primary/10"
-                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"
+                      ? "text-foreground font-medium"
+                      : "text-muted-foreground hover:text-foreground"
                   )}
                 >
-                  <span>[ {link.code} ]</span>
-                  {active && (
-                    <span
-                      aria-hidden="true"
-                      className="absolute bottom-1 left-3 right-3 h-[1.5px] bg-primary rounded-full"
-                    />
-                  )}
+                  <span className="font-mono text-[10px] tracking-[0.1em] text-primary/80">
+                    {link.index}
+                  </span>
+                  <span>{link.name}</span>
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      "absolute -bottom-0.5 left-0 right-0 h-[1.5px] bg-primary transition-transform duration-200 origin-left",
+                      active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                    )}
+                  />
                 </Link>
               );
             })}
           </nav>
 
-          {/* Right: Pause Motion Switch, Theme Toggle, Status LED & Mobile/Tablet Trigger */}
+          {/* Right Controls: Motion Toggle, Theme Switch, Mobile Menu */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            {/* Pause / Resume Motion Control (WCAG 2.2.2) */}
             <button
               type="button"
               onClick={toggleMotion}
@@ -204,45 +225,35 @@ export function Navbar() {
               aria-label={isCalm ? "Resume interface animations" : "Pause interface animations"}
               title={isCalm ? "Resume motion" : "Pause motion"}
               className={cn(
-                "hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 min-h-[38px] rounded-md font-mono text-[10px] uppercase tracking-[0.1em] border whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer",
+                "hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 min-h-[36px] rounded-sm font-mono text-[10px] uppercase tracking-[0.12em] border whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer",
                 isCalm
                   ? "bg-primary/15 border-primary text-primary font-medium"
-                  : "bg-card/80 border-border text-muted-foreground hover:text-foreground hover:border-primary/50"
+                  : "bg-transparent border-border text-muted-foreground hover:text-foreground hover:border-foreground/40"
               )}
             >
               {isCalm ? <Play className="w-3 h-3" /> : <Pause className="w-3 h-3" />}
-              <span>{isCalm ? "MOTION: OFF" : "PAUSE MOTION"}</span>
+              <span>{isCalm ? "Calm: On" : "Calm"}</span>
             </button>
 
-            {/* Theme Switch (Obsidian / Bone) — 44x44px touch target on mobile */}
             <button
               type="button"
               onClick={toggleTheme}
-              aria-label={isDark ? "Switch to Bone light theme" : "Switch to Obsidian dark theme"}
-              title={isDark ? "Switch to Light Mode (Bone)" : "Switch to Dark Mode (Obsidian)"}
-              className="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 min-h-[42px] min-w-[42px] sm:min-h-[38px] sm:min-w-0 rounded-md border border-border bg-card/80 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground hover:text-primary hover:border-primary/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+              aria-label={isDark ? "Switch to warm paper light theme" : "Switch to warm ink dark theme"}
+              title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              className="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 min-h-[40px] min-w-[40px] sm:min-h-[36px] sm:min-w-0 rounded-sm border border-border bg-transparent font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
             >
-              {isDark ? <Sun className="w-4 h-4 sm:w-3.5 sm:h-3.5 text-primary" /> : <Moon className="w-4 h-4 sm:w-3.5 sm:h-3.5 text-primary" />}
-              <span className="hidden md:inline">{isDark ? "BONE" : "OBSIDIAN"}</span>
+              {isDark ? (
+                <Sun className="w-3.5 h-3.5 text-primary" />
+              ) : (
+                <Moon className="w-3.5 h-3.5 text-primary" />
+              )}
+              <span className="hidden md:inline">{isDark ? "Paper" : "Ink"}</span>
             </button>
 
-            {/* Power / System Status Pill */}
-            <div
-              id="navbar-status"
-              className="hidden md:inline-flex items-center gap-2 px-2.5 py-1.5 min-h-[38px] rounded-md bg-card/80 border border-border font-mono text-[10px] tracking-[0.1em] text-foreground/85 whitespace-nowrap"
-            >
-              <span className="relative flex h-2 w-2" aria-hidden="true">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
-              </span>
-              <span>PWR·OK</span>
-            </div>
-
-            {/* Mobile & Tablet Menu Toggle (44x44px touch target) */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden inline-flex items-center justify-center min-w-[42px] min-h-[42px] rounded-md border border-border bg-card text-foreground hover:border-primary/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+              className="lg:hidden inline-flex items-center justify-center min-w-[40px] min-h-[40px] rounded-sm border border-border bg-transparent text-foreground hover:border-primary/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
               aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={mobileMenuOpen}
             >
@@ -252,22 +263,22 @@ export function Navbar() {
         </div>
       </header>
 
-      {/* Mobile & Portrait Tablet Drawer Menu */}
+      {/* Mobile & Tablet Drawer */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -12 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
+            exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
             className="fixed inset-x-0 top-0 h-[100dvh] z-40 pt-16 pb-[max(1.5rem,env(safe-area-inset-bottom))] px-5 sm:px-8 bg-background/98 backdrop-blur-xl lg:hidden flex flex-col justify-between overflow-y-auto"
           >
             <div className="space-y-2 mt-4">
               <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground pb-2 border-b border-border">
-                {"/// SYSTEM NAVIGATION"}
+                Index · Navigation
               </div>
               <nav aria-label="Mobile navigation" className="flex flex-col divide-y divide-border/60">
-                {links.map((link, idx) => {
+                {links.map((link) => {
                   const active = isLinkActive(link.href);
                   return (
                     <Link
@@ -275,12 +286,16 @@ export function Navbar() {
                       href={link.href}
                       onClick={() => setMobileMenuOpen(false)}
                       className={cn(
-                        "py-4 min-h-[52px] flex items-center justify-between font-mono text-sm sm:text-base uppercase tracking-[0.14em] transition-colors",
-                        active ? "text-primary font-semibold" : "text-foreground hover:text-primary"
+                        "py-4 min-h-[52px] flex items-baseline justify-between transition-colors",
+                        active ? "text-primary font-medium" : "text-foreground hover:text-primary"
                       )}
                     >
-                      <span>[ {link.code} ] — {link.name}</span>
-                      <span className="text-xs text-muted-foreground">0{idx + 1}</span>
+                      <span className="font-[family-name:var(--font-cormorant)] text-2xl sm:text-3xl tracking-tight">
+                        {link.name}
+                      </span>
+                      <span className="font-mono text-xs text-muted-foreground">
+                        {link.index}
+                      </span>
                     </Link>
                   );
                 })}
@@ -288,13 +303,13 @@ export function Navbar() {
             </div>
 
             <div className="pt-6 border-t border-border flex flex-col gap-3">
-              <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-2 gap-2.5">
                 <button
                   type="button"
                   onClick={toggleMotion}
                   aria-pressed={isCalm}
                   className={cn(
-                    "min-h-[46px] inline-flex items-center justify-center gap-2 py-3 px-4 rounded-md font-mono text-xs uppercase tracking-widest border cursor-pointer",
+                    "min-h-[44px] inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-sm font-mono text-xs uppercase tracking-widest border cursor-pointer",
                     isCalm
                       ? "bg-primary/15 border-primary text-primary font-semibold"
                       : "bg-card border-border text-foreground"
@@ -306,15 +321,19 @@ export function Navbar() {
                 <button
                   type="button"
                   onClick={toggleTheme}
-                  className="min-h-[46px] inline-flex items-center justify-center gap-2 py-3 px-4 rounded-md font-mono text-xs uppercase tracking-widest border border-border bg-card text-foreground cursor-pointer"
+                  className="min-h-[44px] inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-sm font-mono text-xs uppercase tracking-widest border border-border bg-card text-foreground cursor-pointer"
                 >
-                  {isDark ? <Sun className="w-3.5 h-3.5 text-primary" /> : <Moon className="w-3.5 h-3.5 text-primary" />}
-                  <span>{isDark ? "Bone Theme" : "Obsidian Theme"}</span>
+                  {isDark ? (
+                    <Sun className="w-3.5 h-3.5 text-primary" />
+                  ) : (
+                    <Moon className="w-3.5 h-3.5 text-primary" />
+                  )}
+                  <span>{isDark ? "Paper Light" : "Ink Dark"}</span>
                 </button>
               </div>
               <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-widest text-muted-foreground pt-2">
-                <span>VIKRAMAN V · SRM IST ECE &apos;29</span>
-                <span className="text-primary">PWR·OK</span>
+                <span>VIKRAMAN V. · ECE &apos;29</span>
+                <span className="text-primary">byvikraman.me</span>
               </div>
             </div>
           </motion.div>

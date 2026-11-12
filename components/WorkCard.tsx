@@ -3,7 +3,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { format, parseISO } from "date-fns";
-import { ArrowUpRight, ArrowRight, Calendar, Clock, Github, ExternalLink, BookOpen } from "lucide-react";
+import {
+  ArrowUpRight,
+  ArrowRight,
+  Clock,
+  Github,
+  ExternalLink,
+  BookOpen,
+} from "lucide-react";
 import type { Post } from "@/lib/content/mdx";
 import { motion, useReducedMotion, type Variants } from "motion/react";
 import { ProjectStatusBadge } from "./ProjectStatusBadge";
@@ -19,38 +26,37 @@ export function WorkCard({ item, index = 0, priority = false }: WorkCardProps) {
   const isProject = item.type === "project";
   const targetHref = isProject ? `/projects/${item.slug}` : `/blog/${item.slug}`;
   const refCode = item.refId || (isProject ? `U${index + 1}` : `FN${index + 1}`);
+  const rowNumber = String(index + 1).padStart(2, "0");
 
   let formattedDate = "";
   try {
     if (item.date) {
-      formattedDate = format(parseISO(item.date), "MMM d, yyyy");
+      formattedDate = format(parseISO(item.date), "yyyy-MM-dd");
     }
   } catch {
     formattedDate = item.date;
   }
 
-  const staggerDelay = shouldReduceMotion ? 0 : Math.min((index % 6) * 0.06, 0.3);
+  const staggerDelay = shouldReduceMotion ? 0 : Math.min((index % 8) * 0.04, 0.24);
 
-  const cardVariants: Variants = {
+  const rowVariants: Variants = {
     hidden: {
       opacity: 0,
-      y: shouldReduceMotion ? 0 : 20,
+      y: shouldReduceMotion ? 0 : 12,
     },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: shouldReduceMotion ? 0.15 : 0.45,
+        duration: shouldReduceMotion ? 0.12 : 0.35,
         delay: staggerDelay,
         ease: [0.21, 0.47, 0.32, 0.98] as const,
       },
     },
     exit: {
       opacity: 0,
-      scale: 0.98,
       transition: {
-        duration: 0.2,
-        ease: "easeIn",
+        duration: 0.15,
       },
     },
   };
@@ -67,182 +73,157 @@ export function WorkCard({ item, index = 0, priority = false }: WorkCardProps) {
       id={`archive-${refCode}`}
       data-ref={refCode}
       layout="position"
-      variants={cardVariants}
+      variants={rowVariants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-30px" }}
+      viewport={{ once: true, margin: "-20px" }}
       exit="exit"
-      className="group relative flex flex-col h-full bg-card border border-border hover:border-primary/60 rounded-xl overflow-hidden transition-all duration-300 shadow-[0_4px_24px_rgba(25,26,24,0.1)] hover:shadow-[0_14px_36px_rgba(25,26,24,0.22)]"
+      className="group relative py-7 sm:py-9 px-2 sm:px-4 hover:bg-card/45 transition-colors duration-200"
     >
-      {/* Top Copper Hairline */}
-      <div
-        aria-hidden="true"
-        className="h-[2px] w-full bg-gradient-to-r from-primary/80 via-primary/30 to-transparent opacity-70 group-hover:opacity-100 transition-opacity"
-      />
-
-      {/* Silkscreen Module Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2 px-5 py-3 border-b border-border/80 bg-background/40 font-mono text-[11px]">
-        <div className="flex items-center gap-2 min-w-0">
-          <span
-            className={`inline-flex items-center justify-center px-2 py-0.5 rounded font-semibold tracking-wider shrink-0 ${
-              isProject
-                ? "bg-primary/15 border border-primary/40 text-primary"
-                : "bg-secondary border border-border text-foreground"
-            }`}
-          >
-            {refCode}
-          </span>
-          <span className="uppercase tracking-[0.12em] text-muted-foreground truncate text-[10px]">
-            {item.category || (isProject ? "ENGINEERING MODULE" : "FIELD NOTE")}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-2 shrink-0">
-          {isProject ? (
-            <>
-              <span className="px-2 py-0.5 rounded-sm bg-primary/15 border border-primary/40 text-[9px] uppercase tracking-widest text-primary font-semibold">
-                PROJECT
-              </span>
-              {item.status && <ProjectStatusBadge status={item.status} size="sm" />}
-            </>
-          ) : (
-            <span className="px-2 py-0.5 rounded-sm bg-secondary border border-border text-[9px] uppercase tracking-widest text-foreground/85 font-semibold">
-              ARTICLE
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-start">
+        {/* Column 1 (2 cols): Editorial Index Number, Technical Ref ID & Date */}
+        <div className="lg:col-span-2 flex lg:flex-col items-baseline lg:items-start justify-between gap-3">
+          <div className="flex items-baseline gap-2.5">
+            <span className="font-[family-name:var(--font-antonio)] text-2xl sm:text-3xl tracking-[0.04em] text-foreground/35 group-hover:text-primary transition-colors leading-none">
+              {rowNumber}
             </span>
-          )}
-        </div>
-      </div>
-
-      {/* Media / Schematic Slot */}
-      {item.image ? (
-        <Link
-          href={targetHref}
-          tabIndex={-1}
-          aria-hidden="true"
-          className="block relative aspect-[16/10] w-full overflow-hidden border-b border-border/80 bg-secondary/50"
-        >
-          <Image
-            src={item.image}
-            alt=""
-            aria-hidden="true"
-            fill
-            priority={priority}
-            referrerPolicy="no-referrer"
-            className="object-cover transition-transform duration-500 ease-out motion-safe:group-hover:scale-[1.03] opacity-92 group-hover:opacity-100"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-obsidian/70 via-transparent to-transparent opacity-55 group-hover:opacity-30 transition-opacity duration-300 pointer-events-none" />
-          <span className="absolute bottom-2.5 left-3 z-10 px-2 py-0.5 rounded bg-obsidian/85 text-bone border border-bone/20 font-mono text-[9px] uppercase tracking-[0.16em]">
-            {isProject ? "PROTOTYPE PROOF" : "DOCUMENTED LOG"}
-          </span>
-        </Link>
-      ) : (
-        <Link
-          href={targetHref}
-          tabIndex={-1}
-          aria-hidden="true"
-          className="block relative py-6 px-5 border-b border-border/80 bg-[linear-gradient(to_right,var(--grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-line)_1px,transparent_1px)] bg-[size:1.5rem_1.5rem]"
-        >
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3 min-w-0">
-              <span className="w-10 h-10 rounded-lg bg-card border border-primary/40 flex items-center justify-center font-mono text-xs font-semibold text-primary shrink-0">
-                {refCode}
-              </span>
-              <div className="min-w-0">
-                <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-primary">
-                  {isProject ? "SYSTEM ARCHITECTURE DOSSIER" : "TECHNICAL ESSAY & FIELD NOTE"}
-                </div>
-                <div className="font-mono text-xs text-foreground/85 truncate mt-0.5">
-                  {item.subsystem || "Engineering Analysis & Documentation"}
-                </div>
-              </div>
-            </div>
+            <span
+              className={`px-2 py-0.5 rounded-sm font-mono text-[10px] font-semibold uppercase tracking-[0.14em] border ${
+                isProject
+                  ? "bg-primary/10 border-primary/35 text-primary"
+                  : "bg-surface border-border text-foreground/85"
+              }`}
+            >
+              {refCode}
+            </span>
           </div>
-        </Link>
-      )}
 
-      {/* Card Body */}
-      <div className="p-5 sm:p-6 flex flex-col flex-grow space-y-4">
-        {/* Date & Reading Time */}
-        <div className="flex flex-wrap items-center gap-4 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-          {formattedDate && (
-            <div className="flex items-center gap-1.5">
-              <Calendar className="w-3 h-3 text-primary" />
-              <time dateTime={item.date}>{formattedDate}</time>
-            </div>
-          )}
-          {item.readingTime && (
-            <div className="flex items-center gap-1.5">
-              <Clock className="w-3 h-3 text-primary" />
-              <span>{item.readingTime}</span>
-            </div>
-          )}
+          <div className="flex lg:flex-col items-center lg:items-start gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            {formattedDate && <time dateTime={item.date}>{formattedDate}</time>}
+            <span className="text-foreground/70">
+              {isProject ? "PROJECT" : "ARTICLE"}
+            </span>
+          </div>
         </div>
 
-        {/* Title & Role */}
-        <div>
-          <h3 className="text-xl sm:text-2xl font-normal text-foreground tracking-[-0.015em] group-hover:text-primary transition-colors duration-200 leading-snug">
-            <Link href={targetHref} className="focus-visible:outline-none focus-visible:underline">
+        {/* Column 2 (7 cols): Title, Technical Metadata, Summary, Role & Tags */}
+        <div className="lg:col-span-7 space-y-3">
+          {/* Category + Status / Reading Time */}
+          <div className="flex flex-wrap items-center gap-2.5 font-mono text-[10px] uppercase tracking-[0.14em]">
+            <span className="text-primary">
+              {item.category || (isProject ? "ENGINEERING MODULE" : "FIELD NOTE")}
+            </span>
+            {item.subsystem && (
+              <>
+                <span className="text-border">/</span>
+                <span className="text-muted-foreground truncate max-w-[280px] sm:max-w-md">
+                  {item.subsystem}
+                </span>
+              </>
+            )}
+            {isProject && item.status && (
+              <ProjectStatusBadge status={item.status} size="sm" />
+            )}
+            {!isProject && item.readingTime && (
+              <span className="inline-flex items-center gap-1 text-muted-foreground">
+                <Clock className="w-3 h-3 text-primary" />
+                <span>{item.readingTime}</span>
+              </span>
+            )}
+          </div>
+
+          {/* Title */}
+          <h3 className="font-[family-name:var(--font-cormorant)] text-2xl sm:text-3xl font-normal text-foreground tracking-tight group-hover:text-primary transition-colors leading-[1.14]">
+            <Link
+              href={targetHref}
+              className="focus-visible:outline-none focus-visible:underline"
+            >
               {item.title}
             </Link>
           </h3>
 
+          {/* Personal Role (when available on projects) */}
           {item.role && (
-            <p className="mt-1.5 font-mono text-[11px] text-primary/90 leading-relaxed">
-              <span className="uppercase tracking-wider text-muted-foreground mr-1.5">ROLE:</span>
+            <p className="font-mono text-[11px] text-muted-foreground leading-relaxed">
+              <span className="uppercase tracking-[0.14em] text-primary mr-1.5">
+                Role:
+              </span>
               {item.role}
             </p>
           )}
+
+          {/* Description */}
+          <p className="text-sm sm:text-[15px] text-muted-foreground leading-relaxed max-w-2xl">
+            {item.summary}
+          </p>
+
+          {/* Compact Technical Tags */}
+          {chipList.length > 0 && (
+            <ul
+              className="flex flex-wrap gap-1.5 pt-1"
+              aria-label="Technologies and topics"
+            >
+              {chipList.slice(0, 6).map((tag) => (
+                <li
+                  key={tag}
+                  className="px-2 py-0.5 rounded-sm bg-surface border border-border font-mono text-[10px] tracking-[0.06em] text-foreground/85"
+                >
+                  {tag}
+                </li>
+              ))}
+              {chipList.length > 6 && (
+                <li className="px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+                  +{chipList.length - 6}
+                </li>
+              )}
+            </ul>
+          )}
         </div>
 
-        {/* Summary */}
-        <p className="text-muted-foreground text-sm leading-relaxed font-light flex-grow line-clamp-3">
-          {item.summary}
-        </p>
+        {/* Column 3 (3 cols): Small Thumbnail / Architecture Preview & Actions */}
+        <div className="lg:col-span-3 w-full flex flex-row lg:flex-col items-center lg:items-end justify-between gap-4 pt-2 lg:pt-0">
+          {item.image ? (
+            <Link
+              href={targetHref}
+              tabIndex={-1}
+              aria-hidden="true"
+              className="relative w-28 sm:w-36 lg:w-44 aspect-[16/10] rounded-sm overflow-hidden border border-border bg-surface shrink-0 block"
+            >
+              <Image
+                src={item.image}
+                alt=""
+                aria-hidden="true"
+                fill
+                priority={priority}
+                referrerPolicy="no-referrer"
+                className="object-cover opacity-90 group-hover:opacity-100 transition-transform duration-300 group-hover:scale-[1.03]"
+                sizes="180px"
+              />
+            </Link>
+          ) : isProject ? (
+            <Link
+              href={targetHref}
+              tabIndex={-1}
+              aria-hidden="true"
+              className="hidden sm:flex flex-col justify-between w-36 lg:w-44 p-3 rounded-sm border border-border bg-surface/80 font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground shrink-0"
+            >
+              <span className="text-primary font-semibold">{refCode} · ARCHITECTURE</span>
+              <span className="text-foreground/85 truncate mt-1">
+                SEARCH → PINPOINT → VERIFY
+              </span>
+            </Link>
+          ) : null}
 
-        {/* Component / Topic Chips */}
-        {chipList.length > 0 && (
-          <ul className="flex flex-wrap gap-1.5" aria-label="Technologies and topics">
-            {chipList.slice(0, 5).map((tag) => (
-              <li
-                key={tag}
-                className="px-2 py-0.5 rounded bg-secondary/75 border border-border font-mono text-[10px] uppercase tracking-wider text-foreground/85"
-              >
-                {tag}
-              </li>
-            ))}
-            {chipList.length > 5 && (
-              <li className="px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
-                +{chipList.length - 5}
-              </li>
-            )}
-          </ul>
-        )}
-
-        {/* Bottom Action Row */}
-        <div className="flex items-center justify-between gap-4 mt-auto pt-4 border-t border-border/80">
-          <Link
-            href={targetHref}
-            className="inline-flex items-center gap-2 py-2 min-h-[42px] font-mono text-xs uppercase tracking-[0.15em] font-semibold text-foreground group-hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
-          >
-            <span>{isProject ? "INSPECT MODULE" : "READ FIELD NOTE"}</span>
-            {isProject ? (
-              <ArrowUpRight className="w-4 h-4 text-primary transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            ) : (
-              <ArrowRight className="w-4 h-4 text-primary transition-transform duration-200 group-hover:translate-x-1" />
-            )}
-          </Link>
-
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 ml-auto lg:ml-0">
             {item.docs && (
               <a
                 href={item.docs}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`View documentation for ${item.title}`}
-                className="inline-flex items-center justify-center min-w-[40px] min-h-[40px] sm:min-w-[36px] sm:min-h-[36px] p-2 text-muted-foreground hover:text-primary bg-secondary/60 hover:bg-secondary rounded-md border border-border transition-colors"
+                className="inline-flex items-center justify-center w-8 h-8 rounded-sm border border-border bg-surface text-muted-foreground hover:text-primary transition-colors"
               >
-                <BookOpen className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+                <BookOpen className="w-3.5 h-3.5" />
               </a>
             )}
             {item.github && (
@@ -251,9 +232,9 @@ export function WorkCard({ item, index = 0, priority = false }: WorkCardProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`View GitHub repository for ${item.title}`}
-                className="inline-flex items-center justify-center min-w-[40px] min-h-[40px] sm:min-w-[36px] sm:min-h-[36px] p-2 text-muted-foreground hover:text-primary bg-secondary/60 hover:bg-secondary rounded-md border border-border transition-colors"
+                className="inline-flex items-center justify-center w-8 h-8 rounded-sm border border-border bg-surface text-muted-foreground hover:text-primary transition-colors"
               >
-                <Github className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+                <Github className="w-3.5 h-3.5" />
               </a>
             )}
             {item.demo && (
@@ -262,11 +243,23 @@ export function WorkCard({ item, index = 0, priority = false }: WorkCardProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`View live demo for ${item.title}`}
-                className="inline-flex items-center justify-center min-w-[40px] min-h-[40px] sm:min-w-[36px] sm:min-h-[36px] p-2 text-muted-foreground hover:text-primary bg-secondary/60 hover:bg-secondary rounded-md border border-border transition-colors"
+                className="inline-flex items-center justify-center w-8 h-8 rounded-sm border border-border bg-surface text-muted-foreground hover:text-primary transition-colors"
               >
-                <ExternalLink className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+                <ExternalLink className="w-3.5 h-3.5" />
               </a>
             )}
+
+            <Link
+              href={targetHref}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[36px] rounded-sm border border-border group-hover:border-primary/60 bg-card font-mono text-[11px] uppercase tracking-[0.14em] text-foreground group-hover:text-primary transition-colors"
+            >
+              <span>{isProject ? "Case Study" : "Read Note"}</span>
+              {isProject ? (
+                <ArrowUpRight className="w-3.5 h-3.5 text-primary" />
+              ) : (
+                <ArrowRight className="w-3.5 h-3.5 text-primary" />
+              )}
+            </Link>
           </div>
         </div>
       </div>

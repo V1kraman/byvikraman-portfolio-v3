@@ -6,9 +6,9 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Contact";
 
 export const metadata = {
-  title: "Work Archive | Vikraman V",
+  title: "Works Archive",
   description:
-    "A unified workbench archive of engineered project modules (U1–U6) and technical field notes (FN1–FN5).",
+    "Unified editorial index of engineering projects (U1–U7) and technical articles & field notes (FN1–FN4) by Vikraman V.",
 };
 
 export default function WorkPage() {
@@ -17,7 +17,10 @@ export default function WorkPage() {
   return (
     <>
       <Navbar />
-      <main id="main-content" className="relative min-h-screen pt-24 sm:pt-28 pb-20 sm:pb-24 flex flex-col">
+      <main
+        id="main-content"
+        className="relative min-h-screen pt-24 sm:pt-28 pb-20 sm:pb-24 flex flex-col"
+      >
         <div className="container px-4 sm:px-6 md:px-12 mx-auto relative z-10 flex-grow">
           {/* Navigation Bar & Breadcrumbs */}
           <div className="flex flex-col mb-6 sm:mb-8">
@@ -25,44 +28,48 @@ export default function WorkPage() {
             <Breadcrumbs
               items={[
                 { label: "Home", href: "/" },
-                { label: "Work Archive" },
+                { label: "Works" },
               ]}
             />
           </div>
 
-          {/* Silkscreen Archive Header */}
-          <header className="mb-10 sm:mb-12 md:mb-16 pb-6 sm:pb-8 border-b-2 border-primary/50">
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-              <div className="max-w-3xl">
-                <div className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.18em] sm:tracking-[0.22em] text-primary mb-2.5 sm:mb-3">
-                  {"/// WORKBENCH ARCHIVE · BILL OF MODULES & FIELD NOTES"}
+          {/* Editorial Archive Header */}
+          <header className="mb-10 sm:mb-14 pb-8 border-b border-border">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
+              <div className="lg:col-span-8">
+                <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary mb-3">
+                  01 · Works Index
                 </div>
 
-                <h1 className="text-3xl sm:text-5xl md:text-6xl font-light tracking-[-0.03em] text-foreground mb-3.5 sm:mb-4 leading-tight text-balance">
-                  Engineered Modules &amp;{" "}
-                  <span className="font-[family-name:var(--font-cormorant)] italic text-primary font-normal">
-                    Field Notes
-                  </span>
+                <h1 className="font-[family-name:var(--font-cormorant)] text-4xl sm:text-5xl md:text-6xl font-normal tracking-tight text-foreground mb-4 leading-[1.04]">
+                  Projects, prototypes &amp;{" "}
+                  <span className="italic text-primary">field notes.</span>
                 </h1>
 
-                <p className="text-sm sm:text-lg text-muted-foreground font-light leading-relaxed">
-                  A single unified archive of everything I build on the bench and everything I document in writing. Projects are indexed as hardware/software units (<span className="font-mono text-xs text-primary">U1–Un</span>); articles and architectural essays are indexed as field notes (<span className="font-mono text-xs text-primary">FN1–FNn</span>).
+                <p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl">
+                  A unified index of hardware builds, embedded firmware experiments, and written
+                  reflections. Engineering builds are catalogued as units (
+                  <span className="font-mono text-xs text-primary">U1–U7</span>) alongside technical
+                  articles and essays (
+                  <span className="font-mono text-xs text-primary">FN1–FN4</span>).
                 </p>
               </div>
 
-              {/* Editorial Philosophy Box */}
-              <div className="p-4 rounded-xl bg-card border border-border lg:max-w-sm shrink-0">
-                <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-primary mb-1.5">
-                  SYSTEM PRINCIPLE
+              <div className="lg:col-span-4 lg:border-l lg:border-border lg:pl-6 font-mono text-xs space-y-1.5 text-muted-foreground">
+                <div className="text-[10px] uppercase tracking-[0.18em] text-primary">
+                  ARCHIVE STRUCTURE
                 </div>
-                <p className="text-xs sm:text-sm font-light text-foreground/85 italic leading-relaxed">
-                  &ldquo;Projects show what I built. Articles show what I learned. Both belong on the same workbench.&rdquo;
+                <p className="font-sans text-xs sm:text-sm text-foreground/85 leading-relaxed">
+                  Projects open engineering case studies at{" "}
+                  <code className="font-mono text-[11px] text-primary">/projects/[slug]</code>;
+                  articles open technical notebook entries at{" "}
+                  <code className="font-mono text-[11px] text-primary">/blog/[slug]</code>.
                 </p>
               </div>
             </div>
           </header>
 
-          {/* Interactive Work Feed */}
+          {/* Interactive Editorial Index & Filter Console */}
           <WorkFeed initialPosts={posts} />
         </div>
       </main>

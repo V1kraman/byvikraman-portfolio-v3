@@ -1,7 +1,7 @@
 "use client";
 
 import { Reveal } from "./Reveal";
-import { ArrowUpRight, Check, Download } from "lucide-react";
+import { ArrowUpRight, Check, Download, Mail } from "lucide-react";
 import { personalInfo } from "@/lib/data";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
@@ -25,14 +25,18 @@ export function Contact() {
     }
 
     try {
-      if (typeof navigator !== "undefined" && navigator.clipboard && navigator.clipboard.writeText) {
+      if (
+        typeof navigator !== "undefined" &&
+        navigator.clipboard &&
+        navigator.clipboard.writeText
+      ) {
         await navigator.clipboard.writeText(personalInfo.email);
         setCopied(true);
         setStatusMessage("Email address copied to clipboard!");
         timerRef.current = setTimeout(() => {
           setCopied(false);
           setStatusMessage("");
-        }, 2000);
+        }, 2200);
       } else {
         throw new Error("Clipboard API not available");
       }
@@ -45,149 +49,123 @@ export function Contact() {
   return (
     <section
       id="contact"
-      className="py-20 md:py-28 relative border-t border-border/70 bg-card/20 overflow-hidden"
+      className="py-16 sm:py-24 md:py-28 relative border-t border-border/80 bg-surface/40 overflow-hidden"
     >
-      <div className="container px-6 md:px-12 mx-auto relative z-10">
+      <div className="container px-4 sm:px-6 md:px-12 mx-auto relative z-10">
         <Reveal>
-          {/* Silkscreen Section Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 mb-12 border-b-2 border-primary/50">
-            <div>
-              <div className="font-mono text-xs uppercase tracking-[0.22em] text-primary mb-2">
-                {"/// 05 · SOLDER A CONNECTION"}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            {/* Left Column: Editorial Invitation */}
+            <div className="lg:col-span-6 space-y-4">
+              <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary">
+                05 · Correspondence
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-[-0.025em] text-foreground leading-tight">
-                Test Points &amp;{" "}
-                <span className="font-[family-name:var(--font-cormorant)] italic text-primary font-normal">
-                  Direct Channels
-                </span>
+              <h2 className="font-[family-name:var(--font-cormorant)] text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-foreground leading-[1.08]">
+                Start a conversation or{" "}
+                <span className="italic text-primary">compare notes.</span>
               </h2>
-              <p className="text-sm sm:text-base text-muted-foreground font-light mt-2 max-w-xl">
-                Open to embedded systems internships, collaborative hardware/software builds, and engineering discussions. All connection pads are exposed below.
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-xl">
+                I’m always glad to talk about embedded hardware prototypes, microcontroller firmware,
+                engineering internships, or collaborative builds. Reach out directly by email or connect
+                through GitHub and LinkedIn.
               </p>
-            </div>
-            <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground shrink-0">
-              TEST POINTS · TP1–TP4 EXPOSED
-            </div>
-          </div>
-        </Reveal>
 
-        {/* Test-Point Pads Grid (TP1 - TP3: Email, LinkedIn, GitHub) */}
-        <Reveal delay={0.08}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* TP1: Email Pad (Click to Copy + Mailto) */}
-            <button
-              id="contact-copy-email"
-              type="button"
-              onClick={handleCopy}
-              aria-label={copied ? "Email copied to clipboard" : `Copy email address ${personalInfo.email}`}
-              className="group relative flex items-center gap-4 p-4 sm:p-5 min-h-[76px] rounded-xl bg-card border border-border hover:border-primary/60 text-left transition-all duration-200 hover:-translate-y-0.5 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
-            >
-              {/* Solder pad indicator dot */}
-              <span
-                aria-hidden="true"
-                className="absolute top-3 right-3 w-2 h-2 rounded-full bg-primary/45 group-hover:bg-primary transition-colors"
-              />
-
-              <span className="w-11 h-11 rounded-lg bg-primary/15 border border-primary/40 group-hover:bg-primary group-hover:text-primary-foreground font-mono text-xs font-semibold text-primary flex items-center justify-center shrink-0 transition-colors">
-                {copied ? <Check className="w-4 h-4" /> : "EM"}
-              </span>
-
-              <span className="min-w-0 flex-1">
-                <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                  TP1 · {copied ? "COPIED TO CLIPBOARD" : "EMAIL (TAP TO COPY)"}
-                </span>
-                <strong className="block font-mono text-xs sm:text-sm font-medium text-foreground group-hover:text-primary transition-colors truncate mt-0.5">
-                  {personalInfo.email}
-                </strong>
-              </span>
-              <span className="sr-only" aria-live="polite">
-                {statusMessage}
-              </span>
-            </button>
-
-            {/* TP2: LinkedIn Pad */}
-            <a
-              id="contact-linkedin"
-              href={personalInfo.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative flex items-center gap-4 p-4 sm:p-5 min-h-[76px] rounded-xl bg-card border border-border hover:border-primary/60 transition-all duration-200 hover:-translate-y-0.5 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <span
-                aria-hidden="true"
-                className="absolute top-3 right-3 w-2 h-2 rounded-full bg-primary/45 group-hover:bg-primary transition-colors"
-              />
-              <span className="w-11 h-11 rounded-lg bg-primary/15 border border-primary/40 group-hover:bg-primary group-hover:text-primary-foreground font-mono text-xs font-semibold text-primary flex items-center justify-center shrink-0 transition-colors">
-                IN
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                  TP2 · LINKEDIN
-                </span>
-                <strong className="flex items-center gap-1 font-mono text-xs sm:text-sm font-medium text-foreground group-hover:text-primary transition-colors truncate mt-0.5">
-                  <span>/in/byvikraman</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 shrink-0" />
-                </strong>
-              </span>
-            </a>
-
-            {/* TP3: GitHub Pad */}
-            <a
-              id="contact-github"
-              href={personalInfo.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative flex items-center gap-4 p-4 sm:p-5 min-h-[76px] rounded-xl bg-card border border-border hover:border-primary/60 transition-all duration-200 hover:-translate-y-0.5 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <span
-                aria-hidden="true"
-                className="absolute top-3 right-3 w-2 h-2 rounded-full bg-primary/45 group-hover:bg-primary transition-colors"
-              />
-              <span className="w-11 h-11 rounded-lg bg-primary/15 border border-primary/40 group-hover:bg-primary group-hover:text-primary-foreground font-mono text-xs font-semibold text-primary flex items-center justify-center shrink-0 transition-colors">
-                GH
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                  TP3 · GITHUB REPOS
-                </span>
-                <strong className="flex items-center gap-1 font-mono text-xs sm:text-sm font-medium text-foreground group-hover:text-primary transition-colors truncate mt-0.5">
-                  <span>/V1kraman</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 shrink-0" />
-                </strong>
-              </span>
-            </a>
-          </div>
-        </Reveal>
-
-        {/* TP4: Primary Résumé / Datasheet Bar */}
-        <Reveal delay={0.14}>
-          <a
-            id="contact-download-cv"
-            href={personalInfo.resume || "/Vikraman_V_Resume.pdf"}
-            download="Vikraman_V_Resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-xl bg-primary/10 hover:bg-primary/15 border border-primary/40 hover:border-primary transition-all duration-200 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <div className="flex items-center gap-4 min-w-0">
-              <span className="w-11 h-11 rounded-lg bg-primary text-primary-foreground font-mono text-xs font-semibold flex items-center justify-center shrink-0 shadow-sm">
-                PDF
-              </span>
-              <div className="min-w-0">
-                <strong className="block text-base sm:text-lg font-medium text-foreground group-hover:text-primary transition-colors">
-                  Download Curriculum Vitae (Résumé)
-                </strong>
-                <span className="block font-mono text-[10px] sm:text-xs uppercase tracking-[0.14em] text-muted-foreground mt-0.5 sm:truncate">
-                  TP4 · OPERATOR DATASHEET · EDUCATION, PROJECTS &amp; TECHNICAL STACK
-                </span>
+              <div className="pt-2 flex flex-wrap items-center gap-3">
+                <a
+                  href={`mailto:${personalInfo.email}`}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 min-h-[42px] rounded-sm bg-primary text-primary-foreground font-mono text-xs uppercase tracking-[0.14em] font-medium hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <Mail className="w-3.5 h-3.5" />
+                  <span>Write an Email</span>
+                </a>
+                <a
+                  id="contact-download-cv"
+                  href={personalInfo.resume || "/Vikraman_V_Resume.pdf"}
+                  download="Vikraman_V_Resume.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 min-h-[42px] rounded-sm border border-border bg-card hover:border-primary/60 text-foreground font-mono text-xs uppercase tracking-[0.14em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <Download className="w-3.5 h-3.5 text-primary" />
+                  <span>Download Résumé (PDF)</span>
+                </a>
               </div>
             </div>
 
-            <span className="inline-flex items-center justify-center gap-2 px-4 py-2.5 min-h-[42px] rounded-md bg-primary text-primary-foreground font-mono text-xs uppercase tracking-widest font-semibold shrink-0 w-full sm:w-auto">
-              <span>DOWNLOAD</span>
-              <Download className="w-4 h-4 transition-transform duration-200 group-hover:translate-y-0.5" />
-            </span>
-          </a>
+            {/* Right Column: Direct Index Channels */}
+            <div className="lg:col-span-6 w-full border-t lg:border-t-0 border-border pt-6 lg:pt-0">
+              <div className="divide-y divide-border border-y border-border">
+                {/* Channel 01: Copy / Mail Email */}
+                <button
+                  id="contact-copy-email"
+                  type="button"
+                  onClick={handleCopy}
+                  aria-label={
+                    copied
+                      ? "Email copied to clipboard"
+                      : `Copy email address ${personalInfo.email}`
+                  }
+                  className="group w-full py-4 sm:py-5 px-2 flex items-center justify-between gap-4 text-left hover:bg-card/60 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <div className="min-w-0">
+                    <span className="block font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                      CH·01 · {copied ? "COPIED TO CLIPBOARD" : "DIRECT EMAIL (CLICK TO COPY)"}
+                    </span>
+                    <span className="block font-mono text-sm sm:text-base text-foreground group-hover:text-primary transition-colors truncate mt-1">
+                      {personalInfo.email}
+                    </span>
+                  </div>
+                  <span className="w-8 h-8 rounded-sm border border-border group-hover:border-primary/60 flex items-center justify-center text-muted-foreground group-hover:text-primary shrink-0 transition-colors">
+                    {copied ? <Check className="w-4 h-4 text-primary" /> : <ArrowUpRight className="w-4 h-4" />}
+                  </span>
+                  <span className="sr-only" aria-live="polite">
+                    {statusMessage}
+                  </span>
+                </button>
+
+                {/* Channel 02: GitHub */}
+                <a
+                  id="contact-github"
+                  href={personalInfo.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group w-full py-4 sm:py-5 px-2 flex items-center justify-between gap-4 hover:bg-card/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <div className="min-w-0">
+                    <span className="block font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                      CH·02 · SOURCE REPOSITORIES &amp; FIRMWARE
+                    </span>
+                    <span className="block font-mono text-sm sm:text-base text-foreground group-hover:text-primary transition-colors truncate mt-1">
+                      github.com/V1kraman
+                    </span>
+                  </div>
+                  <span className="w-8 h-8 rounded-sm border border-border group-hover:border-primary/60 flex items-center justify-center text-muted-foreground group-hover:text-primary shrink-0 transition-colors">
+                    <ArrowUpRight className="w-4 h-4" />
+                  </span>
+                </a>
+
+                {/* Channel 03: LinkedIn */}
+                <a
+                  id="contact-linkedin"
+                  href={personalInfo.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group w-full py-4 sm:py-5 px-2 flex items-center justify-between gap-4 hover:bg-card/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <div className="min-w-0">
+                    <span className="block font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                      CH·03 · PROFESSIONAL NETWORK
+                    </span>
+                    <span className="block font-mono text-sm sm:text-base text-foreground group-hover:text-primary transition-colors truncate mt-1">
+                      linkedin.com/in/byvikraman
+                    </span>
+                  </div>
+                  <span className="w-8 h-8 rounded-sm border border-border group-hover:border-primary/60 flex items-center justify-center text-muted-foreground group-hover:text-primary shrink-0 transition-colors">
+                    <ArrowUpRight className="w-4 h-4" />
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
         </Reveal>
       </div>
     </section>
@@ -196,38 +174,64 @@ export function Contact() {
 
 export function Footer() {
   return (
-    <footer className="mt-auto py-8 pb-[max(2rem,env(safe-area-inset-bottom))] border-t border-border/80 bg-background font-mono text-xs">
-      <div className="container px-4 sm:px-6 md:px-12 mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-muted-foreground text-center sm:text-left">
-          <span className="text-foreground font-semibold tracking-[0.14em]">
-            © {new Date().getFullYear()} VIKRAMAN V
-          </span>
-          <span className="hidden sm:inline text-border">•</span>
-          <span className="text-[11px] tracking-[0.12em] uppercase">
-            ECE UNDERGRADUATE · TAMIL NADU, INDIA
+    <footer className="mt-auto py-8 sm:py-10 pb-[max(2rem,env(safe-area-inset-bottom))] border-t border-border/85 bg-background">
+      <div className="container px-4 sm:px-6 md:px-12 mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        {/* Left: Wordmark & Copyright */}
+        <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-4">
+          <Link
+            href="/"
+            className="font-[family-name:var(--font-antonio)] text-base tracking-[0.08em] font-semibold text-foreground uppercase hover:text-primary transition-colors"
+          >
+            VIKRAMAN{" "}
+            <span className="font-[family-name:var(--font-cormorant)] italic font-semibold tracking-normal">
+              V
+            </span>
+            <span className="text-primary">.</span>
+          </Link>
+          <span className="font-mono text-[11px] tracking-[0.1em] text-muted-foreground">
+            © {new Date().getFullYear()} Vikraman V. · Kattankulathur, Tamil Nadu
           </span>
         </div>
 
-        <nav aria-label="Footer navigation" className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:gap-5 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-          <Link href="/" className="py-1.5 min-h-[38px] inline-flex items-center hover:text-primary transition-colors">
-            [ HOME ]
+        {/* Right: Navigation + Direct Email, GitHub, LinkedIn */}
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+          <Link href="/work" className="hover:text-foreground transition-colors">
+            Works
           </Link>
-          <Link href="/work" className="py-1.5 min-h-[38px] inline-flex items-center text-primary font-semibold hover:underline">
-            [ WORKS ]
+          <Link href="/about" className="hover:text-foreground transition-colors">
+            About
           </Link>
-          <Link href="/#about" className="py-1.5 min-h-[38px] inline-flex items-center hover:text-primary transition-colors">
-            [ ABOUT ]
+          <Link href="/now" className="hover:text-foreground transition-colors">
+            Now
           </Link>
-          <Link href="/#capabilities" className="py-1.5 min-h-[38px] inline-flex items-center hover:text-primary transition-colors">
-            [ STACK ]
-          </Link>
-          <Link href="/#experience" className="py-1.5 min-h-[38px] inline-flex items-center hover:text-primary transition-colors">
-            [ LOG ]
-          </Link>
-          <Link href="/#contact" className="py-1.5 min-h-[38px] inline-flex items-center hover:text-primary transition-colors">
-            [ CONTACT ]
-          </Link>
-        </nav>
+          <span aria-hidden="true" className="text-border">
+            /
+          </span>
+          <a
+            href={`mailto:${personalInfo.email}`}
+            className="hover:text-primary transition-colors lowercase font-mono"
+          >
+            {personalInfo.email}
+          </a>
+          <a
+            href={personalInfo.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-primary transition-colors inline-flex items-center gap-0.5"
+          >
+            <span>GitHub</span>
+            <ArrowUpRight className="w-3 h-3" />
+          </a>
+          <a
+            href={personalInfo.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-primary transition-colors inline-flex items-center gap-0.5"
+          >
+            <span>LinkedIn</span>
+            <ArrowUpRight className="w-3 h-3" />
+          </a>
+        </div>
       </div>
     </footer>
   );

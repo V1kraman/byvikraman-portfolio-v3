@@ -1,13 +1,18 @@
 import type { Metadata, Viewport } from 'next';
-import { Manrope, Cormorant_Garamond, IBM_Plex_Mono } from 'next/font/google';
+import { Geist, Geist_Mono, Cormorant_Garamond, Antonio } from 'next/font/google';
 import './globals.css';
 import { SafeJsonProtection } from '@/components/SafeJsonProtection';
+import { CustomCursor } from '@/components/CustomCursor';
 import { Analytics } from '@vercel/analytics/next';
 
-const manrope = Manrope({ 
+const geistSans = Geist({
   subsets: ['latin'],
-  variable: '--font-manrope',
-  weight: ['200', '300', '400', '500', '600', '700', '800'],
+  variable: '--font-geist-sans',
+});
+
+const geistMono = Geist_Mono({
+  subsets: ['latin'],
+  variable: '--font-geist-mono',
 });
 
 const cormorant = Cormorant_Garamond({
@@ -17,10 +22,10 @@ const cormorant = Cormorant_Garamond({
   style: ['italic', 'normal'],
 });
 
-const ibmPlexMono = IBM_Plex_Mono({
+const antonio = Antonio({
   subsets: ['latin'],
-  variable: '--font-mono',
-  weight: ['400', '500', '600'],
+  variable: '--font-antonio',
+  weight: ['400', '600', '700'],
 });
 
 export const viewport: Viewport = {
@@ -29,20 +34,21 @@ export const viewport: Viewport = {
   maximumScale: 5,
   viewportFit: 'cover',
   themeColor: [
-    { media: '(prefers-color-scheme: dark)', color: '#191A18' },
-    { media: '(prefers-color-scheme: light)', color: '#E9E2D2' },
+    { media: '(prefers-color-scheme: dark)', color: '#121210' },
+    { media: '(prefers-color-scheme: light)', color: '#F4F0E8' },
   ],
 };
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://byvikraman.me'),
   title: {
-    default: 'Vikraman V | ECE Student, Embedded Systems & Software',
-    template: '%s | Vikraman V',
+    default: 'Vikraman V. | ECE Student, Embedded Systems & Software',
+    template: '%s | Vikraman V.',
   },
-  description: 'Engineering portfolio of Vikraman V — Electronics and Communication Engineering student building embedded systems, hardware prototypes, and software.',
-  authors: [{ name: 'Vikraman V', url: 'https://byvikraman.me' }],
-  creator: 'Vikraman V',
+  description:
+    'Personal digital space and engineering notebook of Vikraman V. — Electronics and Communication Engineering student building embedded hardware prototypes, firmware, and software.',
+  authors: [{ name: 'Vikraman V.', url: 'https://byvikraman.me' }],
+  creator: 'Vikraman V.',
   alternates: {
     canonical: 'https://byvikraman.me',
   },
@@ -54,23 +60,21 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Vikraman V',
+    title: 'Vikraman V.',
   },
   keywords: [
     'Vikraman V',
     'Vikraman',
-    'Developer',
-    'Engineer',
-    'Software Engineer',
     'Electronics and Communication Engineering',
     'ECE',
-    'Full Stack Developer',
     'Embedded Systems',
-    'IoT',
+    'ESP32-S3',
+    'Arduino',
+    'Hardware Prototyping',
+    'Firmware',
     'TypeScript',
     'Next.js',
-    'React',
-    'Hardware Engineering',
+    'Engineering Notebook',
     'Portfolio',
   ],
   icons: {
@@ -85,26 +89,36 @@ export const metadata: Metadata = {
   },
   manifest: '/site.webmanifest',
   openGraph: {
-    title: 'Vikraman V | ECE Student, Embedded Systems & Software',
-    description: 'Engineering portfolio of Vikraman V — Electronics and Communication Engineering student building embedded systems, hardware prototypes, and software.',
+    title: 'Vikraman V. | ECE Student, Embedded Systems & Software',
+    description:
+      'Personal digital space and engineering notebook of Vikraman V. — Electronics and Communication Engineering student building embedded hardware prototypes, firmware, and software.',
     url: 'https://byvikraman.me',
-    siteName: 'Vikraman V',
+    siteName: 'Vikraman V.',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Vikraman V | ECE Student, Embedded Systems & Software',
-    description: 'Engineering portfolio of Vikraman V — Electronics and Communication Engineering student building embedded systems, hardware prototypes, and software.',
+    title: 'Vikraman V. | ECE Student, Embedded Systems & Software',
+    description:
+      'Personal digital space and engineering notebook of Vikraman V. — Electronics and Communication Engineering student building embedded hardware prototypes, firmware, and software.',
   },
 };
 
-export default function RootLayout({children}: {children: React.ReactNode}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark scroll-smooth bg-background text-foreground" data-scroll-behavior="smooth" suppressHydrationWarning>
-      <body className={`${manrope.className} ${manrope.variable} ${cormorant.variable} ${ibmPlexMono.variable} bg-background text-foreground antialiased selection:bg-primary/25 selection:text-foreground overflow-x-hidden min-h-[100dvh] flex flex-col`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className="dark scroll-smooth bg-background text-foreground"
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
+      <body
+        className={`${geistSans.className} ${geistSans.variable} ${geistMono.variable} ${cormorant.variable} ${antonio.variable} bg-background text-foreground antialiased selection:bg-primary/25 selection:text-foreground overflow-x-hidden min-h-[100dvh] flex flex-col`}
+        suppressHydrationWarning
+      >
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-md focus:bg-primary focus:text-primary-foreground focus:font-mono focus:text-xs focus:uppercase focus:tracking-widest focus:shadow-lg"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-sm focus:bg-primary focus:text-primary-foreground focus:font-mono focus:text-xs focus:uppercase focus:tracking-widest focus:shadow-lg"
         >
           Skip to content
         </a>
@@ -115,14 +129,15 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
           suppressHydrationWarning
         />
         <SafeJsonProtection />
-        {/* Restrained PCB routing grid & subtle film grain atmosphere */}
+        <CustomCursor />
+        {/* Restrained editorial grid & subtle warm film grain atmosphere */}
         <div
           aria-hidden="true"
-          className="fixed inset-0 z-[-10] pointer-events-none bg-[linear-gradient(to_right,var(--grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-line)_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_90%_75%_at_50%_0%,#000_35%,transparent_90%)]"
+          className="fixed inset-0 z-[-10] pointer-events-none bg-[linear-gradient(to_right,var(--grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-line)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_90%_75%_at_50%_0%,#000_30%,transparent_90%)]"
         />
         <div
           aria-hidden="true"
-          className="fixed inset-0 z-[-10] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 dark:opacity-15 mix-blend-multiply dark:mix-blend-screen pointer-events-none"
+          className="fixed inset-0 z-[-10] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.08] dark:opacity-[0.12] mix-blend-multiply dark:mix-blend-screen pointer-events-none"
         />
         {children}
         <Analytics />

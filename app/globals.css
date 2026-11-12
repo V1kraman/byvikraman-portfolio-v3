@@ -4,82 +4,85 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --color-obsidian: #191A18;
-  --color-bone: #E9E2D2;
-  --color-burnt-orange: #C46B45;
+  /* Warm Editorial Paper × Deep Carbon Ink × Mineral Vermilion (Light Theme) */
+  --background: #F4F0E8;
+  --foreground: #161614;
 
-  --background: #E9E2D2;
-  --foreground: #191A18;
+  --surface: #EBE5DA;
+  --surface-elevated: #E2DBD0;
 
-  --card: #F1EBDD;
-  --card-foreground: #191A18;
+  --card: #EFE9DF;
+  --card-foreground: #161614;
 
-  --popover: #F5EFE3;
-  --popover-foreground: #191A18;
+  --popover: #F7F4EE;
+  --popover-foreground: #161614;
 
-  --primary: #A95332;
-  --primary-foreground: #F9F5EC;
+  --primary: #B04625;
+  --primary-foreground: #F9F6F0;
 
-  --secondary: #DED5C3;
-  --secondary-foreground: #191A18;
+  --secondary: #E4DDD0;
+  --secondary-foreground: #161614;
 
-  --muted: #E1D9C9;
-  --muted-foreground: #5C574D;
+  --muted: #E6DFD3;
+  --muted-foreground: #58544B;
 
-  --accent: #A95332;
-  --accent-foreground: #F9F5EC;
+  --accent: #B04625;
+  --accent-foreground: #F9F6F0;
 
-  --border: #C9BEAA;
-  --input: #C9BEAA;
-  --ring: #A95332;
+  --border: #D2CBBF;
+  --input: #D2CBBF;
+  --ring: #B04625;
 
-  --surface-subtle: rgba(25, 26, 24, 0.03);
-  --surface-hover: rgba(25, 26, 24, 0.06);
-  --grid-line: rgba(25, 26, 24, 0.045);
+  --surface-subtle: rgba(22, 22, 20, 0.03);
+  --surface-hover: rgba(22, 22, 20, 0.06);
+  --grid-line: rgba(22, 22, 20, 0.04);
 }
 
 .dark {
-  --background: #191A18;
-  --foreground: #E9E2D2;
+  /* Warm Near-Black Ink × Stone Ivory × Mineral Vermilion (Dark Default Theme) */
+  --background: #121210;
+  --foreground: #EFECE6;
 
-  --card: #222320;
-  --card-foreground: #E9E2D2;
+  --surface: #191916;
+  --surface-elevated: #21211D;
 
-  --popover: #272824;
-  --popover-foreground: #E9E2D2;
+  --card: #191916;
+  --card-foreground: #EFECE6;
 
-  --primary: #C46B45;
-  --primary-foreground: #191A18;
+  --popover: #21211D;
+  --popover-foreground: #EFECE6;
 
-  --secondary: #2D2E29;
-  --secondary-foreground: #E9E2D2;
+  --primary: #D2653E;
+  --primary-foreground: #121210;
 
-  --muted: #262723;
-  --muted-foreground: #B8B0A0;
+  --secondary: #242420;
+  --secondary-foreground: #EFECE6;
 
-  --accent: #C46B45;
-  --accent-foreground: #191A18;
+  --muted: #1E1E1B;
+  --muted-foreground: #A6A196;
 
-  --border: #383933;
-  --input: #383933;
-  --ring: #D9825B;
+  --accent: #D2653E;
+  --accent-foreground: #121210;
 
-  --surface-subtle: rgba(233, 226, 210, 0.03);
-  --surface-hover: rgba(233, 226, 210, 0.06);
-  --grid-line: rgba(233, 226, 210, 0.035);
+  --border: #2C2B26;
+  --input: #2C2B26;
+  --ring: #E07852;
+
+  --surface-subtle: rgba(239, 236, 230, 0.025);
+  --surface-hover: rgba(239, 236, 230, 0.055);
+  --grid-line: rgba(239, 236, 230, 0.03);
 }
 
 @theme inline {
-  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-cormorant), ui-serif, Georgia, serif;
-  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-
-  --color-obsidian: var(--color-obsidian);
-  --color-bone: var(--color-bone);
-  --color-burnt-orange: var(--color-burnt-orange);
+  --font-display: var(--font-antonio), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
@@ -120,11 +123,11 @@
   select,
   textarea {
     touch-action: manipulation;
-    -webkit-tap-highlight-color: rgba(196, 107, 69, 0.16);
+    -webkit-tap-highlight-color: rgba(210, 101, 62, 0.16);
   }
 
   ::selection {
-    background-color: rgba(196, 107, 69, 0.28);
+    background-color: rgba(210, 101, 62, 0.26);
     color: var(--foreground);
   }
 }
@@ -178,7 +181,7 @@ html.calm * {
   transition-duration: 0.01ms !important;
 }
 
-/* Editorial Prose & Engineering Dossier Adaptations for Obsidian × Bone × Burnt Orange */
+/* Editorial Prose & Technical Notebook Adaptations */
 .prose {
   --tw-prose-body: var(--muted-foreground);
   --tw-prose-headings: var(--foreground);
@@ -192,8 +195,8 @@ html.calm * {
   --tw-prose-quote-borders: var(--primary);
   --tw-prose-captions: var(--muted-foreground);
   --tw-prose-code: var(--primary);
-  --tw-prose-pre-code: #E9E2D2;
-  --tw-prose-pre-bg: #141513;
+  --tw-prose-pre-code: #EFECE6;
+  --tw-prose-pre-bg: #141412;
   --tw-prose-th-borders: var(--border);
   --tw-prose-td-borders: var(--border);
   overflow-wrap: break-word;
@@ -201,8 +204,8 @@ html.calm * {
 }
 
 .prose pre {
-  background-color: #141513 !important;
-  color: #E9E2D2 !important;
+  background-color: #141412 !important;
+  color: #EFECE6 !important;
   border: 1px solid var(--border);
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -218,4 +221,3 @@ html.calm * {
     padding: 1.125rem 1.25rem;
   }
 }
-
